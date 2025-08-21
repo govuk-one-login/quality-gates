@@ -1,0 +1,16 @@
+{
+  "name": "quality-gate-schema",
+  "version": "0.0.1",
+  "description": "Schemas used to detail Quality Gates",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx @sourcemeta/jsonschema test test/ --resolve schemas --verbose",
+    "validate:schemas": "npx @sourcemeta/jsonschema metaschema schemas --verbose",
+    "validate:lint": "npx @sourcemeta/jsonschema lint schemas --exclude duplicate_enum_values --verbose"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@sourcemeta/jsonschema": "11.1.1"
+  }
+}
