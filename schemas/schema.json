@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "_$id": "schema.json",
+  "title": "root",
+  "description": "",
+  "properties": {
+    "services": {
+      "$ref": "#/$defs/services"
+    }
+  },
+  "$defs": {
+    "check": {
+      "properties": {
+        "check-types": {
+          "$ref": "#/$defs/check-type"
+        },
+        "phase": {
+          "enum": [
+            "pre-merge",
+            "pre-upload",
+            "build",
+            "staging",
+            "production",
+            "integration"
+          ]
+        },
+        "provider": {
+          "enum": [
+            "GitHub",
+            "Stack Orchestrator"
+          ]
+        },
+        "config": {
+          "$ref": "#/$defs/check-config"
+        }
+      },
+      "required": [
+        "check-types",
+        "phase",
+        "provider",
+        "config"
+      ]
+    },
+    "check-config": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "type": "string"
+        },
+        "path": {
+          "description": "JMESPath compatible expression to identify relevant property or node",
+          "type": "string"
+        }
+      },
+      "required": [
+        "file"
+      ]
+    },
+    "check-type": {
+      "type": "array",
+      "description": "List of quality checks as documented, plus emergent checks",
+      "items": {
+        "type": "string",
+        "oneOf": [
+          {
+            "enum": [
+              "unit",
+              "code style and linting",
+              "unit",
+              "new feature",
+              "integration",
+              "regression",
+              "vulnerability detection",
+              "unit test coverage",
+              "contract",
+              "secret scanning",
+              "sensitive data scanning",
+              "accessibility",
+              "system",
+              "stack",
+              "canary",
+              "cross service integration",
+              "smoke"
+            ]
+          },
+          {
+            "enum": [
+              "code quality",
+              "manual"
+            ]
+          }
+        ]
+      }
+    },
+    "quality-gate": {
+      "$ref": "#/$defs/check"
+    },
+    "service": {
+      "required": [
+        "quality-gates",
+        "service-tag"
+      ],
+      "properties": {
+        "quality-gates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/check"
+          }
+        },
+        "service-tag": {
+          "type": "string"
+        }
+      }
+    },
+    "services": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/service"
+      }
+    }
+  }
+}

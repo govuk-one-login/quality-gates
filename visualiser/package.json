@@ -1,0 +1,26 @@
+{
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "clean": "rimraf src/.observablehq/cache",
+    "build": "observable build",
+    "dev": "observable preview",
+    "deploy": "observable deploy",
+    "observable": "observable"
+  },
+  "dependencies": {
+    "@observablehq/framework": "^1.13.3",
+    "d3-dsv": "^3.0.1",
+    "d3-time-format": "^4.1.0",
+    "data-structure-typed": "2.0.4"
+  },
+  "devDependencies": {
+    "dotenv": "^17.2.1",
+    "octokit": "^5.0.3",
+    "rimraf": "^5.0.5",
+    "yaml": "^2.8.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

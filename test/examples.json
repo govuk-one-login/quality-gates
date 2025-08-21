@@ -1,0 +1,11 @@
+{
+  "target": "../schemas/schema.json",
+  "$comment": "All examples should validate",
+  "tests": [
+    {
+      "description": "Example",
+      "valid": true,
+      "dataPath": "../examples/github.json"
+    }
+  ]
+}

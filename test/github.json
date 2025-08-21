@@ -1,0 +1,150 @@
+{
+  "target": "../schemas/schema.json",
+  "$comment": "Simple schema tests for GitHub providers",
+  "tests": [
+    {
+      "description": "Empty manifest",
+      "valid": true,
+      "data": {
+      }
+    },
+    {
+      "description": "Empty services",
+      "valid": true,
+      "data": {
+        "services": []
+      }
+    },
+    {
+      "description": "Services with empty service",
+      "valid": false,
+      "data": {
+        "services": [
+          {}
+        ]
+      }
+    },
+    {
+      "description": "Service with minimum defined service",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "service-tag": "generic-service",
+            "quality-gates": [
+              {
+                "check-types": ["unit"],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": {
+                  "file": ".github/workflows/tests.yaml",
+                  "path": "jobs.unit",
+                  "jobName": "Run unit tests"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "Service with multiple services",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "service-tag": "generic-service-1",
+            "quality-gates": [
+              {
+                "check-types": ["code style and linting"],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": {
+                  "file": ".github/workflows/check-code-quality.yaml",
+                  "path": "jobs.pre-commit",
+                  "name": "Run pre-commit"
+                }
+              }
+            ]
+          },
+          {
+            "service-tag": "generic-service-2",
+            "quality-gates": [
+              {
+                "check-types": ["code style and linting"],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": {
+                  "file": ".github/workflows/check-code-quality.yaml",
+                  "path": "jobs.pre-commit",
+                  "name": "Run pre-commit"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "Service with duplicate services",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "service-tag": "generic-service",
+            "quality-gates": [
+              {
+                "check-types": ["code style and linting"],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": {
+                  "file": ".github/workflows/check-code-quality.yaml",
+                  "path": "jobs.pre-commit",
+                  "name": "Run pre-commit"
+                }
+              }
+            ]
+          },
+          {
+            "service-tag": "generic-service",
+            "quality-gates": [
+              {
+                "check-types": ["code style and linting"],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": {
+                  "file": ".github/workflows/check-code-quality.yaml",
+                  "path": "jobs.pre-commit",
+                  "name": "Run pre-commit"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "Service with unknown check-type",
+      "valid": false,
+      "data": {
+        "services": [
+          {
+            "service-tag": "generic-service",
+            "quality-gates": [
+              {
+                "check-types": ["unknown"],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": {
+                  "file": ".github/workflows/check-code-quality.yaml",
+                  "path": "jobs.pre-commit",
+                  "name": "Run pre-commit"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
