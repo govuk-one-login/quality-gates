@@ -1,0 +1,1 @@
+cat ../schemas/schema.json
