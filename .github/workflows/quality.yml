@@ -1,0 +1,60 @@
+name: Scan repository
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    # Every Monday at 9am
+    - cron: "0 9 * * 1"
+
+concurrency:
+  group: scan-repo-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+permissions: read-all
+
+jobs:
+  pre-commit:
+    name: pre-commit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run pre-commit
+        uses: govuk-one-login/github-actions/code-quality/run-pre-commit@d201191485b645ec856a34e5ca48636cf97b2574
+        with:
+          all-files: true
+
+  codeql:
+    name: CodeQL
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - name: Run CodeQL scan
+        uses: govuk-one-login/github-actions/code-quality/codeql@d201191485b645ec856a34e5ca48636cf97b2574
+        with:
+          languages: javascript
+
+  run-tests:
+    name: Unit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull repository
+        uses: actions/checkout@v5
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint schemas
+        run: npm run validate:schemas
+
+      - name: Validate schemas
+        run: npm run validate:schemas
+
+      - name: Run Unit tests
+        run: npm run test
