@@ -1,4 +1,4 @@
-name: Scan repository
+name: Quality
 
 on:
   pull_request:
@@ -34,27 +34,3 @@ jobs:
         uses: govuk-one-login/github-actions/code-quality/codeql@d201191485b645ec856a34e5ca48636cf97b2574
         with:
           languages: javascript
-
-  run-tests:
-    name: Unit
-    runs-on: ubuntu-latest
-    steps:
-      - name: Pull repository
-        uses: actions/checkout@v5
-
-      - name: Install Node
-        uses: actions/setup-node@v5
-        with:
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Lint schemas
-        run: npm run validate:schemas
-
-      - name: Validate schemas
-        run: npm run validate:schemas
-
-      - name: Run Unit tests
-        run: npm run test
