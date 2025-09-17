@@ -63,22 +63,22 @@
         "oneOf": [
           {
             "enum": [
+              "accessibility",
+              "canary",
               "code style and linting",
-              "unit",
-              "new feature",
-              "integration",
-              "regression",
-              "vulnerability detection",
-              "unit test coverage",
               "contract",
+              "cross service integration",
+              "integration",
+              "new feature",
+              "regression",
               "secret scanning",
               "sensitive data scanning",
-              "accessibility",
-              "system",
+              "smoke",
               "stack",
-              "canary",
-              "cross service integration",
-              "smoke"
+              "system",
+              "unit test coverage",
+              "unit",
+              "vulnerability detection"
             ]
           },
           {
