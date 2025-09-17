@@ -6,7 +6,7 @@
   "scripts": {
     "test": "npx @sourcemeta/jsonschema test test/ --resolve schemas --verbose",
     "validate:schemas": "npx @sourcemeta/jsonschema metaschema schemas --verbose",
-    "validate:lint": "npx @sourcemeta/jsonschema lint schemas --exclude duplicate_enum_values --verbose"
+    "validate:lint": "npx @sourcemeta/jsonschema lint schemas --verbose"
   },
   "author": "",
   "license": "MIT",
