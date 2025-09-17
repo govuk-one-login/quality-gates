@@ -1,6 +1,5 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "_$id": "schema.json",
   "title": "root",
   "description": "",
   "properties": {
@@ -64,7 +63,6 @@
         "oneOf": [
           {
             "enum": [
-              "unit",
               "code style and linting",
               "unit",
               "new feature",
