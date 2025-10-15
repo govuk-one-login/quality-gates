@@ -15,7 +15,7 @@
     "data-structure-typed": "2.0.4"
   },
   "devDependencies": {
-    "dotenv": "^17.2.2",
+    "dotenv": "^17.2.3",
     "octokit": "^5.0.3",
     "yaml": "^2.8.1"
   },
