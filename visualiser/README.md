@@ -16,7 +16,9 @@ npm install
 cp .env.example .env
 ```
 
-3. Create a GitHub token (fine grained) with Administration read-only access.
+3. Create a GitHub token (fine grained) with the following permissions:
+   - Administration (read-only)
+   - Contents (read-only)
 
 4. Add your GitHub token to `.env`.
 
