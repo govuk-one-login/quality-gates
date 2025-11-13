@@ -1,20 +1,38 @@
 # Quality Gate Visualiser
 
-This is an [Observable Framework](https://observablehq.com/framework/) app. To install the required dependencies, run:
+This is an [Observable Framework](https://observablehq.com/framework/) app.
+
+## Getting started
+
+1. To install the required dependencies, run:
 
 ```
 npm install
 ```
 
-Then, to start the local preview server, run:
+2. Create a `.env` file (using `.env.example` as a template).
+
+```
+cp .env.example .env
+```
+
+3. Create a GitHub token (fine grained) with Administration read-only access.
+
+4. Add your GitHub token to `.env`.
+
+5. Then, to start the local preview server, run:
 
 ```
 npm run dev
 ```
 
-Then visit <http://localhost:3000> to preview your app.
+6. Visit <http://localhost:3000> to preview your app.
 
 For more, see <https://observablehq.com/framework/getting-started>.
+
+## Troubleshooting
+
+If changes to `.env` aren't taking effect, you may need to clear `src/.observablehq/cache`.
 
 ## Project structure
 
