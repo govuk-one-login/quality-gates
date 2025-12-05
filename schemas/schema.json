@@ -68,6 +68,7 @@
               "code style and linting",
               "contract",
               "cross service integration",
+              "data compatibility",
               "integration",
               "new feature",
               "regression",
@@ -78,6 +79,7 @@
               "system",
               "unit test coverage",
               "unit",
+              "visual regression",
               "vulnerability detection"
             ]
           },
