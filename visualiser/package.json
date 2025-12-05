@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "dotenv": "^17.2.3",
-    "octokit": "^5.0.4",
+    "octokit": "^5.0.5",
     "yaml": "^2.8.1"
   },
   "engines": {
