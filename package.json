@@ -11,6 +11,6 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@sourcemeta/jsonschema": "12.10.0"
+    "@sourcemeta/jsonschema": "12.10.1"
   }
 }
