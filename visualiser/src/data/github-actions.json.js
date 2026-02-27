@@ -22,6 +22,10 @@ const ghasContent = {};
 for(const ghaFile of ghaFiles.data) {
     console.warn(ghaFile.name);
 
+    if(!ghaFile.name.endsWith(".yaml") && !ghaFile.name.endsWith(".yml")) {
+        continue
+    }
+
     // ... Get the contents
     const ghaFilePromise = await fetch(ghaFile.download_url);
 
