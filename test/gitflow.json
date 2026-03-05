@@ -1,0 +1,69 @@
+{
+  "target": "../schemas/schema.json",
+  "$comment": "GitHub GitFlow tests",
+  "tests": [
+    {
+      "description": "Service with gitflow",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "service-tag": "generic-service",
+            "quality-gates": [
+              {
+                "check-types": ["unit"],
+                "provider": "GitHub",
+                "phase": "pre-develop",
+                "config": {
+                  "file": ".github/workflows/tests.yaml",
+                  "path": "jobs.unit",
+                  "jobName": "Run unit tests"
+                }
+              },
+              {
+                "check-types": ["unit"],
+                "provider": "GitHub",
+                "phase": "develop",
+                "config": {
+                  "file": ".github/workflows/tests.yaml",
+                  "path": "jobs.unit",
+                  "jobName": "Run unit tests"
+                }
+              },
+              {
+                "check-types": ["unit"],
+                "provider": "GitHub",
+                "phase": "pre-release",
+                "config": {
+                  "file": ".github/workflows/tests.yaml",
+                  "path": "jobs.unit",
+                  "jobName": "Run unit tests"
+                }
+              },
+              {
+                "check-types": ["unit"],
+                "provider": "GitHub",
+                "phase": "release",
+                "config": {
+                  "file": ".github/workflows/tests.yaml",
+                  "path": "jobs.unit",
+                  "jobName": "Run unit tests"
+                }
+              },
+              {
+                "check-types": ["unit"],
+                "provider": "GitHub",
+                "phase": "main",
+                "config": {
+                  "file": ".github/workflows/tests.yaml",
+                  "path": "jobs.unit",
+                  "jobName": "Run unit tests"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

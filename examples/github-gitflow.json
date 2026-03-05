@@ -1,0 +1,54 @@
+{
+  "services": [
+    {
+        "service-tag": "service-name",
+            "quality-gates": [
+                {
+                    "check-types": ["unit"],
+                    "provider": "GitHub",
+                    "phase": "pre-develop",
+                    "config": {
+                        "file": ".github/workflows/lint.yaml",
+                        "name": "Lint"
+                    }
+                },
+                {
+                    "check-types": ["unit"],
+                    "provider": "GitHub",
+                    "phase": "develop",
+                    "config": {
+                        "file": ".github/workflows/lint.yaml",
+                        "name": "Lint"
+                    }
+                },
+                {
+                    "check-types": ["unit"],
+                    "provider": "GitHub",
+                    "phase": "pre-release",
+                    "config": {
+                        "file": ".github/workflows/lint.yaml",
+                        "name": "Lint"
+                    }
+                },
+                {
+                    "check-types": ["unit"],
+                    "provider": "GitHub",
+                    "phase": "pre-release",
+                    "config": {
+                        "file": ".github/workflows/lint.yaml",
+                        "name": "Lint"
+                    }
+                },
+                {
+                    "check-types": ["unit"],
+                    "provider": "GitHub",
+                    "phase": "main",
+                    "config": {
+                        "file": ".github/workflows/lint.yaml",
+                        "name": "Lint"
+                    }
+                }
+        ]
+    }
+  ]
+}
