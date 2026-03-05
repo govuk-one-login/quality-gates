@@ -1,0 +1,121 @@
+{
+  "target": "../schemas/schema.json",
+  "$comment": "Check type tests",
+  "tests": [
+    {
+      "description": "Service with integration check - to be deprecated in the future",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "service-tag": "generic-service",
+            "quality-gates": [
+              {
+                "check-types": ["integration"],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": {
+                  "file": ".github/workflows/tests.yaml",
+                  "path": "jobs.unit",
+                  "jobName": "Run unit tests"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "Service with component check",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "service-tag": "generic-service",
+            "quality-gates": [
+              {
+                "check-types": ["component"],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": {
+                  "file": ".github/workflows/tests.yaml",
+                  "path": "jobs.unit",
+                  "jobName": "Run unit tests"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "Service with product check",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "service-tag": "generic-service",
+            "quality-gates": [
+              {
+                "check-types": ["product"],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": {
+                  "file": ".github/workflows/tests.yaml",
+                  "path": "jobs.unit",
+                  "jobName": "Run unit tests"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "Service with neighbour check",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "service-tag": "generic-service",
+            "quality-gates": [
+              {
+                "check-types": ["neighbour"],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": {
+                  "file": ".github/workflows/tests.yaml",
+                  "path": "jobs.unit",
+                  "jobName": "Run unit tests"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "Service with e2e check",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "service-tag": "generic-service",
+            "quality-gates": [
+              {
+                "check-types": ["e2e"],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": {
+                  "file": ".github/workflows/tests.yaml",
+                  "path": "jobs.unit",
+                  "jobName": "Run unit tests"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

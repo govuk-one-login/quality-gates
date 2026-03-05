@@ -82,11 +82,14 @@
               "accessibility",
               "canary",
               "code style and linting",
+              "component",
               "contract",
               "cross service integration",
               "data compatibility",
-              "integration",
+              "e2e",
+              "neighbour",
               "new feature",
+              "product",
               "regression",
               "secret scanning",
               "sensitive data scanning",
@@ -103,6 +106,11 @@
             "enum": [
               "code quality",
               "manual"
+            ]
+          },
+          {
+            "enum": [
+              "integration"
             ]
           }
         ]
