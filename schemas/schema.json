@@ -14,14 +14,30 @@
           "$ref": "#/$defs/check-type"
         },
         "phase": {
-          "enum": [
-            "pre-merge",
-            "pre-upload",
-            "build",
-            "staging",
-            "production",
-            "integration"
+          "items": {
+            "type": "string",
+            "oneOf": [
+            {
+              "enum": [
+                "pre-merge",
+                "pre-upload",
+                "build",
+                "staging",
+                "production",
+                "integration"
+              ]
+            },
+            {
+              "enum": [
+                "pre-develop",
+                "develop",
+                "pre-release",
+                "release",
+                "main"
+              ]
+            }
           ]
+          }
         },
         "provider": {
           "enum": [
