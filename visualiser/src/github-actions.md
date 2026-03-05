@@ -6,22 +6,35 @@ import { createGraph, renderAsFlowChart } from "./components/graph.js"
 ```
 
 ```js
-const repositoryActions = FileAttachment("./data/github-actions.json").json();
+const allGithubActions = FileAttachment("./data/github-actions.json").json();
 ```
+
+```js
+const flattened = _.flatMapDeep(allGithubActions)
+```
+
 
 ```js
 const repositoryBranchProtection = FileAttachment("./data/github-branch-protection.json").json();
 ```
 
-
 ```js
-const graph = createGraph(repositoryActions.github_action_files)
+const repositoryName = view(Inputs.select(_.uniq(_.map(flattened, "repo")), {value: "", label: "Repository name"}))
 ```
 
 ```js
-const graphAsFlowChart = renderAsFlowChart(graph, `${repositoryActions.owner}/${repositoryActions.repo}`)
+const repositoryActions =  _.filter(flattened, {"repo": repositoryName})
 ```
 
-## ${repositoryActions.owner}/${repositoryActions.repo}
+```js
+const graph = createGraph(repositoryActions)
+```
+
+```js
+const graphAsFlowChart = renderAsFlowChart(graph, `${repositoryActions[0].owner}/${repositoryActions[0].repo}`)
+```
+
+## ${repositoryActions[0].owner}/${repositoryActions[0].repo}
+
 
 ${mermaid`${graphAsFlowChart}`}

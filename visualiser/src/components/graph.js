@@ -186,28 +186,24 @@ export function createGraph(files) {
     let verticesToCrossLink = [];
     let events = {};
 
-    const fileNames = Object.keys(files);
-
-
-    console.log(fileNames)
-    for (const key of fileNames) {
+    for (const file of files) {
+        const key = file.filename;
 
         const fileVertex = graph.createVertex(key, {
             type: "file",
-            data: files[key]
+            data: file
         })
 
         // File/Workflow
         graph.addVertex(fileVertex);
 
-        const onProperties = isString(files[key]?.on) ? {[files[key]?.on]: {}} : files[key]?.on;
+        const onProperties = isString(file?.on) ? {[file?.on]: {}} : file?.on;
 
         for (const event of Object.keys(onProperties)) {
 
             const eventVertex = graph.createVertex(event, {
                     name: event,
                     type: "event",
-                    // data: files[key]
             });
 
             graph.addVertex(eventVertex);
@@ -216,19 +212,17 @@ export function createGraph(files) {
                 type: "on"
             });
 
-            // console.log(`onEdge: ${JSON.stringify(onEdge)}`)
-
             graph.addEdge(onEdge)
         }
 
         // Job
-        const jobNames = Object.keys(files[key].jobs)
+        const jobNames = Object.keys(file.jobs)
 
         for (const job of jobNames) {
             const jobVertex = graph.createVertex(`${key}__${job}`, {
                 type: "job",
                 label: job,
-                data: files[key].jobs[job]
+                data: file.jobs[job]
             });
 
             graph.addVertex(jobVertex);

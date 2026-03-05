@@ -6,17 +6,18 @@ const { GITHUB_TOKEN, GITHUB_REPO_ORG="govuk-one-login", GITHUB_REPO_NAME="quali
 
 const octokit = new Octokit({ auth: GITHUB_TOKEN });
 
+const fetchWorkflows = async function (org, repo) {
 // ... Get all the workflows
 const ghaFiles = await octokit.rest.repos.getContent({
-    owner: GITHUB_REPO_ORG,
-    repo: GITHUB_REPO_NAME,
+    owner: org,
+    repo: repo,
     branch: "main",
     path: ".github/workflows"
 })
 
 console.warn(JSON.stringify(ghaFiles, null, 2));
 
-const ghasContent = {};
+const ghasContent = [];
 
 // For each workflow
 for(const ghaFile of ghaFiles.data) {
@@ -30,11 +31,34 @@ for(const ghaFile of ghaFiles.data) {
     const ghaFilePromise = await fetch(ghaFile.download_url);
 
     // Convert YAML into JSON
-    ghasContent[ghaFile.name] = YAML.parse(await ghaFilePromise.text())
+    ghasContent.push(
+    {
+        owner: org,
+        repo,
+        filename: ghaFile.name,
+        ...YAML.parse(await ghaFilePromise.text())
+    })
 }
 
-process.stdout.write(JSON.stringify({
-    owner: GITHUB_REPO_ORG,
-    repo: GITHUB_REPO_NAME,
-    "github_action_files": ghasContent
-}, null, 2));
+return ghasContent
+
+}
+
+// Search for repositories with quality-gate.manifest.json
+const searchItems = await octokit.paginate(octokit.rest.search.code, {
+    q: `filename:quality-gate.manifest.json org:${GITHUB_REPO_ORG}`
+});
+
+const repos = [...new Set(searchItems.map(item => item.repository.name))].sort();
+
+console.warn(repos)
+
+// process.exit(1)
+let allReposData = [];
+
+for (const repo of repos) {
+    const ghasContent = await fetchWorkflows(GITHUB_REPO_ORG, repo);
+    allReposData.push(ghasContent);
+}
+
+process.stdout.write(JSON.stringify(allReposData, null, 2));
