@@ -35,6 +35,12 @@
                 "release",
                 "main"
               ]
+            },
+            {
+              "enum": [
+                "pre-merge",
+                "pre-release"
+              ]
             }
           ]
           }
