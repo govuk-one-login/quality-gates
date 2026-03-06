@@ -1,0 +1,37 @@
+{
+  "services": [
+    {
+        "service-tag": "service-name",
+            "quality-gates": [
+                {
+                    "check-types": ["unit"],
+                    "provider": "GitHub",
+                    "phase": "pre-merge",
+                    "config": {
+                        "file": ".github/workflows/check-code-quality.yaml",
+                        "name": "Run pre-commit"
+                    }
+                },
+                {
+                    "check-types": ["unit"],
+                    "provider": "GitHub",
+                    "phase": "pre-release",
+                    "config": {
+                        "file": "",
+                        "name": "Run Gitlint"
+                    }
+                },
+                {
+                    "check-types": ["unit"],
+                    "provider": "GitHub",
+                    "phase": "pre-merge",
+                    "config": {
+                        "file": "",
+                        "name": "Run Checkov"
+                    }
+                }
+            ]
+        ]
+    }
+  ]
+}
