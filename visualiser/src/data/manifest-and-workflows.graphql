@@ -1,0 +1,39 @@
+# config=../../../../graphql.config.yml
+
+query GetManifestAndWorkflows($org: String!, $cursor: String) {
+    organization(login: $org) {
+        repositories(first: 10, after: $cursor) {
+            pageInfo {
+                hasNextPage
+                endCursor
+            }
+            nodes {
+                name
+                manifest: object(expression: "HEAD:quality-gate.manifest.json") {
+                    ... on Blob {
+                        text
+                    }
+                }
+                workflows: object(expression: "HEAD:.github/workflows") {
+                    ... on Tree {
+                        entries {
+                            name
+                            object {
+                                ... on Blob {
+                                    text
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    rateLimit {
+        limit
+        remaining
+        used
+        resetAt
+    }
+}
