@@ -19,6 +19,7 @@ const data = await graphql(query, {
 });
 
 for (const repo of data.organization.repositories.nodes) {
+  if (repo.manifest?.text) repo.manifest.text = JSON.parse(repo.manifest.text);
   if (repo.workflows?.entries) {
     repo.workflows.entries = repo.workflows.entries
       .filter(({ name }) => name.endsWith(".yml") || name.endsWith(".yaml"))
