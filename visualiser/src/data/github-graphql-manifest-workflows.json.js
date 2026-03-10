@@ -1,5 +1,7 @@
 import "dotenv/config";
-import { graphql } from "@octokit/graphql";
+import { Octokit } from "@octokit/core";
+import { paginateGraphQL } from "@octokit/plugin-paginate-graphql";
+
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
@@ -8,12 +10,15 @@ import YAML from 'yaml'
 
 const { GITHUB_TOKEN, GITHUB_ORG:ORG } = process.env;
 
+const PaginatedOctokit = Octokit.plugin(paginateGraphQL);
+const octokit = new PaginatedOctokit({ auth: GITHUB_TOKEN });
+
 const query = readFileSync(
   join(dirname(fileURLToPath(import.meta.url)), "manifest-and-workflows.graphql"),
   "utf8"
 );
 
-const data = await graphql(query, {
+const data = await octokit.graphql(query, {
   org: ORG,
   headers: { authorization: `token ${GITHUB_TOKEN}` },
 });
