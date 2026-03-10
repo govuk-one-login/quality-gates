@@ -3,6 +3,8 @@ import { graphql } from "@octokit/graphql";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import YAML from 'yaml'
+
 
 const { GITHUB_TOKEN, GITHUB_ORG:ORG } = process.env;
 
@@ -15,5 +17,11 @@ const data = await graphql(query, {
   org: ORG,
   headers: { authorization: `token ${GITHUB_TOKEN}` },
 });
+
+for (const repo of data.organization.repositories.nodes) {
+  if (repo.workflows?.entries) {
+    repo.workflows.entries = repo.workflows.entries.filter(({ name }) => name.endsWith(".yml") || name.endsWith(".yaml"));
+  }
+}
 
 process.stdout.write(JSON.stringify(data, null, 2));
