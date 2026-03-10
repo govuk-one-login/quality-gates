@@ -18,10 +18,7 @@ const query = readFileSync(
   "utf8"
 );
 
-const data = await octokit.graphql(query, {
-  org: ORG,
-  headers: { authorization: `token ${GITHUB_TOKEN}` },
-});
+const data = await octokit.graphql.paginate(query, { org: ORG });
 
 for (const repo of data.organization.repositories.nodes) {
   if (repo.manifest?.text) repo.manifest.text = JSON.parse(repo.manifest.text);
