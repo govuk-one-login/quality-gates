@@ -20,7 +20,9 @@ const data = await graphql(query, {
 
 for (const repo of data.organization.repositories.nodes) {
   if (repo.workflows?.entries) {
-    repo.workflows.entries = repo.workflows.entries.filter(({ name }) => name.endsWith(".yml") || name.endsWith(".yaml"));
+    repo.workflows.entries = repo.workflows.entries
+      .filter(({ name }) => name.endsWith(".yml") || name.endsWith(".yaml"))
+      .map((entry) => ({ ...entry, object: { text: YAML.parse(entry.object.text) } }));
   }
 }
 
