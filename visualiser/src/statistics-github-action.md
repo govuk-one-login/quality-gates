@@ -1,4 +1,4 @@
-# GitHub Quality Gates Statistics
+# Statistics - GitHub Actions
 
 ```js
 const githubManifestAndWorkflows = FileAttachment("./data/github-graphql-manifest-workflows.json").json();
@@ -31,92 +31,7 @@ const nodesWithManifest = nodes.filter((n) => n.manifest).map((n) => ({
     }
   }
 }))
-
-// display(nodesWithManifest)
 ```
-## Manifests
-
-<p></p>
-
-### All repos
-
-```js
-Plot.plot({
-    color: {
-        type: "categorical",
-        scheme: "paired",
-        legend: true
-    },
-    x: {domain: [0, nodes.length]},
-    grid: true,
-    marginLeft: 150,
-    marks: [
-        Plot.barX(
-            nodes,
-            Plot.groupY({x: "count"}, {y: (n) => n.manifest !== null, fill: (n) => n.manifest !== null})
-        )
-    ]
-})
-```
-
-### Production Assets
-```js
-Plot.plot({
-    color: {
-        type: "categorical",
-        scheme: "paired",
-        legend: true
-    },
-    x: {domain: [0, nodes.length]},
-    grid: true,
-    marginLeft: 150,
-    marks: [
-        Plot.barX(
-            nodesWithProductionAssets,
-            Plot.groupY({x: "count"}, {y: (n) => n.manifest !== null, fill: (n) => n.manifest !== null})
-        )
-    ]
-})
-```
-### Production Assets by Pod
-```js
-Plot.plot({
-    color: {
-        type: "categorical",
-        scheme: "paired",
-        legend: true
-    },
-    marginLeft: 150,
-    grid: true,
-    marks: [
-        Plot.barX(
-            nodesWithProductionAssets,
-            Plot.groupY({x: "count"}, {y: (n) => n.pod.value, fill: (n) => n.manifest !== null})
-        )
-    ]
-})
-```
-
-### Versions of Manifests
-```js
-Plot.plot({
-    color: {
-        type: "categorical",
-        scheme: "observable10",
-        legend: true
-    },
-  marks: [
-    Plot.barY(
-      nodesWithManifest,
-      Plot.groupX({ y: "count" }, { x: (n) => n.pod.value, fill: (n) => n.manifest.text.version })
-    )
-  ]
-})
-```
-
-
-
----
 
 ```js
 const usesCounts = nodes
