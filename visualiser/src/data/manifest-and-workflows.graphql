@@ -11,6 +11,15 @@ query GetManifestAndWorkflows($org: String!, $cursor: String) {
                 name
                 isArchived
                 isPrivate
+                pod: repositoryCustomPropertyValue(propertyName: "pod") {
+                    value
+                }
+                productionAssets: repositoryCustomPropertyValue(propertyName: "production-assets") {
+                    value
+                }
+                teamResponsible: repositoryCustomPropertyValue(propertyName: "team-responsible") {
+                    value
+                }
                 manifest: object(expression: "HEAD:quality-gate.manifest.json") {
                     ... on Blob {
                         text
