@@ -9,6 +9,8 @@ query GetManifestAndWorkflows($org: String!, $cursor: String) {
             }
             nodes {
                 name
+                isArchived
+                isPrivate
                 manifest: object(expression: "HEAD:quality-gate.manifest.json") {
                     ... on Blob {
                         text
