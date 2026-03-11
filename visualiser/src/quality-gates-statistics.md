@@ -15,6 +15,12 @@ const nodes = githubManifestAndWorkflows.organization.repositories.nodes
 ```
 
 ```js
+const nodesWithProductionAssets = nodes.filter((n) => n.productionAssets.value === "true")
+
+// display(nodesWithProductionAssets)
+```
+
+```js
 const nodesWithManifest = nodes.filter((n) => n.manifest).map((n) => ({
   ...n,
   manifest: {
@@ -28,35 +34,86 @@ const nodesWithManifest = nodes.filter((n) => n.manifest).map((n) => ({
 
 // display(nodesWithManifest)
 ```
-# Manifests
+## Manifests
 
 <p></p>
 
-## Repos with Manifests
+### All repos
 
-${Plot.plot({
-  marks: [
-    Plot.barY(
-      [
-        { manifest: "present", count: nodes.filter(n => n.manifest !== null).length },
-        { manifest: "absent", count: nodes.filter(n => n.manifest === null).length }
-      ],
-      { x: "manifest", y: "count", fill: "manifest" }
-    )
-  ]
-})}
-
-## Versions of Manifests
 ```js
 Plot.plot({
+    color: {
+        type: "categorical",
+        scheme: "paired",
+        legend: true
+    },
+    x: {domain: [0, nodes.length]},
+    grid: true,
+    marginLeft: 150,
+    marks: [
+        Plot.barX(
+            nodes,
+            Plot.groupY({x: "count"}, {y: (n) => n.manifest !== null, fill: (n) => n.manifest !== null})
+        )
+    ]
+})
+```
+
+### Production Assets
+```js
+Plot.plot({
+    color: {
+        type: "categorical",
+        scheme: "paired",
+        legend: true
+    },
+    x: {domain: [0, nodes.length]},
+    grid: true,
+    marginLeft: 150,
+    marks: [
+        Plot.barX(
+            nodesWithProductionAssets,
+            Plot.groupY({x: "count"}, {y: (n) => n.manifest !== null, fill: (n) => n.manifest !== null})
+        )
+    ]
+})
+```
+### Production Assets by Pod
+```js
+Plot.plot({
+    color: {
+        type: "categorical",
+        scheme: "paired",
+        legend: true
+    },
+    marginLeft: 150,
+    grid: true,
+    marks: [
+        Plot.barX(
+            nodesWithProductionAssets,
+            Plot.groupY({x: "count"}, {y: (n) => n.pod.value, fill: (n) => n.manifest !== null})
+        )
+    ]
+})
+```
+
+### Versions of Manifests
+```js
+Plot.plot({
+    color: {
+        type: "categorical",
+        scheme: "observable10",
+        legend: true
+    },
   marks: [
     Plot.barY(
       nodesWithManifest,
-      Plot.groupX({ y: "count" }, { x: (n) => n.manifest.text.version, fill: (n) => n.manifest.text.version })
+      Plot.groupX({ y: "count" }, { x: (n) => n.pod.value, fill: (n) => n.manifest.text.version })
     )
   ]
 })
 ```
+
 
 
 ---
