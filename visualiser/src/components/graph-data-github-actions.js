@@ -32,3 +32,14 @@ export function githubActionCounts(data) {
                 .map(([version, count]) => ({ version, count }))
         }));
 }
+
+export function isLocalOrgOrExternal(useName) {
+    if(useName.startsWith("./")) {
+        return "local"
+    }
+    else if(useName.startsWith("govuk-one-login/") || useName.startsWith("alphagov/")) {
+        return "org"
+    } else {
+        return "external"
+    }
+}

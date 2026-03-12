@@ -5,7 +5,7 @@ import {readFileSync} from "fs";
 import {fileURLToPath} from "url";
 import {dirname, join} from "path";
 
-import {githubActionCounts} from "./graph-data-github-actions.js";
+import {githubActionCounts, isLocalOrgOrExternal} from "./graph-data-github-actions.js";
 
 describe("graph data - github actions", () => {
     describe("#githubActionCounts", () => {
@@ -171,5 +171,32 @@ describe("graph data - github actions", () => {
 
             assert.deepStrictEqual(result, expectedResult)
         })
+    })
+
+    describe("#isLocalOrgOrExternal", () => {
+        describe("local", ()=> {
+            ["./.github/actions/build", "./.github/actions/push"].forEach((useName) => {
+                it(`should return local for ${useName}`, () => {
+                    assert.strictEqual(isLocalOrgOrExternal(useName), "local");
+                });
+            });
+        })
+
+        describe("org", ()=> {
+            ["govuk-one-login/action", "alphagov/action"].forEach((useName) => {
+                it(`should return org for ${useName}`, () => {
+                    assert.strictEqual(isLocalOrgOrExternal(useName), "org");
+                });
+            });
+        })
+
+        describe("external", ()=> {
+            ["actions/checkout", "aws-actions/setup-same"].forEach((useName) => {
+                it(`should return external for ${useName}`, () => {
+                    assert.strictEqual(isLocalOrgOrExternal(useName), "external");
+                });
+            });
+        })
+
     })
 })
