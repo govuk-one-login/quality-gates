@@ -3,9 +3,9 @@ export function githubActionCounts(data) {
     const counts = {};
 
     for (const repo of data.organization.repositories.nodes) {
-        for (const entry of repo.workflows.entries) {
-            for (const job of Object.values(entry.object.text.jobs)) {
-                for (const step of job.steps) {
+        for (const entry of (repo.workflows?.entries ?? [])) {
+            for (const job of Object.values(entry.object.text.jobs ?? {})) {
+                for (const step of (job.steps ?? [])) {
                     if (!step.uses) continue;
                     const [nameWithVersion, version] = step.uses.split('@');
                     const parts = nameWithVersion.split('/');

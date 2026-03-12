@@ -9,6 +9,119 @@ import {githubActionCounts} from "./graph-data-github-actions.js";
 
 describe("graph data - github actions", () => {
     describe("#githubActionCounts", () => {
+        it("handles workflows without jobs", () => {
+            const fixture = {
+                organization: {
+                    repositories: {
+                        nodes: [{
+                            workflows: {
+                                entries: [
+                                    {
+                                        name: "no-jobs.yml",
+                                        object: {
+                                            text: {
+                                                jobs: null
+                                            }
+                                        }
+                                    },
+                                    {
+                                        name: "deploy.yml",
+                                        object: {
+                                            text: {
+                                                jobs: {
+                                                    "job": {
+                                                        steps: [{uses: "actions/checkout@v4"}]
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }]
+                    }
+                }
+            }
+
+            const result = githubActionCounts(fixture)
+
+            assert.deepStrictEqual(result, [
+                {name: "actions/checkout", count: 1, versions: [{version: "v4", count: 1}]}
+            ])
+        })
+
+        it("handles repos without workflows", () => {
+            const fixture = {
+                organization: {
+                    repositories: {
+                        nodes: [
+                            {
+                                workflows: null
+                            },
+                            {
+                                workflows: {
+                                    entries: [{
+                                        name: "deploy.yml",
+                                        object: {
+                                            text: {
+                                                jobs: {
+                                                    "job": {
+                                                        steps: [{uses: "actions/checkout@v4"}]
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }]
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+
+            const result = githubActionCounts(fixture)
+
+            assert.deepStrictEqual(result, [
+                {name: "actions/checkout", count: 1, versions: [{version: "v4", count: 1}]}
+            ])
+        })
+
+        it("handles jobs without steps", () => {
+            const fixture = {
+                organization: {
+                    repositories: {
+                        nodes: [{
+                            workflows: {
+                                entries: [{
+                                    name: "deploy.yml",
+                                    object: {
+                                        text: {
+                                            jobs: {
+                                                "reusable-job": {
+                                                    uses: "./.github/workflows/other.yml"
+                                                },
+                                                "normal-job": {
+                                                    steps: [{
+                                                        uses: "actions/checkout@v4"
+                                                    }]
+                                                }
+                                            }
+                                        }
+                                    }
+                                }]
+                            }
+                        }]
+                    }
+                }
+            }
+
+            const result = githubActionCounts(fixture)
+
+            assert.deepStrictEqual(result, [
+                {name: "actions/checkout", count: 1, versions: [{version: "v4", count: 1}]}
+            ])
+        })
+
         it("generates counts for github actions in file", () => {
             const fixture = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), "__fixtures/small-graphql.json"), "utf8"));
 
