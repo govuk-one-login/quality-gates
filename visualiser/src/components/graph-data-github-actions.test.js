@@ -9,7 +9,7 @@ import { githubActionCounts} from "./graph-data-github-actions.js";
 
 describe("graph data - github actions", () => {
     describe("#githubActionCounts", () => {
-        const fixture = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "__fixtures/small-graphql.json"), "utf8");
+        const fixture = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), "__fixtures/small-graphql.json"), "utf8"));
 
         console.log(fixture)
 
