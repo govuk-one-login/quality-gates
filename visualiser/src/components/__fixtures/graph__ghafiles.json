@@ -1,0 +1,173 @@
+[
+  {
+    "owner": "govuk-one-login",
+    "repo": "quality-gates",
+    "filename": "quality.yml",
+    "name": "Quality",
+    "on": {
+      "pull_request": null,
+      "push": {
+        "branches": [
+          "main"
+        ]
+      },
+      "schedule": [
+        {
+          "cron": "0 9 * * 1"
+        }
+      ]
+    },
+    "concurrency": {
+      "group": "scan-repo-${{ github.head_ref || github.ref_name }}",
+      "cancel-in-progress": true
+    },
+    "permissions": "read-all",
+    "jobs": {
+      "pre-commit": {
+        "name": "pre-commit",
+        "runs-on": "ubuntu-latest",
+        "steps": [
+          {
+            "name": "Run pre-commit",
+            "uses": "govuk-one-login/github-actions/code-quality/run-pre-commit@d201191485b645ec856a34e5ca48636cf97b2574",
+            "with": {
+              "all-files": true
+            }
+          }
+        ]
+      },
+      "codeql": {
+        "name": "CodeQL",
+        "runs-on": "ubuntu-latest",
+        "permissions": {
+          "security-events": "write"
+        },
+        "steps": [
+          {
+            "name": "Run CodeQL scan",
+            "uses": "govuk-one-login/github-actions/code-quality/codeql@d201191485b645ec856a34e5ca48636cf97b2574",
+            "with": {
+              "languages": "javascript"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "owner": "govuk-one-login",
+    "repo": "quality-gates",
+    "filename": "schema.yml",
+    "name": "Schema",
+    "on": {
+      "pull_request": null,
+      "push": {
+        "branches": [
+          "main"
+        ]
+      },
+      "schedule": [
+        {
+          "cron": "0 9 * * 1"
+        }
+      ]
+    },
+    "concurrency": {
+      "group": "schema-${{ github.head_ref || github.ref_name }}",
+      "cancel-in-progress": true
+    },
+    "permissions": "read-all",
+    "jobs": {
+      "run-tests": {
+        "name": "Schema Tests",
+        "runs-on": "ubuntu-latest",
+        "steps": [
+          {
+            "name": "Pull repository",
+            "uses": "actions/checkout@v6"
+          },
+          {
+            "name": "Install Node",
+            "uses": "actions/setup-node@v6",
+            "with": {
+              "cache": "npm"
+            }
+          },
+          {
+            "name": "Install dependencies",
+            "run": "npm ci"
+          },
+          {
+            "name": "Lint schemas",
+            "run": "npm run validate:schemas"
+          },
+          {
+            "name": "Validate schemas",
+            "run": "npm run validate:schemas"
+          },
+          {
+            "name": "Run Unit tests",
+            "run": "npm run test"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "owner": "govuk-one-login",
+    "repo": "quality-gates",
+    "filename": "visualiser.yml",
+    "name": "Visualiser",
+    "on": {
+      "pull_request": null,
+      "push": {
+        "branches": [
+          "main"
+        ]
+      },
+      "schedule": [
+        {
+          "cron": "0 9 * * 1"
+        }
+      ]
+    },
+    "concurrency": {
+      "group": "visualiser-${{ github.head_ref || github.ref_name }}",
+      "cancel-in-progress": true
+    },
+    "permissions": "read-all",
+    "jobs": {
+      "run-tests": {
+        "name": "Visualiser Tests",
+        "runs-on": "ubuntu-latest",
+        "defaults": {
+          "run": {
+            "shell": "bash",
+            "working-directory": "./visualiser"
+          }
+        },
+        "steps": [
+          {
+            "name": "Pull repository",
+            "uses": "actions/checkout@v6"
+          },
+          {
+            "name": "Install Node",
+            "uses": "actions/setup-node@v6",
+            "with": {
+              "cache": "npm"
+            }
+          },
+          {
+            "name": "Install dependencies",
+            "run": "npm ci"
+          },
+          {
+            "name": "Test",
+            "run": "npm run test"
+          }
+        ]
+      }
+    }
+  }
+]

@@ -1,4 +1,4 @@
-import { DirectedGraph, throwRangeError } from "data-structure-typed";
+import { DirectedGraph } from "data-structure-typed/modern";
 
 function isString(str){
   if (str != null && typeof str.valueOf() === "string") {
@@ -36,13 +36,12 @@ export function renderAsFlowChart(graph, title="GitHub Actions") {
     lines.push(`direction LR`)
 
 
-    const eventVertices = graph.filter((key, value) => {
-        // console.log(value, key)
-        return value.type ==="event"
-    }).sort(sortVertices)
+    const eventVertices = [...graph.vertexMap.entries()]
+        .filter(([, v]) => v.value?.type === "event")
+        .sort(sortVertices)
 
-    for (const event of eventVertices) {
-        lines.push(event[0])
+    for (const [key] of eventVertices) {
+        lines.push(key)
     }
 
     // console.log(eventVertices)
@@ -52,21 +51,18 @@ export function renderAsFlowChart(graph, title="GitHub Actions") {
 
     // Files/Workflows
 
-    const workflowVertices = graph.filter((key, value) => {
-        // console.log(value, key)
-        return value.type ==="file"
-    }).sort(sortVertices)
+    const workflowVertices = [...graph.vertexMap.entries()]
+        .filter(([, v]) => v.value?.type === "file")
+        .sort(sortVertices)
 
     lines.push(`subgraph actions["GitHub Actions"]`)
     lines.push(`direction TB`)
 
-    for (const workflow of workflowVertices) {
-        lines.push(`subgraph ${workflow[0]}`)
+    for (const [key] of workflowVertices) {
+        lines.push(`subgraph ${key}`)
         lines.push(`direction LR`)
 
-        // console.log(`inDegree: ${graph.inDegreeOf(workflow[0])} - outDegree: ${graph.outDegreeOf(workflow[0])}`);
-
-        const edges = graph.outgoingEdgesOf(workflow[0])
+        const edges = graph.outgoingEdgesOf(key)
 
         for(const edge of edges) {
             if(edge?.value?.type === "job") {
@@ -92,33 +88,22 @@ export function renderAsFlowChart(graph, title="GitHub Actions") {
 
 
 
-    for (const event of eventVertices) {
-        console.log('========')
-
-        console.log(`inDegree: ${graph.inDegreeOf(event[0])} - outDegree: ${graph.outDegreeOf(event[0])}`);
-
-        const edges = graph.incomingEdgesOf(event[0])
+    for (const [key] of eventVertices) {
+        const edges = graph.incomingEdgesOf(key)
 
         for(const edge of edges) {
             if(edge?.dest?.key === "workflow_call") {
                 break
             }
-            console.log(`${edge?.value?.type} - ${edge.dest.key} ... ${edge.src.key}`)
 
             if(edge?.value?.type === "on") {
                 lines.push(`${edge.dest.key} --> ${edge.src.key}`)
             }
 
             if(edge?.value?.type === "job") {
-                    console.log(`inDegree: ${graph.inDegreeOf(event[0])} - outDegree: ${graph.outDegreeOf(event[0])}`);
-
                 lines.push(`${edge.dest.key} --> ${edge.src.key}`)
             }
-
         }
-
-        console.log('========')
-
     }
 
 
@@ -142,36 +127,21 @@ export function renderAsFlowChart(graph, title="GitHub Actions") {
     //     }
     // }
 
-    const jobVertices = graph.filter((key, value) => {
-        // console.log(value, key)
-        return value.type ==="job"
-    })
+    const jobVertices = [...graph.vertexMap.entries()]
+        .filter(([, v]) => v.value?.type === "job")
 
-    for(const job of jobVertices) {
-
-        console.log('_____')
-        // console.log(`${job[0]}`)
-
-        console.log(`${job[0]} - inDegree: ${graph.inDegreeOf(job[0])} - outDegree: ${graph.outDegreeOf(job[0])}`);
-
-        const inEdges = graph.outgoingEdgesOf(job[0])
-        for(const edge of inEdges) {
-            console.log(`${job[0]} - ${edge?.value?.type} - ${edge.dest} ... ${edge.src}`)
-        }
-        const edges = graph.outgoingEdgesOf(job[0])
+    for(const [key] of jobVertices) {
+        const edges = graph.outgoingEdgesOf(key)
         for(const edge of edges) {
-            console.log(`${job[0]} - ${edge?.value?.type} - ${edge.dest} ... ${edge.src}`)
-
             if(edge?.value?.type === "needs") {
                 lines.push(`  ${edge.src} --> ${edge.dest}`)
             } else if (edge?.value?.type === "uses") {
                 lines.push(`  ${edge.src} -.- ${edge.dest}`)
             }
         }
-
-        console.log('_____')
-
     }
+
+    lines.push('')
 
 
 
