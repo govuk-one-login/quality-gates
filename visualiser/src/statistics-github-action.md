@@ -1,6 +1,9 @@
 # Statistics - GitHub Actions
 
-<p></p>
+
+```js
+const toggleExcludeArchived = view(Inputs.toggle({label: "Exclude Archived", value: true}));
+```
 
 ```js
 import { githubActionCounts, isLocalOrgOrExternal } from "./components/graph-data-github-actions.js"
@@ -25,6 +28,27 @@ function sparkbar(max) {
 ```js
 const githubManifestAndWorkflows = FileAttachment("./data/github-graphql-manifest-workflows.json").json();
 ```
+
+```js
+const filteredManifestAndWorkflows = {
+    organization: {
+        repositories: {
+          ...githubManifestAndWorkflows.organization.repositories,
+            nodes: githubManifestAndWorkflows.organization.repositories.nodes.filter((n) => toggleExcludeArchived ? n.isArchived === false : true),
+
+        }
+    }
+}
+```
+
+```js
+const stats = githubActionCounts(filteredManifestAndWorkflows).map((gha) => ({
+    ...gha,
+    type: isLocalOrgOrExternal(gha.name)
+  })
+)
+```
+
 
 <div class="grid">
 <div class="card">
@@ -119,14 +143,6 @@ Inputs.table(selectedActionsSources, {
 
 ```js
 
-```
-
-```js
-const stats = githubActionCounts(githubManifestAndWorkflows).map((gha) => ({
-    ...gha,
-    type: isLocalOrgOrExternal(gha.name)
-  })
-)
 ```
 
 

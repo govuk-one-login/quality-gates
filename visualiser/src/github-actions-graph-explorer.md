@@ -8,9 +8,24 @@ import { createGraph, renderAsFlowChart } from "./components/graph.js"
 const githubManifestAndWorkflows = FileAttachment("./data/github-graphql-manifest-workflows.json").json();
 ```
 
+```js
+const toggleExcludeArchived = view(Inputs.toggle({label: "Exclude Archived", value: true}));
+```
 
 ```js
-const repositoryName = view(Inputs.select(_.uniq(_.map(githubManifestAndWorkflows.organization.repositories.nodes, "name")).sort(), {value: "", label: "Repository name"}))
+const filteredManifestAndWorkflows = {
+    organization: {
+        repositories: {
+          ...githubManifestAndWorkflows.organization.repositories,
+            nodes: githubManifestAndWorkflows.organization.repositories.nodes.filter((n) => toggleExcludeArchived ? n.isArchived === false : true),
+
+        }
+    }
+}
+```
+
+```js
+const repositoryName = view(Inputs.select(_.uniq(_.map(filteredManifestAndWorkflows.organization.repositories.nodes, "name")).sort(), {value: "", label: "Repository name"}))
 ```
 
 ```js
