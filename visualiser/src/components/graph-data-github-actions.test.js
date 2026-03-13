@@ -8,12 +8,13 @@ import {dirname, join} from "path";
 import {githubActionCounts, isLocalOrgOrExternal} from "./graph-data-github-actions.js";
 
 describe("graph data - github actions", () => {
-    describe("#githubActionCounts", () => {
+    describe("#temporaryGithubActionCounts", () => {
         it("handles workflows without jobs", () => {
             const fixture = {
                 organization: {
                     repositories: {
                         nodes: [{
+                            name: "test-repo",
                             workflows: {
                                 entries: [
                                     {
@@ -46,7 +47,55 @@ describe("graph data - github actions", () => {
             const result = githubActionCounts(fixture)
 
             assert.deepStrictEqual(result, [
-                {name: "actions/checkout", count: 1, versions: [{version: "v4", count: 1}]}
+                {name: "actions/checkout", count: 1, versions: [
+                    {version: "v4", count: 1, sources: [
+                            {repo: "test-repo", filePath: ".github/workflows/deploy.yml"}
+                        ]}
+                ]}
+            ])
+        })
+    });
+
+    describe("#githubActionCounts", () => {
+        it("handles workflows without jobs", () => {
+            const fixture = {
+                organization: {
+                    repositories: {
+                        nodes: [{
+                            name: "repo-with-no-jobs",
+                            workflows: {
+                                entries: [
+                                    {
+                                        name: "no-jobs.yml",
+                                        object: {
+                                            text: {
+                                                jobs: null
+                                            }
+                                        }
+                                    },
+                                    {
+                                        name: "deploy.yml",
+                                        object: {
+                                            text: {
+                                                jobs: {
+                                                    "job": {
+                                                        steps: [{uses: "actions/checkout@v4"}]
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }]
+                    }
+                }
+            }
+
+            const result = githubActionCounts(fixture)
+
+            assert.deepStrictEqual(result, [
+                {name: "actions/checkout", count: 1, versions: [{version: "v4", count: 1, sources: [{repo: "repo-with-no-jobs", filePath: ".github/workflows/deploy.yml"}]}]}
             ])
         })
 
@@ -56,9 +105,11 @@ describe("graph data - github actions", () => {
                     repositories: {
                         nodes: [
                             {
+                                name: "repo-with-no-workflows",
                                 workflows: null
                             },
                             {
+                                name: "other-repo",
                                 workflows: {
                                     entries: [{
                                         name: "deploy.yml",
@@ -82,7 +133,7 @@ describe("graph data - github actions", () => {
             const result = githubActionCounts(fixture)
 
             assert.deepStrictEqual(result, [
-                {name: "actions/checkout", count: 1, versions: [{version: "v4", count: 1}]}
+                {name: "actions/checkout", count: 1, versions: [{version: "v4", count: 1, sources: [{repo: "other-repo", filePath: ".github/workflows/deploy.yml"}]}]}
             ])
         })
 
@@ -91,6 +142,7 @@ describe("graph data - github actions", () => {
                 organization: {
                     repositories: {
                         nodes: [{
+                            name: "repo-with-no-steps",
                             workflows: {
                                 entries: [{
                                     name: "deploy.yml",
@@ -118,7 +170,7 @@ describe("graph data - github actions", () => {
             const result = githubActionCounts(fixture)
 
             assert.deepStrictEqual(result, [
-                {name: "actions/checkout", count: 1, versions: [{version: "v4", count: 1}]}
+                {name: "actions/checkout", count: 1, versions: [{version: "v4", count: 1, sources: [{repo: "repo-with-no-steps", filePath: ".github/workflows/deploy.yml"}]}]}
             ])
         })
 
@@ -130,40 +182,52 @@ describe("graph data - github actions", () => {
                     name: "actions/checkout",
                     count: 5,
                     versions: [
-                        {version: "v5", count: 1},
-                        {version: "v6", count: 4}
+                        {version: "v5", count: 1, sources: [{repo: "central-backend", filePath: ".github/workflows/validate-template.yml"}]},
+                        {version: "v6", count: 4, sources: [
+                            {repo: "central-frontend", filePath: ".github/workflows/checkov.yaml"},
+                            {repo: "central-frontend", filePath: ".github/workflows/checkov.yaml"},
+                            {repo: "central-frontend", filePath: ".github/workflows/codeql.yaml"},
+                            {repo: "central-backend", filePath: ".github/workflows/validate-template.yml"}
+                        ]}
                     ]
                 },
-                {name: "actions/setup-python", count: 2, versions: [{version: "v6", count: 2}]},
+                {name: "actions/setup-python", count: 2, versions: [{version: "v6", count: 2, sources: [
+                    {repo: "central-frontend", filePath: ".github/workflows/checkov.yaml"},
+                    {repo: "central-backend", filePath: ".github/workflows/validate-template.yml"}
+                ]}]},
                 {
                     name: "aws-actions/setup-sam",
                     count: 2,
                     versions: [
-                        {version: "d78e1a4", count: 1},
-                        {version: "v2", count: 1}
+                        {version: "d78e1a4", count: 1, sources: [{repo: "central-backend", filePath: ".github/workflows/validate-template.yml"}]},
+                        {version: "v2", count: 1, sources: [{repo: "central-frontend", filePath: ".github/workflows/checkov.yaml"}]}
                     ]
                 },
                 {
                     name: "github/codeql-action",
                     count: 3,
                     versions: [
-                        {version: "0d579ff", count: 3}
+                        {version: "0d579ff", count: 3, sources: [
+                            {repo: "central-frontend", filePath: ".github/workflows/codeql.yaml"},
+                            {repo: "central-frontend", filePath: ".github/workflows/codeql.yaml"},
+                            {repo: "central-frontend", filePath: ".github/workflows/codeql.yaml"}
+                        ]}
                     ]
                 },
                 {
                     name: "github/codeql-action/analyze",
                     count: 1,
-                    versions: [{version: "0d579ff", count: 1}]
+                    versions: [{version: "0d579ff", count: 1, sources: [{repo: "central-frontend", filePath: ".github/workflows/codeql.yaml"}]}]
                 },
                 {
                     name: "github/codeql-action/autobuild",
                     count: 1,
-                    versions: [{version: "0d579ff", count: 1}]
+                    versions: [{version: "0d579ff", count: 1, sources: [{repo: "central-frontend", filePath: ".github/workflows/codeql.yaml"}]}]
                 },
                 {
                     name: "github/codeql-action/init",
                     count: 1,
-                    versions: [{version: "0d579ff", count: 1}]
+                    versions: [{version: "0d579ff", count: 1, sources: [{repo: "central-frontend", filePath: ".github/workflows/codeql.yaml"}]}]
                 }
             ]
 
