@@ -16,9 +16,12 @@ npm install
 cp .env.example .env
 ```
 
-3. Create a GitHub token (fine grained) with the following permissions:
-   - Administration (read-only)
-   - Contents (read-only)
+3. Using [GitHub Developer Settings](https://github.com/settings/apps), create a [Personal access token (fine-grained)](https://github.com/settings/personal-access-tokens) with the following permissions:
+      - Contents - Read-only
+      - Custom properties - Read-only
+      - Metadata - Read-only
+      - Workflows - Read and write
+> Note: Non-organisational fine-grained tokens [do not currently support the GraphQL API](https://github.com/actions/add-to-project/issues/289#issuecomment-2967949633)
 
 4. Add your GitHub token to `.env`.
 
