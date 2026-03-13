@@ -1,0 +1,40 @@
+---
+title: govuk-one-login/quality-gates
+---
+flowchart LR
+subgraph events["GitHub Events"]
+direction LR
+pull_request
+push
+schedule
+end
+
+subgraph actions["GitHub Actions"]
+direction TB
+subgraph quality.yml
+direction LR
+quality.yml__pre-commit(["pre-commit"])
+quality.yml__codeql(["codeql"])
+end
+
+subgraph schema.yml
+direction LR
+schema.yml__run-tests(["run-tests"])
+end
+
+subgraph visualiser.yml
+direction LR
+visualiser.yml__run-tests(["run-tests"])
+end
+
+end
+
+pull_request --> quality.yml
+pull_request --> schema.yml
+pull_request --> visualiser.yml
+push --> quality.yml
+push --> schema.yml
+push --> visualiser.yml
+schedule --> quality.yml
+schedule --> schema.yml
+schedule --> visualiser.yml
