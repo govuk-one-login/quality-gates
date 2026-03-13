@@ -1,105 +1,106 @@
 # Statistics - GitHub Actions
+```js
+import { githubActionCounts, isLocalOrgOrExternal } from "./components/graph-data-github-actions.js"
+```
+
 
 ```js
 const githubManifestAndWorkflows = FileAttachment("./data/github-graphql-manifest-workflows.json").json();
 ```
 
+
 ```js
-// display(githubManifestAndWorkflows)
+const versionsSearch = view(Inputs.search(stats, {placeholder: "Search actions…"}));
 ```
 
 ```js
-const nodes = githubManifestAndWorkflows.organization.repositories.nodes
-
-// display(nodes)
+Inputs.table(stats, {
+    columns: ["name", "count", "type"],
+    header: {
+      name: "Name"
+    },
+    width: {
+        name: 180,
+        count: 100,
+        type: 10
+    },
+    format: {
+        count: sparkbar(d3.max(stats, d => d.count)),
+    },
+    sort: "count", reverse: true
+})
 ```
 
 ```js
-const nodesWithProductionAssets = nodes.filter((n) => n.productionAssets.value === "true")
-
-// display(nodesWithProductionAssets)
+function sparkbar(max) {
+  return (x) => htl.html`<div style="
+    background: var(--theme-green);
+    color: black;
+    font: 10px/1.6 var(--sans-serif);
+    width: ${100 * x / max}%;
+    float: right;
+    padding-right: 3px;
+    box-sizing: border-box;
+    overflow: visible;
+    display: flex;
+    justify-content: end;">${x.toLocaleString("en-US")}`
+}
 ```
+---
+
+<h1>Versions</h1>
+<div class="grid grid-cols-2">
+  <div class="card">
+    <h1>Actions</h1>
 
 ```js
-const nodesWithManifest = nodes.filter((n) => n.manifest).map((n) => ({
-  ...n,
-  manifest: {
-    ...n.manifest,
-    text: {
-      ...n.manifest.text,
-      version: n.manifest.text.$schema.match(/tags\/v(.+?)\/schemas\/schema\.json/)?.[1]
-    }
-  }
+const actionsSelection = view(Inputs.table(stats, {
+    columns: ["name", "count"],
+    header: {
+      name: "Name"
+    },
+    format: {
+        count: sparkbar(d3.max(stats, d => d.count)),
+    },
 }))
 ```
 
 ```js
-const usesCounts = nodes
-  .flatMap(n => n.workflows?.entries ?? [])
-  .flatMap(e => {
-    const jobs = Object.values(e.object?.text?.jobs ?? {});
-    return [
-      ...jobs.filter(j => j.uses).map(j => j.uses),
-      ...jobs.flatMap(j => (j.steps ?? []).filter(s => s.uses).map(s => s.uses))
-    ];
+const selectedActions = actionsSelection.flatMap(action => action.versions.map((v)=> ({...v, name: action.name})))
+```
+
+</div>
+  <div class="card">
+    <h1>Versions</h1>
+
+```js
+Inputs.table(selectedActions, {
+    columns: ["name", "version", "count"],
+    header: {
+      version: "Version"
+    },
+    format: {
+        count: sparkbar(d3.max(selectedActions, d => d.count)),
+    },
+    sort: "count", reverse: true
+})
+
+```
+  </div>
+</div>
+
+```js
+
+```
+
+```js
+const stats = githubActionCounts(githubManifestAndWorkflows).map((gha) => ({
+    ...gha,
+    type: isLocalOrgOrExternal(gha.name)
   })
-  .reduce((acc, uses) => ({ ...acc, [uses]: (acc[uses] ?? 0) + 1 }), {});
+)
 ```
 
-
-```js
-// display(usesCounts)
-```
-
-```js
-const totalUsesCounts = nodesWithManifest
-  .flatMap(n => n.workflows?.entries ?? [])
-  .flatMap(e => {
-    const jobs = Object.values(e.object?.text?.jobs ?? {});
-    return [
-      ...jobs.filter(j => j.uses).map(j => j.uses),
-      ...jobs.flatMap(j => (j.steps ?? []).filter(s => s.uses).map(s => s.uses))
-    ];
-  })
-  .map(uses => uses.replace(/@.*$/, ""))
-  .reduce((acc, uses) => ({ ...acc, [uses]: (acc[uses] ?? 0) + 1 }), {});
-```
-
-
-```js
-const simpleTotalUsesCounts = Object.entries(usesCounts).reduce((acc, [uses, count]) => {
-  const key = uses.replace(/@.*$/, "");
-  return { ...acc, [key]: (acc[key] ?? 0) + count };
-}, {});
-```
-
-```js
-// display(simpleTotalUsesCounts)
-```
-
-```js
-const govukOneLoginUsesCounts = Object.fromEntries(
-  Object.entries(simpleTotalUsesCounts).filter(([k]) => k.startsWith("govuk-one-login/") || k.startsWith("alphagov/"))
-);
-```
-
-```js
-const localUsesCounts = Object.fromEntries(
-  Object.entries(simpleTotalUsesCounts).filter(([k]) => k.includes("./"))
-);
-```
-
-```js
-const externalUsesCounts = Object.fromEntries(
-    Object.entries(simpleTotalUsesCounts).filter(([k]) => !k.includes("./") && !k.startsWith("govuk-one-login/") && !k.startsWith("alphagov/"))
-);
-```
-
-```js
-//display(govukOneLoginUsesCounts)
-//display(localUsesCounts)
-//display(externalUsesCounts)
-```
 
 ## Popularity
 
@@ -107,48 +108,64 @@ const externalUsesCounts = Object.fromEntries(
   <div class="card">
     <h1>Local</h1>
     <h2>.github</h2>
+    <h3>${stats.filter((s) => isLocalOrgOrExternal(s.name) === "local").length}</h3>
 
 ${Plot.plot({
-  marginLeft: 500,
+  height: stats.filter((s) => isLocalOrgOrExternal(s.name) === "local").length * 20,
+  marginLeft: 450,
+  style: {
+    fontSize: 20
+  },
   marks: [
     Plot.barX(
-      Object.entries(localUsesCounts),
-        { y: ([k]) => k.replace(/^\.\/.github\/(workflows|actions)\//, ""), x: ([, v]) => v, sort: { y: "-x" } }
+        stats.filter((s) => isLocalOrgOrExternal(s.name) === "local") ,
+        { y: "name", x: "count" }
     )
   ]
 })}
+
   </div>
   <div class="card">
     <h1>Org</h1>
     <h2>govuk-one-login / alphagov</h2>
+    <h3>${stats.filter((s) => isLocalOrgOrExternal(s.name) === "org").length}</h3>
+
 
 ${Plot.plot({
-  marginLeft: 500,
-  marks: [
+  height: stats.filter((s) => isLocalOrgOrExternal(s.name) === "org").length * 20,
+  marginLeft: 450,
+  style: {
+    fontSize: 20
+  },
+    marks: [
     Plot.barX(
-      Object.entries(govukOneLoginUsesCounts),
-        { y: ([k]) => k.replace(/^\.\/.github\/(workflows|actions)\//, ""), x: ([, v]) => v, sort: { y: "-x" } }
+        stats.filter((s) => isLocalOrgOrExternal(s.name) === "org") ,
+        { y: "name", x: "count" }
     )
   ]
 })}
+
 
   </div>
   <div class="card">
     <h1>External</h1>
     <h2>all others</h2>
+    <h3>${stats.filter((s) => isLocalOrgOrExternal(s.name) === "external").length}</h3>
+
 
 ${Plot.plot({
-  marginLeft: 500,
-  marks: [
+  height: stats.filter((s) => isLocalOrgOrExternal(s.name) === "external").length * 20,
+  marginLeft: 450,
+  style: {
+    fontSize: 20
+  },
+    marks: [
     Plot.barX(
-      Object.entries(externalUsesCounts),
-        { y: ([k]) => k.replace(/^\.\/.github\/(workflows|actions)\//, ""), x: ([, v]) => v, sort: { y: "-x" } }
+        stats.filter((s) => isLocalOrgOrExternal(s.name) === "external") ,
+        { y: "name", x: "count" }
     )
   ]
 })}
+
   </div>
 </div>
-
-```js
-
-```
