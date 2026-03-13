@@ -1,34 +1,9 @@
 # Statistics - GitHub Actions
+
+<p></p>
+
 ```js
 import { githubActionCounts, isLocalOrgOrExternal } from "./components/graph-data-github-actions.js"
-```
-
-
-```js
-const githubManifestAndWorkflows = FileAttachment("./data/github-graphql-manifest-workflows.json").json();
-```
-
-
-```js
-const versionsSearch = view(Inputs.search(stats, {placeholder: "Search actions…"}));
-```
-
-```js
-Inputs.table(stats, {
-    columns: ["name", "count", "type"],
-    header: {
-      name: "Name"
-    },
-    width: {
-        name: 180,
-        count: 100,
-        type: 10
-    },
-    format: {
-        count: sparkbar(d3.max(stats, d => d.count)),
-    },
-    sort: "count", reverse: true
-})
 ```
 
 ```js
@@ -46,15 +21,48 @@ function sparkbar(max) {
     justify-content: end;">${x.toLocaleString("en-US")}`
 }
 ```
----
 
-<h1>Versions</h1>
+```js
+const githubManifestAndWorkflows = FileAttachment("./data/github-graphql-manifest-workflows.json").json();
+```
+
+<div class="grid">
+<div class="card">
+<h1>Explorer</h1>
+
+```js
+const versionsSearch = view(Inputs.search(stats, {placeholder: "Search actions…"}));
+```
+
+```js
+const statsSelection = view(Inputs.table(versionsSearch, {
+    columns: ["name", "count", "type"],
+    header: {
+      name: "Name"
+    },
+    width: {
+        name: 180,
+        count: 100,
+        type: 10
+    },
+    format: {
+        count: sparkbar(d3.max(stats, d => d.count)),
+    },
+    sort: "count", reverse: true
+}))
+```
+
+
+</div>
+</div>
+
+
 <div class="grid grid-cols-2">
   <div class="card">
     <h1>Actions</h1>
 
 ```js
-const actionsSelection = view(Inputs.table(stats, {
+const actionsSelection = view(Inputs.table(statsSelection, {
     columns: ["name", "count"],
     header: {
       name: "Name"
@@ -74,7 +82,7 @@ const selectedActions = actionsSelection.flatMap(action => action.versions.map((
     <h1>Versions</h1>
 
 ```js
-Inputs.table(selectedActions, {
+const versionsSelection = view(Inputs.table(selectedActions, {
     columns: ["name", "version", "count"],
     header: {
       version: "Version"
@@ -83,9 +91,29 @@ Inputs.table(selectedActions, {
         count: sparkbar(d3.max(selectedActions, d => d.count)),
     },
     sort: "count", reverse: true
-})
+}))
 
 ```
+  </div>
+
+  <div class="card grid-colspan-2">
+    <h1>Repositories</h1>
+
+```js
+const selectedActionsSources = versionsSelection.flatMap(version => version.sources.map(source => ({name: version.name, version: version.version, ...source})))
+```
+
+
+```js
+Inputs.table(selectedActionsSources, {
+    columns: ["name", "version", "repo", "filePath"],
+    header: {
+      version: "Version"
+    },
+    sort: "count", reverse: true
+})
+```
+
   </div>
 </div>
 
