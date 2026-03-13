@@ -9,6 +9,9 @@ query GetManifestAndWorkflows($org: String!, $cursor: String) {
             }
             nodes {
                 name
+                owner {
+                    login
+                }
                 isArchived
                 isPrivate
                 pod: repositoryCustomPropertyValue(propertyName: "pod") {
