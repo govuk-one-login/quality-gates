@@ -5,19 +5,11 @@ const githubManifestAndWorkflows = FileAttachment("./data/github-graphql-manifes
 ```
 
 ```js
-// display(githubManifestAndWorkflows)
-```
-
-```js
-const nodes = githubManifestAndWorkflows.organization.repositories.nodes
-
-// display(nodes)
+const nodes = githubManifestAndWorkflows.organization.repositories.nodes.filter((n) => toggleExcludeArchived ? n.isArchived === false : true)
 ```
 
 ```js
 const nodesWithProductionAssets = nodes.filter((n) => n.productionAssets.value === "true")
-
-// display(nodesWithProductionAssets)
 ```
 
 ```js
@@ -36,7 +28,9 @@ const nodesWithManifest = nodes.filter((n) => n.manifest).map((n) => ({
 ```
 ## Manifests
 
-<p></p>
+```js
+const toggleExcludeArchived = view(Inputs.toggle({label: "Exclude Archived", value: true}));
+```
 
 ### All repos
 
