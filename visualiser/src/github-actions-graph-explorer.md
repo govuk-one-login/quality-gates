@@ -1,4 +1,4 @@
-# GitHub Actions Graph
+# GitHub Actions Graph Explorer
 
 
 ```js

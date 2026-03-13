@@ -1,0 +1,266 @@
+{
+  "organization": {
+    "repositories": {
+      "pageInfo": {
+        "hasNextPage": false,
+        "endCursor": "Y3Vyc29yOnYyOpHORkKC1A=="
+      },
+      "nodes": [
+        {
+          "name": "central-frontend",
+          "isArchived": false,
+          "isPrivate": false,
+          "pod": {
+            "value": "Alpha"
+          },
+          "productionAssets": {
+            "value": "true"
+          },
+          "teamResponsible": {
+            "value": "Central"
+          },
+          "workflows": {
+            "entries": [
+              {
+                "name": "checkov.yaml",
+                "object": {
+                  "text": {
+                    "name": "Run Checkov static analysis on the template",
+                    "on": {
+                      "pull_request": {
+                        "types": [
+                          "opened",
+                          "synchronize",
+                          "reopened"
+                        ],
+                        "paths": [
+                          "deploy/template.yaml"
+                        ]
+                      }
+                    },
+                    "jobs": {
+                      "RunCheckov": {
+                        "runs-on": "ubuntu-latest",
+                        "timeout-minutes": 15,
+                        "steps": [
+                          {
+                            "uses": "actions/checkout@v6",
+                            "with": {
+                              "fetch-depth": 0
+                            }
+                          },
+                          {
+                            "name": "Set up Python 3.8",
+                            "uses": "actions/setup-python@v6",
+                            "with": {
+                              "python-version": 3.8
+                            }
+                          },
+                          {
+                            "name": "install checkov",
+                            "run": "pip3 install checkov"
+                          },
+                          {
+                            "name": "run checkov",
+                            "run": "checkov --directory deploy"
+                          }
+                        ]
+                      },
+                      "RunSamValidate": {
+                        "runs-on": "ubuntu-latest",
+                        "timeout-minutes": 15,
+                        "permissions": {
+                          "id-token": "write",
+                          "contents": "read"
+                        },
+                        "steps": [
+                          {
+                            "uses": "actions/checkout@v6",
+                            "with": {
+                              "fetch-depth": 0
+                            }
+                          },
+                          {
+                            "uses": "aws-actions/setup-sam@v2",
+                            "with": {
+                              "use-installer": true
+                            }
+                          },
+                          {
+                            "run": "sam validate -t deploy/template.yaml --region eu-west-2 --lint"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "name": "codeql.yaml",
+                "object": {
+                  "text": {
+                    "name": "CodeQL",
+                    "on": {
+                      "push": {
+                        "branches": [
+                          "main"
+                        ]
+                      },
+                      "pull_request": {
+                        "branches": [
+                          "main"
+                        ]
+                      },
+                      "schedule": [
+                        {
+                          "cron": "16 12 * * 0"
+                        }
+                      ]
+                    },
+                    "jobs": {
+                      "analyze": {
+                        "name": "Analyze",
+                        "runs-on": "ubuntu-latest",
+                        "timeout-minutes": 15,
+                        "permissions": {
+                          "actions": "read",
+                          "contents": "read",
+                          "security-events": "write"
+                        },
+                        "strategy": {
+                          "fail-fast": false,
+                          "matrix": {
+                            "language": [
+                              "javascript"
+                            ]
+                          }
+                        },
+                        "steps": [
+                          {
+                            "name": "Checkout repository",
+                            "uses": "actions/checkout@v6"
+                          },
+                          {
+                            "name": "Initialize CodeQL",
+                            "uses": "github/codeql-action/init@0d579ff",
+                            "with": {
+                              "languages": "${{ matrix.language }}"
+                            }
+                          },
+                          {
+                            "name": "Autobuild",
+                            "uses": "github/codeql-action/autobuild@0d579ff"
+                          },
+                          {
+                            "name": "Perform CodeQL Analysis",
+                            "uses": "github/codeql-action/analyze@0d579ff"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+
+            ]
+          }
+        },
+        {
+          "name": "central-backend",
+          "isArchived": false,
+          "isPrivate": false,
+          "pod": {
+            "value": "Alpha"
+          },
+          "productionAssets": {
+            "value": "true"
+          },
+          "teamResponsible": {
+            "value": "Central"
+          },
+          "workflows": {
+            "entries": [
+              {
+                "name": "validate-template.yml",
+                "object": {
+                  "text": {
+                    "name": "Run static analysis on the template",
+                    "on": {
+                      "pull_request": {
+                        "types": [
+                          "opened",
+                          "synchronize",
+                          "reopened"
+                        ],
+                        "paths": [
+                          "deploy/template.yaml"
+                        ]
+                      }
+                    },
+                    "env": {
+                      "SAM_CLI_TELEMETRY": "0"
+                    },
+                    "jobs": {
+                      "RunCheckov": {
+                        "runs-on": "ubuntu-latest",
+                        "timeout-minutes": 15,
+                        "steps": [
+                          {
+                            "uses": "actions/checkout@v6",
+                            "with": {
+                              "fetch-depth": 0
+                            }
+                          },
+                          {
+                            "name": "Set up Python 3.8",
+                            "uses": "actions/setup-python@v6",
+                            "with": {
+                              "python-version": 3.8
+                            }
+                          },
+                          {
+                            "name": "install checkov",
+                            "run": "pip3 install checkov"
+                          },
+                          {
+                            "name": "run checkov",
+                            "run": "checkov --directory deploy"
+                          }
+                        ]
+                      },
+                      "RunSamValidate": {
+                        "runs-on": "ubuntu-latest",
+                        "timeout-minutes": 15,
+                        "permissions": {
+                          "id-token": "write",
+                          "contents": "read"
+                        },
+                        "steps": [
+                          {
+                            "uses": "actions/checkout@v5",
+                            "with": {
+                              "fetch-depth": 0
+                            }
+                          },
+                          {
+                            "uses": "aws-actions/setup-sam@d78e1a4",
+                            "with": {
+                              "use-installer": true
+                            }
+                          },
+                          {
+                            "run": "sam validate -t deploy/template.yaml --region eu-west-2 --lint"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

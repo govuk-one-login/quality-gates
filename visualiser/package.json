@@ -6,7 +6,8 @@
     "build": "observable build",
     "dev": "observable preview",
     "deploy": "observable deploy",
-    "observable": "observable"
+    "observable": "observable",
+    "test": "node --test"
   },
   "dependencies": {
     "@observablehq/framework": "^1.13.4",
@@ -15,6 +16,9 @@
     "data-structure-typed": "2.0.4"
   },
   "devDependencies": {
+    "@octokit/core": "7.0.6",
+    "@octokit/graphql": "9.0.3",
+    "@octokit/plugin-paginate-graphql": "6.0.0",
     "dotenv": "^17.3.1",
     "octokit": "^5.0.5",
     "yaml": "^2.8.2"
