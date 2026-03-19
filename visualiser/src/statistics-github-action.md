@@ -54,8 +54,9 @@ const stats = githubActionCounts(filteredManifestAndWorkflows).map((gha) => ({
 <div class="card">
 <h1>Explorer</h1>
 
+
 ```js
-const versionsSearch = view(Inputs.search(stats, {placeholder: "Search actions…"}));
+const versionsSearch = view(Inputs.search(stats, {placeholder: "Search actions…", filter: (query) => (d) => d.name.includes(query)}));
 ```
 
 ```js
