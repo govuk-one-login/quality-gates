@@ -20,6 +20,11 @@ const allCheckTypes = currentSchema["$defs"]["check-type"].items.oneOf.flatMap((
 ```
 
 ```js
+const preMergeChecks = view(Inputs.checkbox(allCheckTypes, {label: "Check Types", value: allCheckTypes}));
+```
+
+
+```js
 const nodes = githubManifestAndWorkflows.organization.repositories.nodes
     .filter((n) => toggleExcludeArchived ? n.isArchived === false : true)
     .filter((n) => toggleProductionOnly ? n.productionAssets.value === "true" : true )
@@ -86,7 +91,7 @@ const versionsSearch = view(Inputs.search(stats, {placeholder: "Search actionsâ€
 ```
 
 ```js
-const statsSelection = view(Inputs.table(versionsSearch, {
+const statsSelection = view(Inputs.table(versionsSearch.filter((d) => preMergeChecks.includes(d.checkType)), {
     columns: ["name", "checkType", "file", "path", "stepsCount"],
     header: {
       name: "Name",
@@ -106,7 +111,7 @@ const statsSelection = view(Inputs.table(versionsSearch, {
 ```
 
 ```js
-Inputs.table(statsSelection?.job?.steps, {
+Inputs.table(statsSelection?.job?.steps || [], {
     columns: ["name", "uses"]
 } )
 ```
