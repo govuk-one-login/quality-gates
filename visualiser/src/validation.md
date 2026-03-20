@@ -101,7 +101,7 @@ const checkTypeRepoView = view(Inputs.table(gatesWithmismatchedCheckTypes, {
 function getQualityGatesForRepo(name) {
     const node = nodesWithManifest.find((n) => n.name === name);
     return node?.manifest.text.services.flatMap((s) =>
-        s["quality-gates"].map((g) => ({ "service-tag": s["service-tag"], ...g }))
+        s["quality-gates"].map((g) => ({ "service-tag": s["service-tag"], ...g, "config.file": g.config.file, "config.name": g.config.name, "config.path": g.config.path, name: node.name, "pod.value": node.pod?.value, "teamResponsible.value": node.teamResponsible?.value }))
     ) ?? [];
 }
 ```
@@ -109,5 +109,54 @@ function getQualityGatesForRepo(name) {
 ```js
 Inputs.table(
     getQualityGatesForRepo(checkTypeRepoView?.name),
-    { columns: ["service-tag", "phase", "provider", "check-types"] })
+    { columns: ["name", "pod.value", "teamResponsible.value", "service-tag", "phase", "provider", "check-types", "config.file", "config.name", "config.path"] })
+```
+
+
+## Mismatched Jobs
+
+```js
+function findGatesWithmismatchedJobs(node) {
+    const workflowJobs = new Map(
+        node.workflows.entries.map(({ name, object }) => [name, new Set(Object.keys(object.text.jobs ?? {}))])
+    );
+    const { manifest, workflows, ...rest } = node;
+    return node.manifest.text.services.flatMap((s) =>
+        s["quality-gates"]
+            .filter((g) => {
+                const jobKey = g.config.path?.split(".")[1];
+                const filename = g.config.file.replace(".github/workflows/", "");
+                return jobKey && !workflowJobs.get(filename)?.has(jobKey);
+            })
+            .map((g) => ({ ...rest, ...g, mismatchedJobNames: g.config.path?.split(".")[1] }))
+    );
+}
+
+const gatesWithmismatchedJobs = nodesWithManifest.flatMap(findGatesWithmismatchedJobs);
+```
+
+#### ${gatesWithmismatchedJobs.length} gates with mismatched jobs
+```js
+const jobRepoView = view(Inputs.table(gatesWithmismatchedJobs, {
+    columns: ["name", "mismatchedJobNames"],
+    multiple: false
+}))
+```
+
+```js
+Inputs.table(
+    getQualityGatesForRepo(jobRepoView?.name),
+    {
+        columns: ["name", "config.file", "config.name", "config.path"],
+        header: {
+            "pod.value": "Pod",
+            "teamResponsible.value": "Team",
+            "config.file": "file",
+            "config.name": "jobName",
+            "config.path": "path"
+        },
+        format: {
+            "config.file": (s) => s.split("workflows/")[1]
+        }
+    })
 ```
