@@ -57,6 +57,31 @@ const missingWorkflows = nodesWithManifest.flatMap(findMissingWorkflows);
 ## Mismatched Configurations
 
 #### ${missingWorkflows.length} mismatched configurations
+
+```js
+Plot.plot({
+    marginLeft: 150,
+    color: {scheme: "observable10"},
+    marks: [Plot.barX(missingWorkflows, Plot.groupY({x: "count", fill: "count"}, {y: d => d.pod.value, sort: {y: "x", reverse: true}}))]
+})
+```
+
+```js
+Plot.plot({
+    marginLeft: 150,
+    color: {scheme: "observable10"},
+    marks: [Plot.barX(missingWorkflows, Plot.groupY({x: "count", fill: "count"}, {y: d => d.teamResponsible.value, sort: {y: "x", reverse: true}}))]
+})
+```
+
+```js
+Plot.plot({
+    marginLeft: 200,
+    color: {scheme: "observable10"},
+    marks: [Plot.barX(missingWorkflows, Plot.groupY({x: "count", fill: "count"}, {y: "name", sort: {y: "x", reverse: true}}))]
+})
+```
+
 ```js
 const repoView = view(Inputs.table(missingWorkflows, {
     columns: ["name", "file"],
@@ -72,6 +97,8 @@ function getWorkflowsForRepo(name) {
 
 display(Inputs.table(getWorkflowsForRepo(repoView?.name), { columns: ["filename"] }));
 ```
+
+---
 
 ## Mismatched Check Types
 
@@ -90,6 +117,31 @@ const gatesWithmismatchedCheckTypes = nodesWithManifest.flatMap(findGatesWithmis
 ```
 
 #### ${gatesWithmismatchedCheckTypes.length} gates with mismatched check types
+
+```js
+Plot.plot({
+    marginLeft: 150,
+    color: {scheme: "observable10"},
+    marks: [Plot.barX(gatesWithmismatchedCheckTypes, Plot.groupY({x: "count", fill: "count"}, {y: d => d.pod.value, sort: {y: "x", reverse: true}}))]
+})
+```
+
+```js
+Plot.plot({
+    marginLeft: 150,
+    color: {scheme: "observable10"},
+    marks: [Plot.barX(gatesWithmismatchedCheckTypes, Plot.groupY({x: "count", fill: "count"}, {y: d => d.teamResponsible.value, sort: {y: "x", reverse: true}}))]
+})
+```
+
+```js
+Plot.plot({
+    marginLeft: 200,
+    color: {scheme: "observable10"},
+    marks: [Plot.barX(gatesWithmismatchedCheckTypes, Plot.groupY({x: "count", fill: "count"}, {y: "name", sort: {y: "x", reverse: true}}))]
+})
+```
+
 ```js
 const checkTypeRepoView = view(Inputs.table(gatesWithmismatchedCheckTypes, {
     columns: ["name", "mismatchedCheckTypes"],
@@ -112,6 +164,7 @@ Inputs.table(
     { columns: ["name", "pod.value", "teamResponsible.value", "service-tag", "phase", "provider", "check-types", "config.file", "config.name", "config.path"] })
 ```
 
+---
 
 ## Mismatched Jobs
 
@@ -136,6 +189,31 @@ const gatesWithmismatchedJobs = nodesWithManifest.flatMap(findGatesWithmismatche
 ```
 
 #### ${gatesWithmismatchedJobs.length} gates with mismatched jobs
+
+```js
+Plot.plot({
+    marginLeft: 150,
+    color: {scheme: "observable10"},
+    marks: [Plot.barX(gatesWithmismatchedJobs, Plot.groupY({x: "count", fill: "count"}, {y: d => d.pod.value, sort: {y: "x", reverse: true}}))]
+})
+```
+
+```js
+Plot.plot({
+    marginLeft: 150,
+    color: {scheme: "observable10"},
+    marks: [Plot.barX(gatesWithmismatchedJobs, Plot.groupY({x: "count", fill: "count"}, {y: d => d.teamResponsible.value, sort: {y: "x", reverse: true}}))]
+})
+```
+
+```js
+Plot.plot({
+    marginLeft: 200,
+    color: {scheme: "observable10"},
+    marks: [Plot.barX(gatesWithmismatchedJobs, Plot.groupY({x: "count", fill: "count"}, {y: "name", sort: {y: "x", reverse: true}}))]
+})
+```
+
 ```js
 const jobRepoView = view(Inputs.table(gatesWithmismatchedJobs, {
     columns: ["name", "mismatchedJobNames"],
