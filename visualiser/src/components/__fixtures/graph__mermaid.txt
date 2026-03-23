@@ -25,6 +25,8 @@ end
 subgraph visualiser.yml
 direction LR
 visualiser.yml__run-tests(["run-tests"])
+visualiser.yml__dependent(["dependent"])
+visualiser.yml__double-dependent(["double-dependent"])
 end
 
 end
@@ -38,3 +40,7 @@ push --> visualiser.yml
 schedule --> quality.yml
 schedule --> schema.yml
 schedule --> visualiser.yml
+
+visualiser.yml__run-tests --> visualiser.yml__dependent
+visualiser.yml__run-tests --> visualiser.yml__double-dependent
+visualiser.yml__dependent --> visualiser.yml__double-dependent

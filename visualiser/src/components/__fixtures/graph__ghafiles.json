@@ -167,6 +167,15 @@
             "run": "npm run test"
           }
         ]
+      },
+      "dependent": {
+        "needs": "run-tests"
+      },
+      "double-dependent": {
+        "needs": [
+          "run-tests",
+          "dependent"
+        ]
       }
     }
   }
