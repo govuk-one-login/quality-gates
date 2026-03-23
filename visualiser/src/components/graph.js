@@ -130,15 +130,23 @@ export function renderAsFlowChart(graph, title="GitHub Actions") {
     const jobVertices = [...graph.vertexMap.entries()]
         .filter(([, v]) => v.value?.type === "job")
 
+    const needsLines = [];
     for(const [key] of jobVertices) {
         const edges = graph.outgoingEdgesOf(key)
         for(const edge of edges) {
+            const src = edge.src?.key ?? edge.src;
+            const dest = edge.dest?.key ?? edge.dest;
             if(edge?.value?.type === "needs") {
-                lines.push(`  ${edge.src} --> ${edge.dest}`)
+                needsLines.push(`${src} --> ${dest}`)
             } else if (edge?.value?.type === "uses") {
-                lines.push(`  ${edge.src} -.- ${edge.dest}`)
+                needsLines.push(`  ${src} -.- ${dest}`)
             }
         }
+    }
+
+    if(needsLines.length > 0) {
+        lines.push('')
+        lines.push(...needsLines)
     }
 
     lines.push('')
@@ -231,25 +239,21 @@ export function createGraph(files) {
         //     hard link between
 
         if(vertex.value?.data?.needs) {
-            // Find the parent link by used graph.incomingEdgesOf(vertex)
             const parents = graph.incomingEdgesOf(vertex);
-
-
-            // console.log(`parents: ${JSON.stringify(parents, null, 2)}`)
+            const needsList = Array.isArray(vertex.value.data.needs)
+                ? vertex.value.data.needs
+                : [vertex.value.data.needs];
 
             for (const edge of parents) {
                 if(edge?.value?.type === "job") {
-                    console.log(`${edge.src.key}__${vertex.value.data.needs}`)
-                    const neededJob = graph.find((searchVertex) => searchVertex === `${edge.src.key}__${vertex.value.data.needs}`)
-
-                    // console.log(`vertex: ${JSON.stringify(vertex)}`)
-                    // console.log(`needed: ${JSON.stringify(neededJob)}`)
-
-                    if(neededJob) {
-                        const needsEdge = graph.createEdge(neededJob[0], vertex.key, 1, {type: "needs"})
-                        graph.addEdge(needsEdge)
+                    for (const need of needsList) {
+                        const neededKey = `${edge.src.key}__${need}`;
+                        const neededVertex = graph.getVertex(neededKey);
+                        if(neededVertex) {
+                            const needsEdge = graph.createEdge(neededKey, vertex.key, 1, {type: "needs"})
+                            graph.addEdge(needsEdge)
+                        }
                     }
-
                 }
             }
         }
