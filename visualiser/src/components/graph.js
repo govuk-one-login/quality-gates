@@ -175,7 +175,7 @@ export function createGraph(files) {
         // File/Workflow
         graph.addVertex(fileVertex);
 
-        const onProperties = isString(file?.on) ? {[file?.on]: {}} : file?.on;
+        const onProperties = isString(file?.on) ? {[file?.on]: {}} : Array.isArray(file?.on) ? Object.fromEntries(file.on.map(e => [e, {}])) : file?.on;
 
         for (const event of Object.keys(onProperties)) {
 
