@@ -33,13 +33,11 @@ end
 
 pull_request --> quality.yml
 pull_request --> schema.yml
-pull_request --> visualiser.yml
 push --> quality.yml
 push --> schema.yml
 push --> visualiser.yml
 schedule --> quality.yml
 schedule --> schema.yml
-schedule --> visualiser.yml
 
 visualiser.yml__run-tests --> visualiser.yml__dependent
 visualiser.yml__run-tests --> visualiser.yml__double-dependent
