@@ -1,0 +1,57 @@
+# config=../../../../graphql.config.yml
+
+query GetAllRepositories($org: String!, $cursor: String) {
+    organization(login: $org) {
+        repositories(first: 20, after: $cursor) {
+            pageInfo {
+                hasNextPage
+                endCursor
+            }
+            totalCount
+            nodes {
+                name
+                owner {
+                    login
+                }
+
+                isArchived
+                isPrivate
+
+                defaultBranchRef {
+                    name
+                    target {
+                        commitResourcePath
+                        commitUrl
+                    }
+                }
+
+                pod: repositoryCustomPropertyValue(propertyName: "pod") {
+                    value
+                }
+                productionAssets: repositoryCustomPropertyValue(propertyName: "production-assets") {
+                    value
+                }
+                teamResponsible: repositoryCustomPropertyValue(propertyName: "team-responsible") {
+                    value
+                }
+
+                manifest: object(expression: "HEAD:quality-gate.manifest.json") {
+                    commitUrl
+                    ... on Blob {
+                        isBinary
+                        text
+                    }
+                }
+            }
+        }
+    }
+
+    rateLimit {
+        cost
+        nodeCount
+        limit
+        remaining
+        used
+        resetAt
+    }
+}

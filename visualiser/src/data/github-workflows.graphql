@@ -1,0 +1,32 @@
+# config=../../../../graphql.config.yml
+
+query GetManifestAndWorkflows($org: String!, $repo: String!) {
+    repository(owner: $org, name: $repo) {
+        name
+        workflows: object(expression: "HEAD:.github/workflows") {
+            ... on Tree {
+                entries {
+                    ... on TreeEntry {
+                        name
+                        object {
+                            ... on Blob {
+                                text
+                                isBinary
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    rateLimit {
+        cost
+        nodeCount
+        limit
+        remaining
+        used
+        resetAt
+    }
+}
