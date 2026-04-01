@@ -1,16 +1,96 @@
 # Implementation Levels
 
-```js
-const toggleExcludeArchived = view(Inputs.toggle({label: "Exclude Archived", value: true}));
-```
+
+
 ```js
 const githubManifestAndWorkflows = FileAttachment("./data/github-graphql-manifest-workflows.json").json();
+```
+
+```js
+const levelGroups  = FileAttachment("./data/level-groups.json").json();
 ```
 
 ```js
 const currentSchema = FileAttachment("./data/schema.json").json();
 ```
 
+```js
+const allCheckTypes = currentSchema["$defs"]["check-type"].items.oneOf.flatMap((oneOf) => oneOf.enum)
+```
+
+```js
+const allPods = _.chain(githubManifestAndWorkflows.organization.repositories.nodes)
+    .map(n => n.pod.value)
+    .uniq()
+    .sort()
+    .value()
+```
+
+```js
+const allTeams = _.chain(githubManifestAndWorkflows.organization.repositories.nodes)
+    .map(n => n.teamResponsible.value)
+    .uniq()
+    .sort()
+    .value()
+```
+
+<div class="grid grid-cols-2">
+
+<div class="card">
+
+```js
+const selectedTeams = view(Inputs.checkbox(_.chain(allTeams), {label: "Team", value: allTeams}));
+```
+
+
+</div>
+
+<div class="card">
+
+```js
+const toggleExcludeArchived = view(Inputs.toggle({label: "Exclude Archived", value: true}));
+```
+</div>
+</div>
+
+```js
+const filteredFlattenedCheckTypes = flattenedCheckTypes.filter(fc => selectedTeams.includes(fc.teamResponsible.value))
+```
+
+
+# By Level
+
+```js
+const makeSections = (level) => {
+    const heading = html`<h2>${level.name} - ${level.phase}</h2>`
+
+    const chart = Plot.plot({
+        marginLeft: 350,
+        marginBottom: 200,
+        marginTop: 200,
+        x: { domain: level.checks },
+        y: { domain: flattenedCheckTypes.filter(fc => selectedTeams.includes(fc.teamResponsible.value)).map((fc) => fc.service__repo).sort()},
+        marks: [
+            Plot.axisX({anchor: "top", tickRotate: -90}),
+            Plot.axisX({anchor: "bottom", label: null, tickRotate: -90}),
+            Plot.cell(
+                flattenedCheckTypes,
+                { x: "check-type", y: "service__repo", fill: "check-type" }
+            )
+        ]
+    })
+
+    return html`<div>${heading}${chart}</div>`
+}
+```
+
+```js
+const disp = levelGroups.map(l => makeSections(l))
+```
+
+```js
+display(html`${disp}`)
+```
 
 ```js
 const filteredManifestAndWorkflows = {
@@ -73,21 +153,20 @@ const flattenedCheckTypes = flattenedQualityGates.flatMap(({ "check-types": ct, 
 )
 ```
 
-```js
-const allCheckTypes = currentSchema["$defs"]["check-type"].items.oneOf.flatMap((oneOf) => oneOf.enum)
-```
+---
+
+# Explorer
 
 ```js
-const preMergeChecks = view(Inputs.checkbox(allCheckTypes, {label: "Check Types", value: allCheckTypes}));
+const explorerChecks = view(Inputs.checkbox(allCheckTypes, {label: "Check Types", value: allCheckTypes}));
 ```
 
-# Pre-Merge
 ```js
 display(Plot.plot({
   marginLeft: 350,
   marginBottom: 200,
   marginTop: 200,
-  x: { domain: preMergeChecks.sort() },
+  x: { domain: explorerChecks.sort() },
   y: { domain: flattenedCheckTypes.map((fc) => fc.service__repo)},
   marks: [
     Plot.axisX({anchor: "top", tickRotate: -90}),
@@ -99,32 +178,6 @@ display(Plot.plot({
   ]
 }))
 ```
-
-
-# Pre-Upload
-
-```js
-const preUploadChecks = view(Inputs.checkbox(allCheckTypes, {label: "Check Types", value: allCheckTypes}));
-```
-
-```js
-display(Plot.plot({
-  marginLeft: 350,
-  marginBottom: 200,
-  marginTop: 200,
-  x: { domain: preUploadChecks.sort() },
-  y: { domain: flattenedCheckTypes.map((fc) => fc.service__repo)},
-  marks: [
-      Plot.axisX({anchor: "top", tickRotate: -90}),
-      Plot.axisX({anchor: "bottom", label: null, tickRotate: -90}),
-      Plot.cell(
-      flattenedCheckTypes.filter(c => c.phase === "pre-upload"),
-      { x: "check-type", y: "service__repo", fill: "check-type" }
-    )
-  ]
-}))
-```
-
 
 ---
 
