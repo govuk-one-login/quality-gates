@@ -61,6 +61,14 @@ for await (const response of repoIterator) {
             repo.manifest.text = {}
         }
 
+        try {
+            if (repo.preCommitConfig?.text) repo.preCommitConfig.text = YAML.parse(repo.preCommitConfig.text);
+        } catch (e) {
+            console.error(`Error parsing .pre-commit-config.yaml for ${ORG}/${repo.name}`)
+            console.error(e.message)
+            repo.preCommitConfig.text = {}
+        }
+
         let workflows;
         let parsedWorkflows = {
             entries: [],

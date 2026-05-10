@@ -42,6 +42,13 @@ query GetAllRepositories($org: String!, $cursor: String) {
                         text
                     }
                 }
+                preCommitConfig: object(expression: "HEAD:.pre-commit-config.yaml") {
+                    commitUrl
+                    ... on Blob {
+                        isBinary
+                        text
+                    }
+                }
             }
         }
     }
