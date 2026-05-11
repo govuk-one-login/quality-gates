@@ -93,11 +93,15 @@ Plot.plot({
 
 ### Versions of Manifests
 ```js
+const versions = _.uniq(_.map(nodesWithManifest, (n) => n.manifest.text.version)).sort()
+```
+```js
 Plot.plot({
     color: {
         type: "categorical",
         scheme: "observable10",
-        legend: true
+        legend: true,
+        domain: versions
     },
   marks: [
     Plot.barY(
