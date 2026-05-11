@@ -53,9 +53,6 @@ const checkStepRunUses = qualityGatesJobsToCheckStepRunUses(flattenQualityGatesJ
 ```
 
 ```js
-display(Inputs.table(checkStepRunUses))
-```
-```js
 display(Plot.plot({
   color: {
     legend: true
@@ -66,7 +63,7 @@ display(Plot.plot({
   x: { label: "Count", axis: "both" },
   y: { label: "uses"},
   marks: [
-    Plot.barX(checkStepRunUses, Plot.groupY({ x: "count" }, { y: "value", fill: "run-use-type", sort: { y: "-x" } }))
+    Plot.barX(checkStepRunUses.filter((d) => preMergeChecks.includes(d["check-type"])), Plot.groupY({ x: "count" }, { y: "value", fill: "run-use-type", sort: { y: "-x" } }))
   ]
 }))
 ```
