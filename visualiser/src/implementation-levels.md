@@ -61,31 +61,50 @@ const filteredFlattenedCheckTypes = flattenedCheckTypes.filter(fc => selectedTea
 # By Level
 
 ```js
-const makeSections = (level) => {
-    const heading = html`<h2>${level.name} - ${level.phase}</h2>`
+const groupedCheckTypes = _.groupBy(flattenedCheckTypes, (ct) => ct.teamResponsible.value)
+```
 
-    const chart = Plot.plot({
+```js
+// display(groupedCheckTypes)
+```
+
+
+```js
+const createChart = (level, checkTypes) => {
+    return html`<div>
+        <h3>${checkTypes[0].pod.value} - ${checkTypes[0].teamResponsible.value} (${level.name} - ${level.phase})</h3>
+        <div>${Plot.plot({
         marginLeft: 350,
         marginBottom: 200,
-        marginTop: 200,
+        marginTop: 150,
         x: { domain: level.checks },
-        y: { domain: flattenedCheckTypes.filter(fc => selectedTeams.includes(fc.teamResponsible.value)).map((fc) => fc.service__repo).sort()},
+        y: { domain: checkTypes.filter(fc => selectedTeams.includes(fc.teamResponsible.value)).map((fc) => fc.service__repo).sort()},
         marks: [
             Plot.axisX({anchor: "top", tickRotate: -90}),
             Plot.axisX({anchor: "bottom", label: null, tickRotate: -90}),
             Plot.cell(
-                flattenedCheckTypes,
+                checkTypes,
                 { x: "check-type", y: "service__repo", fill: "check-type" }
             )
         ]
-    })
+    })}</div></div>`
+}
 
-    return html`<div>${heading}${chart}</div>`
+```
+```js
+const makeSections = (level, groupedCheckTypes) => {
+    const heading = html`<h2>${level.name} - ${level.phase}</h2>`
+
+//    const chart = createChart(level, flattenedCheckTypes)
+
+    const charts = _.map(groupedCheckTypes, (group, groupName) => createChart(level, group))
+
+    return html`<div>${heading}${charts}</div>`
 }
 ```
 
 ```js
-const disp = levelGroups.map(l => makeSections(l))
+const disp = levelGroups.map(l => makeSections(l, groupedCheckTypes))
 ```
 
 ```js
@@ -127,14 +146,14 @@ const nodesByServiceTag = Object.groupBy(
 
 ```js
 const flattenedServices = Object.entries(nodesByServiceTag).flatMap(([tag, nodes]) =>
-  nodes.map((n) => ({ ...n, service__repo: `${tag}/${n.name}` }))
+  nodes.map((n) => ({ ...n, service__repo: `${tag} / ${n.name}` }))
 )
 ```
 
 ```js
 const serviceItems = Object.keys(nodesByServiceTag).reduce((acc, tag) =>
   acc.concat(nodesByServiceTag[tag].map((n) => ({
-    service__repo: `${tag}/${n.name}`,
+    service__repo: `${tag} / ${n.name}`,
       ...n,
     ...n.manifest.text.services.find((s) => s["service-tag"] === tag)
   }))),
