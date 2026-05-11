@@ -13,7 +13,7 @@ const PaginatedOctokit = Octokit.plugin(paginateGraphQL);
 const octokit = new PaginatedOctokit({ auth: GITHUB_TOKEN });
 
 const repoQuery = readFileSync(
-  join(dirname(fileURLToPath(import.meta.url)), "github-repositories-and-manifest.graphql"),
+  join(dirname(fileURLToPath(import.meta.url)), "github-repositories-properties.graphql"),
   "utf8"
 );
 
@@ -53,6 +53,7 @@ for await (const response of repoIterator) {
     data.rateLimit = response.rateLimit
 
     for await (const repo of response.organization.repositories.nodes) {
+        // quality-gates.manifest.json
         try {
             if (repo.manifest?.text) repo.manifest.text = JSON.parse(repo.manifest.text);
         } catch (e) {
@@ -61,6 +62,7 @@ for await (const response of repoIterator) {
             repo.manifest.text = {}
         }
 
+        // .pre-commit-config.yaml
         try {
             if (repo.preCommitConfig?.text) repo.preCommitConfig.text = YAML.parse(repo.preCommitConfig.text);
         } catch (e) {

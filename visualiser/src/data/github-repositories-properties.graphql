@@ -17,14 +17,6 @@ query GetAllRepositories($org: String!, $cursor: String) {
                 isArchived
                 isPrivate
 
-                defaultBranchRef {
-                    name
-                    target {
-                        commitResourcePath
-                        commitUrl
-                    }
-                }
-
                 pod: repositoryCustomPropertyValue(propertyName: "pod") {
                     value
                 }
