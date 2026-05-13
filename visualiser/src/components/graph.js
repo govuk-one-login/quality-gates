@@ -19,7 +19,7 @@ function sortVertices(a, b) {
 
 }
 
-export function renderAsFlowChart(graph, title="GitHub Actions") {
+export function renderAsFlowChart(graph, title="GitHub Actions", { jobNames = [] } = {}) {
     const lines = [];
 
     lines.push('---')
@@ -66,7 +66,9 @@ export function renderAsFlowChart(graph, title="GitHub Actions") {
 
         for(const edge of edges) {
             if(edge?.value?.type === "job") {
-                lines.push(`${edge.dest.key}(["${edge.dest.value.label}"])`)
+                const label = edge.dest.value.label;
+                const cls = jobNames.includes(label) ? ":::green" : "";
+                lines.push(`${edge.dest.key}(["${label}"])${cls}`)
             }
         }
 
@@ -151,7 +153,10 @@ export function renderAsFlowChart(graph, title="GitHub Actions") {
 
     lines.push('')
 
-
+    if (jobNames.length > 0) {
+        lines.push('classDef green fill:#85d4ae,color:#000')
+        lines.push('')
+    }
 
     return lines.join('\n')
 }
