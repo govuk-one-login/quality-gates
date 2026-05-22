@@ -1,5 +1,5 @@
 {
-  "target": "../schemas/schema.json",
+  "target": "../../../schemas/schema.json",
   "$comment": "All examples should validate",
   "tests": [
     {

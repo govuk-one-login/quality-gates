@@ -1,0 +1,15 @@
+{
+  "name": "@govuk-one-login/schema-tools",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Schema validation tools for Quality Gates",
+  "license": "MIT",
+  "scripts": {
+    "test": "npx @sourcemeta/jsonschema test test/ --resolve ../../schemas --verbose",
+    "validate:schemas": "npx @sourcemeta/jsonschema metaschema ../../schemas --verbose",
+    "validate:lint": "npx @sourcemeta/jsonschema lint ../../schemas --verbose"
+  },
+  "dependencies": {
+    "@sourcemeta/jsonschema": "15.6.0"
+  }
+}
