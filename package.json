@@ -2,15 +2,9 @@
   "name": "quality-gate-schema",
   "version": "0.0.1",
   "description": "Schemas used to detail Quality Gates",
-  "main": "index.js",
-  "scripts": {
-    "test": "npx @sourcemeta/jsonschema test test/ --resolve schemas --verbose",
-    "validate:schemas": "npx @sourcemeta/jsonschema metaschema schemas --verbose",
-    "validate:lint": "npx @sourcemeta/jsonschema lint schemas --verbose"
-  },
-  "author": "",
+  "private": true,
   "license": "MIT",
-  "dependencies": {
-    "@sourcemeta/jsonschema": "15.6.0"
-  }
+  "workspaces": [
+    "packages/*"
+  ]
 }

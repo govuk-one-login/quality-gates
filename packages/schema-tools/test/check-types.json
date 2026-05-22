@@ -1,5 +1,5 @@
 {
-  "target": "../schemas/schema.json",
+  "target": "../../../schemas/schema.json",
   "$comment": "Check type tests",
   "tests": [
     {
