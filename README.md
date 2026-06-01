@@ -1,47 +1,92 @@
-# Quality Gates
+# Quality Gates Schema
+
+[![Schema Tests](https://github.com/govuk-one-login/quality-gates/actions/workflows/schema.yml/badge.svg)](https://github.com/govuk-one-login/quality-gates/actions/workflows/schema.yml)
+[![Quality](https://github.com/govuk-one-login/quality-gates/actions/workflows/quality.yml/badge.svg)](https://github.com/govuk-one-login/quality-gates/actions/workflows/quality.yml)
 
 Quality Gates are enforced milestones or checks between phases of deployment on the path to production.
 
-This repository contains schemas and utilities to be used for creating manifest files to annotate existing deployment pipelines for use with further analysis.
+This repository contains a JSON Schema and tooling for creating manifest files that annotate existing deployment pipelines for analysis and reporting.
 
-## Schema
+## Quick start
 
-This repository [contains a schema](./schemas/schema.json) that can be used to statically define quality gates. This is current targetted at pre-merge checks running in GitHub Actions, with incomplete support for other phases of the SDLC.
-
-### Example
+Reference the schema directly in your manifest file:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.1.0/schemas/schema.json",
+  "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.0.0/schemas/schema.json",
   "services": [
     {
-      "service-tag": "example-service-shortname",
+      "service-tag": "my-service",
       "quality-gates": [
         {
-          "check-types": [
-            "code style and linting",
-            "secret scanning"
-          ],
-          "config": {
-            "file": ".github/workflows/check-code-quality.yaml",
-            "name": "Run pre-commit",
-            "path": "jobs.run-pre-commit"
-          },
+          "check-types": ["unit"],
           "phase": "pre-merge",
-          "provider": "GitHub"
+          "provider": "GitHub",
+          "config": {
+            "file": ".github/workflows/test.yml",
+            "path": "jobs.test"
+          }
         }
       ]
     }
   ]
 }
-
 ```
 
-## Visualiser
+See the [examples/](./examples) directory for complete manifests covering trunk-based, gitflow, and library SDK branching strategies.
 
-This repository [contains a visualiser](./visualiser) that can be used to:
+## What's included
 
-- display a directed graph of the GitHub Actions and Jobs for a repository
-- display a debug table of quality gates and their enforcement.
+| Component                   | Description                                                      |
+|-----------------------------|------------------------------------------------------------------|
+| [schemas/](./schemas)       | JSON Schema definition for quality gate manifests                |
+| [examples/](./examples)     | Example manifest files for common branching strategies           |
+| [visualiser/](./visualiser) | Observable Framework app for viewing and analysing quality gates |
+| [test/](./test)             | Schema validation tests                                          |
 
-Note: The visualiser requires a token with ["Administration" repository permissions (read)](https://docs.github.com/en/rest/branches/branch-protection?apiVersion=2022-11-28)
+## Developing with the schema locally
+
+You'll need [Node.js](https://nodejs.org/en/) v18 or later.
+
+```shell
+git clone git@github.com:govuk-one-login/quality-gates.git
+cd quality-gates
+npm install
+```
+
+### Validate schemas
+
+```shell
+npm run validate:schemas
+npm run validate:lint
+```
+
+### Run schema tests
+
+```shell
+npm test
+```
+
+## Analysing the organisation using the visualiser
+
+See [visualiser/README.md](./visualiser/README.md).
+
+## Versioning
+
+This schema follows [semantic versioning](https://semver.org/). The schema URL includes a version tag:
+
+```
+https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.0.0/schemas/schema.json
+```
+
+- **Major** — breaking changes to the schema (removed fields, renamed enums)
+- **Minor** — backwards-compatible additions (new check-types, new phases)
+- **Patch** — documentation or tooling fixes
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on how to contribute.
+
+## Licence
+
+[MIT](./LICENSE)
