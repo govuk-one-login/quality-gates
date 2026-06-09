@@ -126,16 +126,8 @@
               "unit test coverage",
               "unit",
               "visual regression",
-              "vulnerability detection"
-            ]
-          },
-          {
-            "enum": [
-              "manual"
-            ]
-          },
-          {
-            "enum": [
+              "vulnerability detection",
+              "manual",
               "integration"
             ]
           }
