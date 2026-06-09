@@ -154,7 +154,7 @@
         "qualityGates": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/check"
+            "$ref": "#/$defs/quality-gate"
           }
         },
         "serviceTag": {
