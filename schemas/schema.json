@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "root",
-  "description": "",
+  "description": "An annotation of existing commands that are used as checks in quality gates for the GOVUK One Login programme",
   "examples": [
     {
       "services": [
