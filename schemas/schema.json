@@ -10,7 +10,7 @@
   "$defs": {
     "check": {
       "properties": {
-        "check-types": {
+        "checkTypes": {
           "$ref": "#/$defs/check-type"
         },
         "phase": {
@@ -56,7 +56,7 @@
         }
       },
       "required": [
-        "check-types",
+        "checkTypes",
         "phase",
         "provider",
         "config"
@@ -127,17 +127,17 @@
     },
     "service": {
       "required": [
-        "quality-gates",
-        "service-tag"
+        "qualityGates",
+        "serviceTag"
       ],
       "properties": {
-        "quality-gates": {
+        "qualityGates": {
           "type": "array",
           "items": {
             "$ref": "#/$defs/check"
           }
         },
-        "service-tag": {
+        "serviceTag": {
           "type": "string"
         }
       }

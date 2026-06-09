@@ -30,10 +30,10 @@
       "data": {
         "services": [
           {
-            "service-tag": "generic-service",
-            "quality-gates": [
+            "serviceTag": "generic-service",
+            "qualityGates": [
               {
-                "check-types": ["unit"],
+                "checkTypes": ["unit"],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -53,10 +53,10 @@
       "data": {
         "services": [
           {
-            "service-tag": "generic-service-1",
-            "quality-gates": [
+            "serviceTag": "generic-service-1",
+            "qualityGates": [
               {
-                "check-types": ["code style and linting"],
+                "checkTypes": ["code style and linting"],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -68,10 +68,10 @@
             ]
           },
           {
-            "service-tag": "generic-service-2",
-            "quality-gates": [
+            "serviceTag": "generic-service-2",
+            "qualityGates": [
               {
-                "check-types": ["code style and linting"],
+                "checkTypes": ["code style and linting"],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -91,10 +91,10 @@
       "data": {
         "services": [
           {
-            "service-tag": "generic-service",
-            "quality-gates": [
+            "serviceTag": "generic-service",
+            "qualityGates": [
               {
-                "check-types": ["code style and linting"],
+                "checkTypes": ["code style and linting"],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -106,10 +106,10 @@
             ]
           },
           {
-            "service-tag": "generic-service",
-            "quality-gates": [
+            "serviceTag": "generic-service",
+            "qualityGates": [
               {
-                "check-types": ["code style and linting"],
+                "checkTypes": ["code style and linting"],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -129,10 +129,10 @@
       "data": {
         "services": [
           {
-            "service-tag": "generic-service",
-            "quality-gates": [
+            "serviceTag": "generic-service",
+            "qualityGates": [
               {
-                "check-types": ["unknown"],
+                "checkTypes": ["unknown"],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {

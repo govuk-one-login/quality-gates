@@ -8,10 +8,10 @@
       "data": {
         "services": [
           {
-            "service-tag": "generic-service",
-            "quality-gates": [
+            "serviceTag": "generic-service",
+            "qualityGates": [
               {
-                "check-types": ["integration"],
+                "checkTypes": ["integration"],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -31,10 +31,10 @@
       "data": {
         "services": [
           {
-            "service-tag": "generic-service",
-            "quality-gates": [
+            "serviceTag": "generic-service",
+            "qualityGates": [
               {
-                "check-types": ["component"],
+                "checkTypes": ["component"],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -54,10 +54,10 @@
       "data": {
         "services": [
           {
-            "service-tag": "generic-service",
-            "quality-gates": [
+            "serviceTag": "generic-service",
+            "qualityGates": [
               {
-                "check-types": ["product"],
+                "checkTypes": ["product"],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -77,10 +77,10 @@
       "data": {
         "services": [
           {
-            "service-tag": "generic-service",
-            "quality-gates": [
+            "serviceTag": "generic-service",
+            "qualityGates": [
               {
-                "check-types": ["neighbour"],
+                "checkTypes": ["neighbour"],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -100,10 +100,10 @@
       "data": {
         "services": [
           {
-            "service-tag": "generic-service",
-            "quality-gates": [
+            "serviceTag": "generic-service",
+            "qualityGates": [
               {
-                "check-types": ["e2e"],
+                "checkTypes": ["e2e"],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
