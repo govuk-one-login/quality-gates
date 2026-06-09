@@ -8,10 +8,10 @@
       "data": {
         "services": [
           {
-            "service-tag": "generic-service",
-            "quality-gates": [
+            "serviceTag": "generic-service",
+            "qualityGates": [
               {
-                "check-types": ["unit"],
+                "checkTypes": ["unit"],
                 "provider": "GitHub",
                 "phase": "pre-develop",
                 "config": {
@@ -21,7 +21,7 @@
                 }
               },
               {
-                "check-types": ["unit"],
+                "checkTypes": ["unit"],
                 "provider": "GitHub",
                 "phase": "develop",
                 "config": {
@@ -31,7 +31,7 @@
                 }
               },
               {
-                "check-types": ["unit"],
+                "checkTypes": ["unit"],
                 "provider": "GitHub",
                 "phase": "pre-release",
                 "config": {
@@ -41,7 +41,7 @@
                 }
               },
               {
-                "check-types": ["unit"],
+                "checkTypes": ["unit"],
                 "provider": "GitHub",
                 "phase": "release",
                 "config": {
@@ -51,7 +51,7 @@
                 }
               },
               {
-                "check-types": ["unit"],
+                "checkTypes": ["unit"],
                 "provider": "GitHub",
                 "phase": "main",
                 "config": {

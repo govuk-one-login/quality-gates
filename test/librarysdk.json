@@ -8,10 +8,10 @@
       "data": {
         "services": [
           {
-            "service-tag": "generic-library",
-            "quality-gates": [
+            "serviceTag": "generic-library",
+            "qualityGates": [
               {
-                "check-types": ["unit"],
+                "checkTypes": ["unit"],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -21,7 +21,7 @@
                 }
               },
               {
-                "check-types": ["unit"],
+                "checkTypes": ["unit"],
                 "provider": "GitHub",
                 "phase": "pre-release",
                 "config": {
