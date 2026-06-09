@@ -1,6 +1,6 @@
 {
   "target": "../schemas/schema.json",
-  "$comment": "GitHub GitFlow tests",
+  "$comment": "GitHub Library SDK tests",
   "tests": [
     {
       "description": "Library",

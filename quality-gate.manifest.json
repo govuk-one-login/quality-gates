@@ -1,11 +1,11 @@
 {
-  "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.4.0/schemas/schema.json",
+  "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.6.0/schemas/schema.json",
   "services": [
     {
-      "service-tag": "quality-gates",
-      "quality-gates": [
+      "serviceTag": "quality-gates",
+      "qualityGates": [
         {
-          "check-types": ["unit"],
+          "checkTypes": ["unit"],
           "phase": "pre-merge",
           "provider": "GitHub",
           "config": {
@@ -14,7 +14,7 @@
           }
         },
         {
-          "check-types": ["unit"],
+          "checkTypes": ["unit"],
           "phase": "pre-merge",
           "provider": "GitHub",
           "config": {
@@ -23,7 +23,7 @@
           }
         },
         {
-          "check-types": ["code quality"],
+          "checkTypes": ["code quality"],
           "phase": "pre-merge",
           "provider": "GitHub",
           "config": {
@@ -32,7 +32,7 @@
           }
         },
         {
-          "check-types": ["code style and linting"],
+          "checkTypes": ["code style and linting"],
           "phase": "pre-merge",
           "provider": "GitHub",
           "config": {
