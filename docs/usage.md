@@ -36,10 +36,11 @@ Most JSON editors support `$schema` for autocompletion and validation. For VS Co
 
 A manifest contains an array of **services**, each with:
 
-| Field           | Type   | Description                      |
-|-----------------|--------|----------------------------------|
-| `serviceTag`    | string | Short identifier for the service |
-| `quality-gates` | array  | List of quality gate checks      |
+| Field           | Type   | Description                                                  |
+|-----------------|--------|--------------------------------------------------------------|
+| `serviceTag`    | string | Short identifier for the service                             |
+| `promotionType` | string | Promotion strategy (`securePipelines`, `gitFlow`, `library`) |
+| `qualityGates`  | array  | List of quality gate checks                                  |
 
 Each **quality gate** contains:
 
@@ -58,13 +59,13 @@ The schema supports the following check-type values:
 
 ### Phases
 
-Phases vary by branching strategy:
+Valid phases depend on the service's `promotionType`:
 
-| Strategy    | Phases                                                                     |
-|-------------|----------------------------------------------------------------------------|
-| Trunk-based | `pre-merge`, `pre-upload`, `build`, `staging`, `production`, `integration` |
-| Gitflow     | `pre-develop`, `develop`, `pre-release`, `release`, `main`                 |
-| Library SDK | `pre-merge`, `pre-release`                                                 |
+| `promotionType`    | Valid phases                                                               |
+|--------------------|----------------------------------------------------------------------------|
+| `securePipelines`  | `pre-merge`, `pre-upload`, `build`, `staging`, `production`, `integration` |
+| `gitFlow`          | `pre-develop`, `develop`, `pre-release`, `release`, `main`                 |
+| `library`          | `pre-merge`, `pre-release`                                                 |
 
 ### Config object
 

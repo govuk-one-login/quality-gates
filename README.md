@@ -17,6 +17,7 @@ Reference the schema directly in your manifest file:
   "services": [
     {
       "serviceTag": "my-service",
+      "promotionType": "securePipelines",
       "qualityGates": [
         {
           "checkTypes": ["unit"],

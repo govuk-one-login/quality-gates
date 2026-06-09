@@ -9,6 +9,7 @@
         "services": [
           {
             "serviceTag": "generic-library",
+            "promotionType": "library",
             "qualityGates": [
               {
                 "checkTypes": ["unit"],

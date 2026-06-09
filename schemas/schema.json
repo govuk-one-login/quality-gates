@@ -7,6 +7,7 @@
       "services": [
         {
           "serviceTag": "service-name",
+          "promotionType": "securePipelines",
           "qualityGates": [
             {
               "checkTypes": ["code style and linting"],
@@ -34,36 +35,7 @@
           "$ref": "#/$defs/check-type"
         },
         "phase": {
-          "items": {
-            "type": "string",
-            "oneOf": [
-            {
-              "enum": [
-                "pre-merge",
-                "pre-upload",
-                "build",
-                "staging",
-                "production",
-                "integration"
-              ]
-            },
-            {
-              "enum": [
-                "pre-develop",
-                "develop",
-                "pre-release",
-                "release",
-                "main"
-              ]
-            },
-            {
-              "enum": [
-                "pre-merge",
-                "pre-release"
-              ]
-            }
-          ]
-          }
+          "type": "string"
         },
         "provider": {
           "enum": [
@@ -140,7 +112,8 @@
     "service": {
       "required": [
         "qualityGates",
-        "serviceTag"
+        "serviceTag",
+        "promotionType"
       ],
       "properties": {
         "qualityGates": {
@@ -151,8 +124,86 @@
         },
         "serviceTag": {
           "type": "string"
+        },
+        "promotionType": {
+          "enum": [
+            "securePipelines",
+            "gitFlow",
+            "library"
+          ]
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "promotionType": {
+                "const": "securePipelines"
+              }
+            },
+            "required": ["promotionType"]
+          },
+          "then": {
+            "properties": {
+              "qualityGates": {
+                "items": {
+                  "properties": {
+                    "phase": {
+                      "enum": ["pre-merge", "pre-upload", "build", "staging", "production", "integration"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "promotionType": {
+                "const": "gitFlow"
+              }
+            },
+            "required": ["promotionType"]
+          },
+          "then": {
+            "properties": {
+              "qualityGates": {
+                "items": {
+                  "properties": {
+                    "phase": {
+                      "enum": ["pre-develop", "develop", "pre-release", "release", "main"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "promotionType": {
+                "const": "library"
+              }
+            },
+            "required": ["promotionType"]
+          },
+          "then": {
+            "properties": {
+              "qualityGates": {
+                "items": {
+                  "properties": {
+                    "phase": {
+                      "enum": ["pre-merge", "pre-release"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "services": {
       "type": "array",

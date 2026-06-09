@@ -9,6 +9,7 @@
         "services": [
           {
             "serviceTag": "generic-service",
+            "promotionType": "securePipelines",
             "qualityGates": [
               {
                 "checkTypes": ["integration"],
@@ -32,6 +33,7 @@
         "services": [
           {
             "serviceTag": "generic-service",
+            "promotionType": "securePipelines",
             "qualityGates": [
               {
                 "checkTypes": ["component"],
@@ -55,6 +57,7 @@
         "services": [
           {
             "serviceTag": "generic-service",
+            "promotionType": "securePipelines",
             "qualityGates": [
               {
                 "checkTypes": ["product"],
@@ -78,6 +81,7 @@
         "services": [
           {
             "serviceTag": "generic-service",
+            "promotionType": "securePipelines",
             "qualityGates": [
               {
                 "checkTypes": ["neighbour"],
@@ -101,6 +105,7 @@
         "services": [
           {
             "serviceTag": "generic-service",
+            "promotionType": "securePipelines",
             "qualityGates": [
               {
                 "checkTypes": ["e2e"],

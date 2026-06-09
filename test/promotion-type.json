@@ -1,0 +1,165 @@
+{
+  "target": "../schemas/schema.json",
+  "$comment": "promotionType conditional phase validation tests",
+  "tests": [
+    {
+      "description": "securePipelines with valid phase staging",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "qualityGates": [
+              {
+                "checkTypes": ["unit"],
+                "provider": "GitHub",
+                "phase": "staging",
+                "config": { "file": "test.yaml" }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "securePipelines with invalid phase develop",
+      "valid": false,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "qualityGates": [
+              {
+                "checkTypes": ["unit"],
+                "provider": "GitHub",
+                "phase": "develop",
+                "config": { "file": "test.yaml" }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "gitFlow with valid phase develop",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "gitFlow",
+            "qualityGates": [
+              {
+                "checkTypes": ["unit"],
+                "provider": "GitHub",
+                "phase": "develop",
+                "config": { "file": "test.yaml" }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "gitFlow with invalid phase staging",
+      "valid": false,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "gitFlow",
+            "qualityGates": [
+              {
+                "checkTypes": ["unit"],
+                "provider": "GitHub",
+                "phase": "staging",
+                "config": { "file": "test.yaml" }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "library with valid phase pre-merge",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "library",
+            "qualityGates": [
+              {
+                "checkTypes": ["unit"],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": { "file": "test.yaml" }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "library with invalid phase build",
+      "valid": false,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "library",
+            "qualityGates": [
+              {
+                "checkTypes": ["unit"],
+                "provider": "GitHub",
+                "phase": "build",
+                "config": { "file": "test.yaml" }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "service without promotionType is invalid",
+      "valid": false,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "qualityGates": [
+              {
+                "checkTypes": ["unit"],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": { "file": "test.yaml" }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "service with unknown promotionType is invalid",
+      "valid": false,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "unknown",
+            "qualityGates": [
+              {
+                "checkTypes": ["unit"],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": { "file": "test.yaml" }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
