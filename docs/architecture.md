@@ -27,7 +27,8 @@ A quality gate is an enforced check that must pass before code progresses to the
 - A **type** describing what it checks (unit tests, linting, security scanning, etc.)
 - A **phase** indicating when in the SDLC it runs
 - A **provider** identifying the platform that executes it
-- A **config** pointing to where the check is defined
+- A **file** pointing to where the check is defined
+- An optional **path** identifying the specific job or step within the file
 
 #### Deployment strategy
 
@@ -55,9 +56,9 @@ These various usages are then annotated using the schema file to create a repres
 - Validation happens at authoring time (editor support) and in CI
 - Analysis and visualisation are separate concerns
 
-### JMESPath for config paths
+### JSONPath for locating checks
 
-The `config.path` field uses JMESPath-compatible expressions to identify specific nodes within workflow files (e.g., `jobs.run-tests`). This provides a standard way to reference nested YAML/JSON structures without coupling to a specific CI platform's object model.
+The `path` field uses JSONPath (RFC 9535) expressions to identify specific jobs or steps within workflow files (e.g., `jobs.run-tests` or `jobs.run-tests.steps[?@.name=='Run Tests']`). This provides a standard way to reference nested YAML/JSON structures without coupling to a specific CI platform's object model.
 
 ### Dogfooding
 
