@@ -12,7 +12,7 @@
             "promotionType": "library",
             "qualityGates": [
               {
-                "checkTypes": ["unit"],
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -22,7 +22,7 @@
                 }
               },
               {
-                "checkTypes": ["unit"],
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-release",
                 "config": {

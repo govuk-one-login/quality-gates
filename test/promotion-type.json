@@ -12,7 +12,7 @@
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkTypes": ["unit"],
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "staging",
                 "config": { "file": "test.yaml" }
@@ -32,7 +32,7 @@
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkTypes": ["unit"],
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "develop",
                 "config": { "file": "test.yaml" }
@@ -52,7 +52,7 @@
             "promotionType": "gitFlow",
             "qualityGates": [
               {
-                "checkTypes": ["unit"],
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "develop",
                 "config": { "file": "test.yaml" }
@@ -72,7 +72,7 @@
             "promotionType": "gitFlow",
             "qualityGates": [
               {
-                "checkTypes": ["unit"],
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "staging",
                 "config": { "file": "test.yaml" }
@@ -92,7 +92,7 @@
             "promotionType": "library",
             "qualityGates": [
               {
-                "checkTypes": ["unit"],
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": { "file": "test.yaml" }
@@ -112,7 +112,7 @@
             "promotionType": "library",
             "qualityGates": [
               {
-                "checkTypes": ["unit"],
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "build",
                 "config": { "file": "test.yaml" }
@@ -131,7 +131,7 @@
             "serviceTag": "service",
             "qualityGates": [
               {
-                "checkTypes": ["unit"],
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": { "file": "test.yaml" }
@@ -151,7 +151,7 @@
             "promotionType": "unknown",
             "qualityGates": [
               {
-                "checkTypes": ["unit"],
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": { "file": "test.yaml" }

@@ -6,7 +6,7 @@
       "promotionType": "library",
       "qualityGates": [
         {
-          "checkTypes": ["unit"],
+          "checkType": "unit",
           "phase": "pre-merge",
           "provider": "GitHub",
           "config": {
@@ -15,7 +15,7 @@
           }
         },
         {
-          "checkTypes": ["unit"],
+          "checkType": "unit",
           "phase": "pre-merge",
           "provider": "GitHub",
           "config": {
@@ -24,7 +24,7 @@
           }
         },
         {
-          "checkTypes": ["code quality"],
+          "checkType": "code quality",
           "phase": "pre-merge",
           "provider": "GitHub",
           "config": {
@@ -33,7 +33,7 @@
           }
         },
         {
-          "checkTypes": ["code style and linting"],
+          "checkType": "code style and linting",
           "phase": "pre-merge",
           "provider": "GitHub",
           "config": {

@@ -5,7 +5,7 @@
       "promotionType": "securePipelines",
       "qualityGates": [
         {
-          "checkTypes": ["code style and linting"],
+          "checkType": "code style and linting",
           "provider": "GitHub",
           "phase": "pre-merge",
           "config": {
@@ -14,7 +14,7 @@
           }
         },
         {
-          "checkTypes": ["code style and linting"],
+          "checkType": "code style and linting",
           "provider": "GitHub",
           "phase": "pre-merge",
           "config": {
@@ -23,7 +23,7 @@
           }
         },
         {
-          "checkTypes": ["code style and linting"],
+          "checkType": "code style and linting",
           "provider": "GitHub",
           "phase": "pre-merge",
           "config": {

@@ -12,7 +12,7 @@
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkTypes": ["unit"],
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": { "file": "test.yaml" }
@@ -32,7 +32,7 @@
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkTypes": ["unit"],
+                "checkType": "unit",
                 "phase": "pre-merge",
                 "config": { "file": "test.yaml" }
               }
@@ -51,13 +51,13 @@
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkTypes": ["unit"],
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": { "file": "test.yaml", "path": "jobs.test" }
               },
               {
-                "checkTypes": ["code quality"],
+                "checkType": "code quality",
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": { "file": "test.yaml", "path": "jobs.test" }
@@ -77,7 +77,7 @@
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkTypes": ["unit"],
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": { "file": "test.yaml", "path": "jobs.x.steps[?@.name=='Y']" }
@@ -97,13 +97,13 @@
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkTypes": ["unit"],
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": { "file": ".github/workflows/test.yml" }
               },
               {
-                "checkTypes": ["integration"],
+                "checkType": "integration",
                 "provider": "Stack Orchestrator",
                 "phase": "build",
                 "config": { "file": "infra/pipelines.tf" }

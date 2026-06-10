@@ -12,7 +12,7 @@
             "promotionType": "gitFlow",
             "qualityGates": [
               {
-                "checkTypes": ["unit"],
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-develop",
                 "config": {
@@ -22,7 +22,7 @@
                 }
               },
               {
-                "checkTypes": ["unit"],
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "develop",
                 "config": {
@@ -32,7 +32,7 @@
                 }
               },
               {
-                "checkTypes": ["unit"],
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-release",
                 "config": {
@@ -42,7 +42,7 @@
                 }
               },
               {
-                "checkTypes": ["unit"],
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "release",
                 "config": {
@@ -52,7 +52,7 @@
                 }
               },
               {
-                "checkTypes": ["unit"],
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "main",
                 "config": {

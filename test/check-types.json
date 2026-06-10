@@ -12,7 +12,7 @@
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkTypes": ["integration"],
+                "checkType": "integration",
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -36,7 +36,7 @@
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkTypes": ["component"],
+                "checkType": "component",
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -60,7 +60,7 @@
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkTypes": ["product"],
+                "checkType": "product",
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -84,7 +84,7 @@
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkTypes": ["neighbour"],
+                "checkType": "neighbour",
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -108,7 +108,7 @@
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkTypes": ["e2e"],
+                "checkType": "e2e",
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {

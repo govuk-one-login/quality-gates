@@ -34,7 +34,7 @@
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkTypes": ["unit"],
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -58,7 +58,7 @@
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkTypes": ["code style and linting"],
+                "checkType": "code style and linting",
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -74,7 +74,7 @@
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkTypes": ["code style and linting"],
+                "checkType": "code style and linting",
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -98,7 +98,7 @@
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkTypes": ["code style and linting"],
+                "checkType": "code style and linting",
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -114,7 +114,7 @@
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkTypes": ["code style and linting"],
+                "checkType": "code style and linting",
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -138,7 +138,7 @@
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkTypes": ["unknown"],
+                "checkType": "unknown",
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {

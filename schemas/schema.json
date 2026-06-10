@@ -10,7 +10,7 @@
           "promotionType": "securePipelines",
           "qualityGates": [
             {
-              "checkTypes": ["code style and linting"],
+              "checkType": "code style and linting",
               "provider": "GitHub",
               "phase": "pre-merge",
               "config": {
@@ -33,8 +33,8 @@
     "check": {
       "type": "object",
       "properties": {
-        "checkTypes": {
-          "$ref": "#/$defs/check-types"
+        "checkType": {
+          "$ref": "#/$defs/check-type"
         },
         "phase": {
           "type": "string"
@@ -50,7 +50,7 @@
         }
       },
       "required": [
-        "checkTypes",
+        "checkType",
         "phase",
         "provider",
         "config"
@@ -99,12 +99,6 @@
         "manual",
         "integration"
       ]
-    },
-    "check-types": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/check-type"
-      }
     },
     "quality-gate": {
       "$ref": "#/$defs/check"
