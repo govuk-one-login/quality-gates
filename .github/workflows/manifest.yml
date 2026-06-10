@@ -1,0 +1,19 @@
+name: Manifest
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  validate-manifest:
+    name: Validate Manifest
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Install the JSON Schema CLI
+      uses: sourcemeta/jsonschema@v15.9.0
+
+    - name: Validate quality-gate.manifest.json
+      run: jsonschema validate schemas/schema.json quality-gate.manifest.json
