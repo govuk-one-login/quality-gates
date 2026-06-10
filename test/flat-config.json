@@ -1,0 +1,107 @@
+{
+  "target": "../schemas/schema.json",
+  "$comment": "Tests for flattened file/path at gate level (no config wrapper)",
+  "tests": [
+    {
+      "description": "gate with top-level file (no path) is valid",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "qualityGates": [
+              {
+                "checkType": "unit",
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "file": "test.yaml"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "gate with top-level file and path is valid",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "qualityGates": [
+              {
+                "checkType": "unit",
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "file": ".github/workflows/test.yml",
+                "path": "jobs.unit-tests"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "gate without file is invalid",
+      "valid": false,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "qualityGates": [
+              {
+                "checkType": "unit",
+                "provider": "GitHub",
+                "phase": "pre-merge"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "gate with old nested config object is invalid",
+      "valid": false,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "qualityGates": [
+              {
+                "checkType": "unit",
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": { "file": "test.yaml" }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "gate with JSONPath step filter in path is valid",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "qualityGates": [
+              {
+                "checkType": "unit",
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "file": ".github/workflows/test.yml",
+                "path": "jobs.run-tests.steps[?@.name=='Run Tests']"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
