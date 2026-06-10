@@ -23,6 +23,7 @@
       ]
     }
   ],
+  "type": "object",
   "properties": {
     "services": {
       "$ref": "#/$defs/services"
@@ -30,6 +31,7 @@
   },
   "$defs": {
     "check": {
+      "type": "object",
       "properties": {
         "checkTypes": {
           "$ref": "#/$defs/check-type"
@@ -116,6 +118,7 @@
       }
     },
     "secure-pipelines-phases": {
+      "type": "object",
       "properties": {
         "qualityGates": {
           "items": {
@@ -129,6 +132,7 @@
       }
     },
     "git-flow-phases": {
+      "type": "object",
       "properties": {
         "qualityGates": {
           "items": {
@@ -142,6 +146,7 @@
       }
     },
     "library-phases": {
+      "type": "object",
       "properties": {
         "qualityGates": {
           "items": {
@@ -155,6 +160,7 @@
       }
     },
     "service": {
+      "type": "object",
       "required": [
         "qualityGates",
         "serviceTag",
