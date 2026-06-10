@@ -6,7 +6,8 @@
   "scripts": {
     "test": "npx @sourcemeta/jsonschema test test/ --resolve schemas --verbose",
     "validate:schemas": "npx @sourcemeta/jsonschema metaschema schemas --verbose",
-    "validate:lint": "npx @sourcemeta/jsonschema lint schemas --verbose"
+    "validate:lint": "npx @sourcemeta/jsonschema lint schemas --verbose",
+    "validate:manifest": "npx @sourcemeta/jsonschema validate schemas/schema.json quality-gate.manifest.json"
   },
   "author": "",
   "license": "MIT",
