@@ -9,6 +9,7 @@
         "services": [
           {
             "serviceTag": "generic-service",
+            "promotionType": "gitFlow",
             "qualityGates": [
               {
                 "checkTypes": ["unit"],

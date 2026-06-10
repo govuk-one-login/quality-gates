@@ -29,19 +29,19 @@ A quality gate is an enforced check that must pass before code progresses to the
 - A **provider** identifying the platform that executes it
 - A **config** pointing to where the check is defined
 
-### Branching strategy models
+#### Deployment strategy
 
-The schema supports three branching strategy models, each with different phase definitions:
+The schema supports three deployment strategy models, each with different phase definitions. The `promotionType` property on a service determines which phases are valid:
 
-| Model           | Use case                               | Phases                                                              |
-|-----------------|----------------------------------------|---------------------------------------------------------------------|
-| **Trunk-based** | Teams deploying continuously from main | pre-merge → pre-upload → build → staging → production → integration |
-| **Gitflow**     | Teams using develop/release branches   | pre-develop → develop → pre-release → release → main                |
-| **Library SDK** | Teams publishing packages              | pre-merge → pre-release                                             |
+| `promotionType`    | Use case                               | Phases                                                              |
+|--------------------|----------------------------------------|---------------------------------------------------------------------|
+| `securePipelines`  | Teams deploying continuously from main | pre-merge → pre-upload → build → staging → production → integration |
+| `gitFlow`          | Teams using develop/release branches   | pre-develop → develop → pre-release → release → main                |
+| `library`          | Teams publishing packages              | pre-merge → pre-release                                             |
 
 ### Check type taxonomy
 
-Check types are drawn from prior analyis work within the GOV.UK One Login programme. They represent categories of verification, not specific tools. For example, `unit` covers any unit testing framework, and `secret scanning` covers any tool that detects secrets.
+Check types are drawn from prior analysis work within the GOV.UK One Login programme. They represent categories of verification, not specific tools. For example, `unit` covers any unit testing framework, and `secret scanning` covers any tool that detects secrets.
 
 ## Design decisions
 

@@ -31,6 +31,7 @@
         "services": [
           {
             "serviceTag": "generic-service",
+            "promotionType": "securePipelines",
             "qualityGates": [
               {
                 "checkTypes": ["unit"],
@@ -54,6 +55,7 @@
         "services": [
           {
             "serviceTag": "generic-service-1",
+            "promotionType": "securePipelines",
             "qualityGates": [
               {
                 "checkTypes": ["code style and linting"],
@@ -69,6 +71,7 @@
           },
           {
             "serviceTag": "generic-service-2",
+            "promotionType": "securePipelines",
             "qualityGates": [
               {
                 "checkTypes": ["code style and linting"],
@@ -92,6 +95,7 @@
         "services": [
           {
             "serviceTag": "generic-service",
+            "promotionType": "securePipelines",
             "qualityGates": [
               {
                 "checkTypes": ["code style and linting"],
@@ -107,6 +111,7 @@
           },
           {
             "serviceTag": "generic-service",
+            "promotionType": "securePipelines",
             "qualityGates": [
               {
                 "checkTypes": ["code style and linting"],
@@ -130,6 +135,7 @@
         "services": [
           {
             "serviceTag": "generic-service",
+            "promotionType": "securePipelines",
             "qualityGates": [
               {
                 "checkTypes": ["unknown"],

@@ -3,6 +3,7 @@
   "services": [
     {
       "serviceTag": "quality-gates",
+      "promotionType": "library",
       "qualityGates": [
         {
           "checkTypes": ["unit"],

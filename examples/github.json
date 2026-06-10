@@ -2,6 +2,7 @@
   "services": [
     {
       "serviceTag": "service-name",
+      "promotionType": "securePipelines",
       "qualityGates": [
         {
           "checkTypes": ["code style and linting"],
