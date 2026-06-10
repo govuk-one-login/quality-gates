@@ -15,7 +15,7 @@
                 "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "staging",
-                "config": { "file": "test.yaml" }
+                "file": "test.yaml"
               }
             ]
           }
@@ -35,7 +35,7 @@
                 "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "develop",
-                "config": { "file": "test.yaml" }
+                "file": "test.yaml"
               }
             ]
           }
@@ -55,7 +55,7 @@
                 "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "develop",
-                "config": { "file": "test.yaml" }
+                "file": "test.yaml"
               }
             ]
           }
@@ -75,7 +75,7 @@
                 "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "staging",
-                "config": { "file": "test.yaml" }
+                "file": "test.yaml"
               }
             ]
           }
@@ -95,7 +95,7 @@
                 "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": { "file": "test.yaml" }
+                "file": "test.yaml"
               }
             ]
           }
@@ -115,7 +115,7 @@
                 "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "build",
-                "config": { "file": "test.yaml" }
+                "file": "test.yaml"
               }
             ]
           }
@@ -134,7 +134,7 @@
                 "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": { "file": "test.yaml" }
+                "file": "test.yaml"
               }
             ]
           }
@@ -154,7 +154,7 @@
                 "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": { "file": "test.yaml" }
+                "file": "test.yaml"
               }
             ]
           }

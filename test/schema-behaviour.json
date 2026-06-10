@@ -15,7 +15,7 @@
                 "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": { "file": "test.yaml" }
+                "file": "test.yaml"
               }
             ]
           }
@@ -34,7 +34,7 @@
               {
                 "checkType": "unit",
                 "phase": "pre-merge",
-                "config": { "file": "test.yaml" }
+                "file": "test.yaml"
               }
             ]
           }
@@ -54,13 +54,15 @@
                 "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": { "file": "test.yaml", "path": "jobs.test" }
+                "file": "test.yaml",
+                "path": "jobs.test"
               },
               {
                 "checkType": "code quality",
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": { "file": "test.yaml", "path": "jobs.test" }
+                "file": "test.yaml",
+                "path": "jobs.test"
               }
             ]
           }
@@ -80,7 +82,8 @@
                 "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": { "file": "test.yaml", "path": "jobs.x.steps[?@.name=='Y']" }
+                "file": "test.yaml",
+                "path": "jobs.x.steps[?@.name=='Y']"
               }
             ]
           }
@@ -100,13 +103,13 @@
                 "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": { "file": ".github/workflows/test.yml" }
+                "file": ".github/workflows/test.yml"
               },
               {
                 "checkType": "integration",
                 "provider": "Stack Orchestrator",
                 "phase": "build",
-                "config": { "file": "infra/pipelines.tf" }
+                "file": "infra/pipelines.tf"
               }
             ]
           }

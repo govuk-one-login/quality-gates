@@ -37,11 +37,8 @@
                 "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/tests.yaml",
-                  "path": "jobs.unit",
-                  "jobName": "Run unit tests"
-                }
+                "file": ".github/workflows/tests.yaml",
+                "path": "jobs.unit"
               }
             ]
           }
@@ -61,11 +58,8 @@
                 "checkType": "code style and linting",
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/check-code-quality.yaml",
-                  "path": "jobs.pre-commit",
-                  "name": "Run pre-commit"
-                }
+                "file": ".github/workflows/check-code-quality.yaml",
+                "path": "jobs.pre-commit"
               }
             ]
           },
@@ -77,11 +71,8 @@
                 "checkType": "code style and linting",
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/check-code-quality.yaml",
-                  "path": "jobs.pre-commit",
-                  "name": "Run pre-commit"
-                }
+                "file": ".github/workflows/check-code-quality.yaml",
+                "path": "jobs.pre-commit"
               }
             ]
           }
@@ -101,11 +92,8 @@
                 "checkType": "code style and linting",
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/check-code-quality.yaml",
-                  "path": "jobs.pre-commit",
-                  "name": "Run pre-commit"
-                }
+                "file": ".github/workflows/check-code-quality.yaml",
+                "path": "jobs.pre-commit"
               }
             ]
           },
@@ -117,11 +105,8 @@
                 "checkType": "code style and linting",
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/check-code-quality.yaml",
-                  "path": "jobs.pre-commit",
-                  "name": "Run pre-commit"
-                }
+                "file": ".github/workflows/check-code-quality.yaml",
+                "path": "jobs.pre-commit"
               }
             ]
           }
@@ -141,11 +126,8 @@
                 "checkType": "unknown",
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/check-code-quality.yaml",
-                  "path": "jobs.pre-commit",
-                  "name": "Run pre-commit"
-                }
+                "file": ".github/workflows/check-code-quality.yaml",
+                "path": "jobs.pre-commit"
               }
             ]
           }

@@ -15,7 +15,7 @@
                 "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": { "file": "test.yaml" }
+                "file": "test.yaml"
               }
             ]
           }
@@ -35,7 +35,7 @@
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": { "file": "test.yaml" }
+                "file": "test.yaml"
               }
             ]
           }
@@ -55,7 +55,7 @@
                 "checkType": "unknown",
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": { "file": "test.yaml" }
+                "file": "test.yaml"
               }
             ]
           }

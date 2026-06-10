@@ -13,10 +13,8 @@
               "checkType": "code style and linting",
               "provider": "GitHub",
               "phase": "pre-merge",
-              "config": {
-                "file": ".github/workflows/check-code-quality.yaml",
-                "name": "Run pre-commit"
-              }
+              "file": ".github/workflows/check-code-quality.yaml",
+              "path": "jobs.pre-commit"
             }
           ]
         }
@@ -45,29 +43,18 @@
             "Stack Orchestrator"
           ]
         },
-        "config": {
-          "$ref": "#/$defs/check-config"
+        "file": {
+          "type": "string"
+        },
+        "path": {
+          "description": "JSONPath (RFC 9535) expression identifying the job or step",
+          "type": "string"
         }
       },
       "required": [
         "checkType",
         "phase",
         "provider",
-        "config"
-      ]
-    },
-    "check-config": {
-      "type": "object",
-      "properties": {
-        "file": {
-          "type": "string"
-        },
-        "path": {
-          "description": "JMESPath compatible expression to identify relevant property or node",
-          "type": "string"
-        }
-      },
-      "required": [
         "file"
       ]
     },

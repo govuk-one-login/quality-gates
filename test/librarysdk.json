@@ -15,21 +15,15 @@
                 "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/tests.yaml",
-                  "path": "jobs.unit",
-                  "jobName": "Run unit tests"
-                }
+                "file": ".github/workflows/tests.yaml",
+                "path": "jobs.unit"
               },
               {
                 "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-release",
-                "config": {
-                  "file": ".github/workflows/tests.yaml",
-                  "path": "jobs.unit",
-                  "jobName": "Run unit tests"
-                }
+                "file": ".github/workflows/tests.yaml",
+                "path": "jobs.unit"
               }
             ]
           }
