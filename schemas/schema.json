@@ -34,7 +34,7 @@
       "type": "object",
       "properties": {
         "checkTypes": {
-          "$ref": "#/$defs/check-type"
+          "$ref": "#/$defs/check-types"
         },
         "phase": {
           "type": "string"
@@ -72,40 +72,38 @@
       ]
     },
     "check-type": {
+      "description": "A quality check category as documented, plus emergent checks",
+      "enum": [
+        "accessibility",
+        "canary",
+        "code quality",
+        "code style and linting",
+        "component",
+        "contract",
+        "cross service integration",
+        "data compatibility",
+        "e2e",
+        "neighbour",
+        "new feature",
+        "product",
+        "regression",
+        "secret scanning",
+        "sensitive data scanning",
+        "smoke",
+        "stack",
+        "system",
+        "unit test coverage",
+        "unit",
+        "visual regression",
+        "vulnerability detection",
+        "manual",
+        "integration"
+      ]
+    },
+    "check-types": {
       "type": "array",
-      "description": "List of quality checks as documented, plus emergent checks",
       "items": {
-        "type": "string",
-        "oneOf": [
-          {
-            "enum": [
-              "accessibility",
-              "canary",
-              "code quality",
-              "code style and linting",
-              "component",
-              "contract",
-              "cross service integration",
-              "data compatibility",
-              "e2e",
-              "neighbour",
-              "new feature",
-              "product",
-              "regression",
-              "secret scanning",
-              "sensitive data scanning",
-              "smoke",
-              "stack",
-              "system",
-              "unit test coverage",
-              "unit",
-              "visual regression",
-              "vulnerability detection",
-              "manual",
-              "integration"
-            ]
-          }
-        ]
+        "$ref": "#/$defs/check-type"
       }
     },
     "quality-gate": {
