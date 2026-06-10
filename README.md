@@ -16,10 +16,10 @@ Reference the schema directly in your manifest file:
   "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.0.0/schemas/schema.json",
   "services": [
     {
-      "service-tag": "my-service",
-      "quality-gates": [
+      "serviceTag": "my-service",
+      "qualityGates": [
         {
-          "check-types": ["unit"],
+          "checkTypes": ["unit"],
           "phase": "pre-merge",
           "provider": "GitHub",
           "config": {

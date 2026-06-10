@@ -38,7 +38,7 @@ A manifest contains an array of **services**, each with:
 
 | Field           | Type   | Description                      |
 |-----------------|--------|----------------------------------|
-| `service-tag`   | string | Short identifier for the service |
+| `serviceTag`    | string | Short identifier for the service |
 | `quality-gates` | array  | List of quality gate checks      |
 
 Each **quality gate** contains:
