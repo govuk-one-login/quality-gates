@@ -109,6 +109,51 @@
     "quality-gate": {
       "$ref": "#/$defs/check"
     },
+    "quality-gates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/quality-gate"
+      }
+    },
+    "secure-pipelines-phases": {
+      "properties": {
+        "qualityGates": {
+          "items": {
+            "properties": {
+              "phase": {
+                "enum": ["pre-merge", "pre-upload", "build", "staging", "production", "integration"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "git-flow-phases": {
+      "properties": {
+        "qualityGates": {
+          "items": {
+            "properties": {
+              "phase": {
+                "enum": ["pre-develop", "develop", "pre-release", "release", "main"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "library-phases": {
+      "properties": {
+        "qualityGates": {
+          "items": {
+            "properties": {
+              "phase": {
+                "enum": ["pre-merge", "pre-release"]
+              }
+            }
+          }
+        }
+      }
+    },
     "service": {
       "required": [
         "qualityGates",
@@ -117,10 +162,7 @@
       ],
       "properties": {
         "qualityGates": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/quality-gate"
-          }
+          "$ref": "#/$defs/quality-gates"
         },
         "serviceTag": {
           "type": "string"
@@ -144,17 +186,7 @@
             "required": ["promotionType"]
           },
           "then": {
-            "properties": {
-              "qualityGates": {
-                "items": {
-                  "properties": {
-                    "phase": {
-                      "enum": ["pre-merge", "pre-upload", "build", "staging", "production", "integration"]
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/$defs/secure-pipelines-phases"
           }
         },
         {
@@ -167,17 +199,7 @@
             "required": ["promotionType"]
           },
           "then": {
-            "properties": {
-              "qualityGates": {
-                "items": {
-                  "properties": {
-                    "phase": {
-                      "enum": ["pre-develop", "develop", "pre-release", "release", "main"]
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/$defs/git-flow-phases"
           }
         },
         {
@@ -190,17 +212,7 @@
             "required": ["promotionType"]
           },
           "then": {
-            "properties": {
-              "qualityGates": {
-                "items": {
-                  "properties": {
-                    "phase": {
-                      "enum": ["pre-merge", "pre-release"]
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/$defs/library-phases"
           }
         }
       ]
