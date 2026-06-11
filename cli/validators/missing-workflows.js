@@ -1,8 +1,8 @@
 export function findMissingWorkflows(data) {
-  const workflowNames = new Set(data.workflows.entries.map((e) => e.name));
+  const workflowNames = new Set(data.workflows.map((w) => w.name));
   const available = [...workflowNames];
 
-  return data.manifest.text.services.flatMap((s) => {
+  return data.manifest.services.flatMap((s) => {
     const service = s.serviceTag || s["service-tag"];
     const gates = s.qualityGates || s["quality-gates"] || [];
     return gates

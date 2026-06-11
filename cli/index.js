@@ -2,7 +2,8 @@
 import { existsSync } from "node:fs";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { loadManifestAndWorkflows } from "./filesystem.js";
+import { loadManifest } from "./middleware/load-manifest.js";
+import { loadWorkflows } from "./middleware/load-workflows.js";
 import { findMissingWorkflows } from "./validators/missing-workflows.js";
 import { findMismatchedJobs } from "./validators/mismatched-jobs.js";
 import { formatText } from "./formatters/text.js";
@@ -22,12 +23,12 @@ const cli = yargs(hideBin(process.argv))
       });
     },
     (argv) => {
-      const data = loadManifestAndWorkflows(argv.directory);
-      if (!data.manifest.text) {
+      if (!argv.manifest) {
         console.error("No quality-gate.manifest.json found in", argv.directory);
         process.exitCode = 2;
         return;
       }
+      const data = { manifest: argv.manifest, workflows: argv.workflows };
       const errors = [
         ...findMissingWorkflows(data),
         ...findMismatchedJobs(data),
@@ -37,6 +38,7 @@ const cli = yargs(hideBin(process.argv))
       process.exitCode = errors.length ? 1 : 0;
     }
   )
+  .middleware([loadManifest, loadWorkflows])
   .option("format", {
     choices: ["text", "json"],
     default: "text",

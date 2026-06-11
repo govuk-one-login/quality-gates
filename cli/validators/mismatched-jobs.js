@@ -1,12 +1,9 @@
 export function findMismatchedJobs(data) {
   const workflowJobs = new Map(
-    data.workflows.entries.map(({ name, object }) => [
-      name,
-      Object.keys(object.text.jobs ?? {}),
-    ])
+    data.workflows.map(({ name, jobs }) => [name, Object.keys(jobs)])
   );
 
-  return data.manifest.text.services.flatMap((s) => {
+  return data.manifest.services.flatMap((s) => {
     const service = s.serviceTag || s["service-tag"];
     const gates = s.qualityGates || s["quality-gates"] || [];
     return gates

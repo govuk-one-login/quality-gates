@@ -6,14 +6,12 @@ describe("findMissingWorkflows", () => {
   it("returns empty array when all workflows exist", () => {
     const data = {
       manifest: {
-        text: {
-          services: [{
-            serviceTag: "my-service",
-            qualityGates: [{ config: { file: ".github/workflows/test.yml" } }],
-          }],
-        },
+        services: [{
+          serviceTag: "my-service",
+          qualityGates: [{ config: { file: ".github/workflows/test.yml" } }],
+        }],
       },
-      workflows: { entries: [{ name: "test.yml", object: { text: {} } }] },
+      workflows: [{ name: "test.yml", jobs: {} }],
     };
     assert.deepEqual(findMissingWorkflows(data), []);
   });
@@ -21,14 +19,12 @@ describe("findMissingWorkflows", () => {
   it("returns error for missing workflow file", () => {
     const data = {
       manifest: {
-        text: {
-          services: [{
-            serviceTag: "my-service",
-            qualityGates: [{ config: { file: ".github/workflows/missing.yml" } }],
-          }],
-        },
+        services: [{
+          serviceTag: "my-service",
+          qualityGates: [{ config: { file: ".github/workflows/missing.yml" } }],
+        }],
       },
-      workflows: { entries: [{ name: "other.yml", object: { text: {} } }] },
+      workflows: [{ name: "other.yml", jobs: {} }],
     };
     const errors = findMissingWorkflows(data);
     assert.equal(errors.length, 1);
@@ -41,17 +37,15 @@ describe("findMissingWorkflows", () => {
   it("returns multiple errors for multiple missing files", () => {
     const data = {
       manifest: {
-        text: {
-          services: [{
-            serviceTag: "svc",
-            qualityGates: [
-              { config: { file: ".github/workflows/a.yml" } },
-              { config: { file: ".github/workflows/b.yml" } },
-            ],
-          }],
-        },
+        services: [{
+          serviceTag: "svc",
+          qualityGates: [
+            { config: { file: ".github/workflows/a.yml" } },
+            { config: { file: ".github/workflows/b.yml" } },
+          ],
+        }],
       },
-      workflows: { entries: [{ name: "c.yml", object: { text: {} } }] },
+      workflows: [{ name: "c.yml", jobs: {} }],
     };
     assert.equal(findMissingWorkflows(data).length, 2);
   });
