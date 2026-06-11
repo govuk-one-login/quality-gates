@@ -23,6 +23,11 @@ const cli = yargs(hideBin(process.argv))
     },
     (argv) => {
       const data = loadManifestAndWorkflows(argv.directory);
+      if (!data.manifest.text) {
+        console.error("No quality-gate.manifest.json found in", argv.directory);
+        process.exitCode = 2;
+        return;
+      }
       const errors = [
         ...findMissingWorkflows(data),
         ...findMismatchedJobs(data),
