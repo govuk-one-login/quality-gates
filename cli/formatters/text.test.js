@@ -38,4 +38,34 @@ describe("formatText", () => {
     ];
     assert.match(formatText(errors), /Found 2 validation errors/);
   });
+
+  it("shows 'Did you mean' for close workflow match", () => {
+    const output = formatText([{
+      type: "missing-workflow",
+      service: "svc",
+      message: "",
+      details: { file: "check-pr.yml", available: ["pr-check.yml", "deploy.yml"] },
+    }]);
+    assert.match(output, /Did you mean: pr-check\.yml\?/);
+  });
+
+  it("does not show 'Did you mean' when no close match", () => {
+    const output = formatText([{
+      type: "missing-workflow",
+      service: "svc",
+      message: "",
+      details: { file: "totally-different.yml", available: ["foo.yml", "bar.yml"] },
+    }]);
+    assert.doesNotMatch(output, /Did you mean/);
+  });
+
+  it("shows 'Did you mean' for close job match", () => {
+    const output = formatText([{
+      type: "mismatched-job",
+      service: "svc",
+      message: "",
+      details: { path: "jobs.run-pre-commit", workflow: "ci.yml", available: ["pre-commit", "unit-tests"] },
+    }]);
+    assert.match(output, /Did you mean: jobs\.pre-commit\?/);
+  });
 });
