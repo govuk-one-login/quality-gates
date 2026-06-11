@@ -10,7 +10,7 @@
           "phase": "pre-merge",
           "provider": "GitHub",
           "config": {
-            "file": "./workflows/schema.yml",
+            "file": ".github/workflows/schema.yml",
             "path": "jobs.run-tests"
           }
         },
@@ -19,7 +19,7 @@
           "phase": "pre-merge",
           "provider": "GitHub",
           "config": {
-            "file": "./workflows/visualiser.yml",
+            "file": ".github/workflows/visualiser.yml",
             "path": "jobs.run-tests"
           }
         },
@@ -28,7 +28,7 @@
           "phase": "pre-merge",
           "provider": "GitHub",
           "config": {
-            "file": "./workflows/quality.yml",
+            "file": ".github/workflows/quality.yml",
             "path": "jobs.codeql"
           }
         },
@@ -37,7 +37,7 @@
           "phase": "pre-merge",
           "provider": "GitHub",
           "config": {
-            "file": "./workflows/quality.yml",
+            "file": ".github/workflows/quality.yml",
             "path": "jobs.pre-commit"
           }
         }
