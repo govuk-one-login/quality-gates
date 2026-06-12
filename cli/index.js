@@ -2,9 +2,11 @@
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import * as checkReferences from "./commands/check-references.js";
+import * as validate from "./commands/validate.js";
 
 const cli = yargs(hideBin(process.argv))
   .command(checkReferences)
+  .command(validate)
   .option("format", {
     choices: ["text", "json"],
     default: "text",
