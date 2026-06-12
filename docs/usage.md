@@ -20,6 +20,53 @@ Add a `$schema` property pointing to a tagged release:
 npx @sourcemeta/jsonschema validate ../quality-gates/schemas/schema.json  quality-gate.manifest.json
 ```
 
+## CLI tool
+
+The `cli/` directory provides a purpose-built tool for working with quality gate manifests. Install dependencies with `npm install` in the `cli/` directory.
+
+### Commands
+
+#### `validate`
+
+Validates a manifest file against its JSON Schema. By default it reads the `$schema` field from the manifest to determine which schema to use. Remote schema URLs are downloaded automatically.
+
+```shell
+# Validate the manifest in the current directory
+node cli/index.js validate
+
+# Validate a specific file
+node cli/index.js validate path/to/quality-gate.manifest.json
+
+# Override the schema
+node cli/index.js validate . --schema https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.4.0/schemas/schema.json
+
+# Output as JSON
+node cli/index.js validate . --format json
+```
+
+#### `check-references`
+
+Validates that workflow files and jobs referenced in the manifest actually exist on disk.
+
+```shell
+# Check references in the current directory
+node cli/index.js check-references
+
+# Check a specific project
+node cli/index.js check-references ../my-repo
+
+# Output as JSON
+node cli/index.js check-references . --format json
+```
+
+### Exit codes
+
+| Code | Meaning                     |
+|------|-----------------------------|
+| 0    | Valid                       |
+| 1    | Validation errors found     |
+| 2    | Configuration or schema error |
+
 ### Editor integration
 
 Most JSON editors support `$schema` for autocompletion and validation. For VS Code, you can also configure `json.schemas` in settings:

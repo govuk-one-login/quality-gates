@@ -20,7 +20,10 @@ export function builder(yargs) {
     .option("schema", {
       describe: "Override schema URL or path (defaults to $schema field in manifest)",
       type: "string",
-    });
+    })
+    .example("$0 validate", "Validate manifest in current directory")
+    .example("$0 validate ../my-repo", "Validate manifest in another directory")
+    .example("$0 validate manifest.json --schema https://example.com/schema.json", "Validate with a custom schema URL");
 }
 
 export function handler(argv) {
