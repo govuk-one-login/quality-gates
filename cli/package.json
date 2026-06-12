@@ -10,6 +10,7 @@
     "test": "node --test './**/*.test.js'"
   },
   "dependencies": {
+    "@sourcemeta/jsonschema": "15.9.0",
     "yaml": "2.8.4",
     "yargs": "^18.0.0"
   }
