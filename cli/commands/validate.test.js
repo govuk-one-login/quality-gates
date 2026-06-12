@@ -61,6 +61,30 @@ describe("validate command", () => {
     rmSync(tmp, { recursive: true, force: true });
   });
 
+  it("errors when schema URL cannot be fetched", () => {
+    const tmp = mkdtempSync(join(tmpdir(), "qg-validate-test-"));
+    writeFileSync(join(tmp, "quality-gate.manifest.json"), JSON.stringify({
+      $schema: "https://example.com/nonexistent-schema-404.json",
+      services: [],
+    }));
+    const result = run([tmp]);
+    assert.equal(result.status, 2);
+    assert.match(result.stderr, /Failed to resolve schema/);
+    rmSync(tmp, { recursive: true, force: true });
+  });
+
+  it("errors when local schema file does not exist", () => {
+    const tmp = mkdtempSync(join(tmpdir(), "qg-validate-test-"));
+    writeFileSync(join(tmp, "quality-gate.manifest.json"), JSON.stringify({
+      $schema: "./nonexistent-schema.json",
+      services: [],
+    }));
+    const result = run([tmp]);
+    assert.equal(result.status, 2);
+    assert.match(result.stderr, /Schema file not found/);
+    rmSync(tmp, { recursive: true, force: true });
+  });
+
   it("validates a remote manifest (ipv-cri-uk-passport-api)", { timeout: 30000 }, () => {
     const tmp = mkdtempSync(join(tmpdir(), "qg-validate-remote-"));
     const url = "https://raw.githubusercontent.com/govuk-one-login/ipv-cri-uk-passport-api/refs/heads/main/quality-gate.manifest.json";

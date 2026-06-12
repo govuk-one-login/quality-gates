@@ -39,7 +39,21 @@ export function handler(argv) {
     return;
   }
 
-  const { schemaPath, cleanup } = resolveSchema(schemaRef, dirname(manifestPath));
+  let schemaPath, cleanup;
+  try {
+    ({ schemaPath, cleanup } = resolveSchema(schemaRef, dirname(manifestPath)));
+  } catch {
+    console.error(`Failed to resolve schema: ${schemaRef}`);
+    process.exitCode = 2;
+    return;
+  }
+
+  if (!existsSync(schemaPath)) {
+    cleanup();
+    console.error(`Schema file not found: ${schemaPath}`);
+    process.exitCode = 2;
+    return;
+  }
 
   try {
     const args = ["validate", schemaPath, manifestPath];
@@ -47,6 +61,12 @@ export function handler(argv) {
     if (argv.format === "json") args.push("--json");
 
     const result = spawnSync(binPath, args, { stdio: "pipe", encoding: "utf8" });
+
+    if (result.error) {
+      console.error("jsonschema binary not found. Run: npm install @sourcemeta/jsonschema");
+      process.exitCode = 2;
+      return;
+    }
 
     if (result.stdout) console.log(result.stdout.trimEnd());
     if (result.stderr) console.error(result.stderr.trimEnd());
