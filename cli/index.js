@@ -3,10 +3,12 @@ import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import * as checkReferences from "./commands/check-references.js";
 import * as validate from "./commands/validate.js";
+import * as cache from "./commands/cache.js";
 
 const cli = yargs(hideBin(process.argv))
   .command(checkReferences)
   .command(validate)
+  .command(cache)
   .option("format", {
     choices: ["text", "json"],
     default: "text",

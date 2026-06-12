@@ -1,18 +1,35 @@
 import { resolve, join } from "node:path";
-import { mkdtempSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, mkdirSync, rmSync } from "node:fs";
+import { homedir } from "node:os";
+import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
+
+export const CACHE_DIR = join(homedir(), ".cache", "quality-gate-tools");
 
 export function isUrl(ref) {
   return ref.startsWith("http://") || ref.startsWith("https://");
 }
 
-export function resolveSchema(ref, baseDir) {
+export function cachePathForUrl(url) {
+  const hash = createHash("sha256").update(url).digest("hex").slice(0, 16);
+  return join(CACHE_DIR, hash + ".json");
+}
+
+export function resolveSchema(ref, baseDir, { force = false } = {}) {
   if (isUrl(ref)) {
-    const tmp = mkdtempSync(join(tmpdir(), "qg-schema-"));
-    const schemaPath = join(tmp, "schema.json");
-    execFileSync("curl", ["-fsSL", "-o", schemaPath, ref], { stdio: "pipe" });
-    return { schemaPath, cleanup: () => rmSync(tmp, { recursive: true, force: true }) };
+    const cached = cachePathForUrl(ref);
+    if (!force && existsSync(cached)) {
+      return { schemaPath: cached, cleanup: () => {} };
+    }
+    mkdirSync(CACHE_DIR, { recursive: true });
+    execFileSync("curl", ["-fsSL", "-o", cached, ref], { stdio: "pipe" });
+    return { schemaPath: cached, cleanup: () => {} };
   }
   return { schemaPath: resolve(baseDir, ref), cleanup: () => {} };
+}
+
+export function clearCache() {
+  if (existsSync(CACHE_DIR)) {
+    rmSync(CACHE_DIR, { recursive: true, force: true });
+  }
 }
