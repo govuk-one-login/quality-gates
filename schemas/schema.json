@@ -41,8 +41,10 @@
         },
         "provider": {
           "enum": [
+            "CloudFormation",
             "GitHub",
-            "Stack Orchestrator"
+            "Stack Orchestration Tool",
+            "Terraform"
           ]
         },
         "config": {

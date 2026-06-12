@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { parseVersion, getTransforms, schemaUrl } from "./index.js";
 import { transform as v050 } from "./v0.5.0.js";
 import { transform as v070 } from "./v0.7.0.js";
+import { transform as v090 } from "./v0.9.0.js";
 
 describe("parseVersion", () => {
   it("extracts version from schema URL", () => {
@@ -18,17 +19,20 @@ describe("parseVersion", () => {
 
 describe("getTransforms", () => {
   it("returns all transforms for null version", () => {
-    assert.equal(getTransforms(null).length, 2);
+    assert.equal(getTransforms(null).length, 3);
   });
-  it("returns both transforms for v0.1.0", () => {
-    assert.equal(getTransforms([0, 1, 0]).length, 2);
+  it("returns all transforms for v0.1.0", () => {
+    assert.equal(getTransforms([0, 1, 0]).length, 3);
   });
-  it("returns only v0.7.0 for v0.5.0", () => {
+  it("returns v0.7.0 and v0.9.0 for v0.5.0", () => {
     const t = getTransforms([0, 5, 0]);
-    assert.equal(t.length, 1);
+    assert.equal(t.length, 2);
   });
-  it("returns nothing for v0.7.0", () => {
-    assert.equal(getTransforms([0, 7, 0]).length, 0);
+  it("returns only v0.9.0 for v0.7.0", () => {
+    assert.equal(getTransforms([0, 7, 0]).length, 1);
+  });
+  it("returns nothing for v0.9.0", () => {
+    assert.equal(getTransforms([0, 9, 0]).length, 0);
   });
 });
 
@@ -100,14 +104,32 @@ describe("v0.7.0 transform", () => {
   });
 });
 
+describe("v0.9.0 transform", () => {
+    it("infers Stack Orchestration Tool when StackOrchestrator provider present", () => {
+        const input = {
+            $schema: schemaUrl("0.7.0"),
+            services: [{ serviceTag: "svc", qualityGates: [{ checkTypes: ["unit"], phase: "develop", provider: "Stack Orchestrator", config: { file: "a.yml" } }] }],
+        };
+        assert.equal(v090(input).services[0].qualityGates[0].provider, "Stack Orchestration Tool");
+    });
+
+    it("preserves provider by default", () => {
+        const input = {
+            $schema: schemaUrl("0.7.0"),
+            services: [{ serviceTag: "svc", qualityGates: [{ checkTypes: ["unit"], phase: "pre-merge", provider: "GitHub", config: { file: "a.yml" } }] }],
+        };
+        assert.equal(v090(input).services[0].qualityGates[0].provider, "GitHub");
+    });
+});
+
 describe("full pipeline", () => {
-  it("upgrades v0.1.0 manifest to v0.7.0", () => {
+  it("upgrades v0.1.0 manifest to v0.9.0", () => {
     const input = {
       $schema: "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.1.0/schemas/schema.json",
       services: [{
-        "service-tag": "fraud-ticf-cri",
+        "service-tag": "example",
         "quality-gates": [
-          { "check-types": ["integration"], phase: "pre-merge", provider: "GitHub", config: { file: "test.yml" } },
+          { "check-types": ["integration"], phase: "pre-merge", provider: "Stack Orchestrator", config: { file: "test.yml" } },
         ],
       }],
     };
@@ -118,9 +140,10 @@ describe("full pipeline", () => {
       result = transform(result);
     }
 
-    assert.equal(result.$schema, schemaUrl("0.7.0"));
-    assert.equal(result.services[0].serviceTag, "fraud-ticf-cri");
+    assert.equal(result.$schema, schemaUrl("0.9.0"));
+    assert.equal(result.services[0].serviceTag, "example");
     assert.equal(result.services[0].promotionType, "securePipelines");
     assert.deepEqual(result.services[0].qualityGates[0].checkTypes, ["integration"]);
+    assert.deepEqual(result.services[0].qualityGates[0].provider, "Stack Orchestration Tool")
   });
 });

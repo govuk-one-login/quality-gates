@@ -1,0 +1,106 @@
+{
+  "target": "../schemas/schema.json",
+  "$comment": "provider validation tests",
+  "tests": [
+    {
+      "description": "valid provider GitHub",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "qualityGates": [
+              {
+                "checkTypes": ["unit"],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": { "file": "test.yaml" }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "valid provider Terraform",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "qualityGates": [
+              {
+                "checkTypes": ["unit"],
+                "provider": "Terraform",
+                "phase": "pre-merge",
+                "config": { "file": "test.yaml" }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "valid provider CloudFormation",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "qualityGates": [
+              {
+                "checkTypes": ["unit"],
+                "provider": "CloudFormation",
+                "phase": "pre-merge",
+                "config": { "file": "test.yaml" }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "valid provider Stack Orchestration Tool",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "qualityGates": [
+              {
+                "checkTypes": ["unit"],
+                "provider": "Stack Orchestration Tool",
+                "phase": "pre-merge",
+                "config": { "file": "test.yaml" }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "invalid provider Jenkins",
+      "valid": false,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "qualityGates": [
+              {
+                "checkTypes": ["unit"],
+                "provider": "Jenkins",
+                "phase": "pre-merge",
+                "config": { "file": "test.yaml" }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
