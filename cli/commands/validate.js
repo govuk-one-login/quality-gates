@@ -21,6 +21,12 @@ export function builder(yargs) {
       describe: "Override schema URL or path (defaults to $schema field in manifest)",
       type: "string",
     })
+    .option("force", {
+      alias: "f",
+      describe: "Force re-download of cached schemas",
+      type: "boolean",
+      default: false,
+    })
     .example("$0 validate", "Validate manifest in current directory")
     .example("$0 validate ../my-repo", "Validate manifest in another directory")
     .example("$0 validate manifest.json --schema https://example.com/schema.json", "Validate with a custom schema URL");
@@ -44,7 +50,7 @@ export function handler(argv) {
 
   let schemaPath, cleanup;
   try {
-    ({ schemaPath, cleanup } = resolveSchema(schemaRef, dirname(manifestPath)));
+    ({ schemaPath, cleanup } = resolveSchema(schemaRef, dirname(manifestPath), { force: argv.force }));
   } catch {
     console.error(`Failed to resolve schema: ${schemaRef}`);
     process.exitCode = 2;

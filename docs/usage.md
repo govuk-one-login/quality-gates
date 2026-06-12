@@ -59,6 +59,17 @@ node cli/index.js check-references ../my-repo
 node cli/index.js check-references . --format json
 ```
 
+#### `cache clear`
+
+Removes all cached schema downloads from `~/.cache/quality-gate-tools/`.
+
+```shell
+node cli/index.js cache clear
+```
+
+> **Note:** Schema URLs pointing to branches (e.g. `refs/heads/...`) may become stale.
+> Use `--force` on the validate command to re-download, or `cache clear` to wipe all cached schemas.
+
 ### Exit codes
 
 | Code | Meaning                     |
