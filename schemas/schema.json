@@ -10,13 +10,11 @@
           "promotionType": "securePipelines",
           "qualityGates": [
             {
-              "checkTypes": ["code style and linting"],
+              "checkType": "code style and linting",
               "provider": "GitHub",
               "phase": "pre-merge",
-              "config": {
-                "file": ".github/workflows/check-code-quality.yaml",
-                "name": "Run pre-commit"
-              }
+              "file": ".github/workflows/check-code-quality.yaml",
+              "path": "jobs.pre-commit"
             }
           ]
         }
@@ -33,8 +31,8 @@
     "check": {
       "type": "object",
       "properties": {
-        "checkTypes": {
-          "$ref": "#/$defs/check-types"
+        "checkType": {
+          "$ref": "#/$defs/check-type"
         },
         "phase": {
           "type": "string"
@@ -45,29 +43,18 @@
             "Stack Orchestrator"
           ]
         },
-        "config": {
-          "$ref": "#/$defs/check-config"
-        }
-      },
-      "required": [
-        "checkTypes",
-        "phase",
-        "provider",
-        "config"
-      ]
-    },
-    "check-config": {
-      "type": "object",
-      "properties": {
         "file": {
           "type": "string"
         },
         "path": {
-          "description": "JMESPath compatible expression to identify relevant property or node",
+          "description": "JSONPath (RFC 9535) expression identifying the job or step",
           "type": "string"
         }
       },
       "required": [
+        "checkType",
+        "phase",
+        "provider",
         "file"
       ]
     },
@@ -99,12 +86,6 @@
         "manual",
         "integration"
       ]
-    },
-    "check-types": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/check-type"
-      }
     },
     "quality-gate": {
       "$ref": "#/$defs/check"

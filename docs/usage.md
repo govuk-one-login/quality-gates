@@ -102,12 +102,23 @@ A manifest contains an array of **services**, each with:
 
 Each **quality gate** contains:
 
-| Field         | Type     | Description                                                 |
-|---------------|----------|-------------------------------------------------------------|
-| `check-types` | string[] | Categories of check (see [check types](#check-types))       |
-| `phase`       | string   | SDLC phase where the check runs                             |
-| `provider`    | string   | Platform running the check (`GitHub`, `Stack Orchestrator`) |
-| `config`      | object   | Location of the check definition                            |
+| Field        | Type   | Required | Description                                                          |
+|--------------|--------|----------|----------------------------------------------------------------------|
+| `checkType`  | string | Yes      | Category of check (see [check types](#check-types))                  |
+| `phase`      | string | Yes      | SDLC phase where the check runs                                      |
+| `provider`   | string | Yes      | Platform running the check (`GitHub`, `Stack Orchestrator`)          |
+| `file`       | string | Yes      | Path to the workflow or config file                                   |
+| `path`       | string | No       | JSONPath (RFC 9535) expression identifying the job or step           |
+
+### Path
+
+The `path` field uses JSONPath syntax to identify where a check is defined within a workflow file:
+
+- **Job level:** `jobs.<job_id>` — sufficient for single-action jobs
+- **Step level by name:** `jobs.<job_id>.steps[?@.name=='<step name>']` — for multi-step jobs
+- **Step level by id:** `jobs.<job_id>.steps[?@.id=='<step id>']` — when steps have an `id` field
+
+For non-workflow files (e.g., Stack Orchestrator `parameters.json` or Terraform `pipelines.tf`), `path` is omitted.
 
 ### Check types
 
@@ -124,10 +135,3 @@ Valid phases depend on the service's `promotionType`:
 | `securePipelines`  | `pre-merge`, `pre-upload`, `build`, `staging`, `production`, `integration` |
 | `gitFlow`          | `pre-develop`, `develop`, `pre-release`, `release`, `main`                 |
 | `library`          | `pre-merge`, `pre-release`                                                 |
-
-### Config object
-
-| Field  | Required | Description                                       |
-|--------|----------|---------------------------------------------------|
-| `file` | Yes      | Path to the workflow/config file                  |
-| `path` | No       | JMESPath expression identifying the relevant node |

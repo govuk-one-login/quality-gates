@@ -5,49 +5,39 @@
       "promotionType": "gitFlow",
       "qualityGates": [
         {
-          "checkTypes": ["unit"],
+          "checkType": "unit",
           "provider": "GitHub",
           "phase": "pre-develop",
-          "config": {
-            "file": ".github/workflows/lint.yaml",
-            "name": "Lint"
-          }
+          "file": ".github/workflows/lint.yaml",
+          "path": "jobs.lint"
         },
         {
-          "checkTypes": ["unit"],
+          "checkType": "unit",
           "provider": "GitHub",
           "phase": "develop",
-          "config": {
-            "file": ".github/workflows/lint.yaml",
-            "name": "Lint"
-          }
+          "file": ".github/workflows/lint.yaml",
+          "path": "jobs.lint"
         },
         {
-          "checkTypes": ["unit"],
+          "checkType": "unit",
           "provider": "GitHub",
           "phase": "pre-release",
-          "config": {
-            "file": ".github/workflows/lint.yaml",
-            "name": "Lint"
-          }
+          "file": ".github/workflows/lint.yaml",
+          "path": "jobs.lint"
         },
         {
-          "checkTypes": ["unit"],
+          "checkType": "unit",
           "provider": "GitHub",
           "phase": "pre-release",
-          "config": {
-            "file": ".github/workflows/lint.yaml",
-            "name": "Lint"
-          }
+          "file": ".github/workflows/lint.yaml",
+          "path": "jobs.lint"
         },
         {
-          "checkTypes": ["unit"],
+          "checkType": "unit",
           "provider": "GitHub",
           "phase": "main",
-          "config": {
-            "file": ".github/workflows/lint.yaml",
-            "name": "Lint"
-          }
+          "file": ".github/workflows/lint.yaml",
+          "path": "jobs.lint"
         }
       ]
     }

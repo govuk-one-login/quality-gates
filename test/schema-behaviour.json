@@ -1,106 +1,115 @@
 {
   "target": "../schemas/schema.json",
-  "$comment": "Check type tests",
+  "$comment": "Tests documenting current schema behaviour before refactoring",
   "tests": [
     {
-      "description": "Service with integration check - to be deprecated in the future",
+      "description": "path is optional in config",
       "valid": true,
       "data": {
         "services": [
           {
-            "serviceTag": "generic-service",
+            "serviceTag": "service",
             "promotionType": "securePipelines",
             "qualityGates": [
+              {
+                "checkType": "unit",
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "file": "test.yaml"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "provider is required on gate",
+      "valid": false,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "qualityGates": [
+              {
+                "checkType": "unit",
+                "phase": "pre-merge",
+                "file": "test.yaml"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "multiple gates with same config but different checkTypes",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "qualityGates": [
+              {
+                "checkType": "unit",
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "file": "test.yaml",
+                "path": "jobs.test"
+              },
+              {
+                "checkType": "code quality",
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "file": "test.yaml",
+                "path": "jobs.test"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "special characters in path are valid",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "qualityGates": [
+              {
+                "checkType": "unit",
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "file": "test.yaml",
+                "path": "jobs.x.steps[?@.name=='Y']"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "mixed providers in same service",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "qualityGates": [
+              {
+                "checkType": "unit",
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "file": ".github/workflows/test.yml"
+              },
               {
                 "checkType": "integration",
-                "provider": "GitHub",
-                "phase": "pre-merge",
-                "file": ".github/workflows/tests.yaml",
-                "path": "jobs.unit"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "description": "Service with component check",
-      "valid": true,
-      "data": {
-        "services": [
-          {
-            "serviceTag": "generic-service",
-            "promotionType": "securePipelines",
-            "qualityGates": [
-              {
-                "checkType": "component",
-                "provider": "GitHub",
-                "phase": "pre-merge",
-                "file": ".github/workflows/tests.yaml",
-                "path": "jobs.unit"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "description": "Service with product check",
-      "valid": true,
-      "data": {
-        "services": [
-          {
-            "serviceTag": "generic-service",
-            "promotionType": "securePipelines",
-            "qualityGates": [
-              {
-                "checkType": "product",
-                "provider": "GitHub",
-                "phase": "pre-merge",
-                "file": ".github/workflows/tests.yaml",
-                "path": "jobs.unit"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "description": "Service with neighbour check",
-      "valid": true,
-      "data": {
-        "services": [
-          {
-            "serviceTag": "generic-service",
-            "promotionType": "securePipelines",
-            "qualityGates": [
-              {
-                "checkType": "neighbour",
-                "provider": "GitHub",
-                "phase": "pre-merge",
-                "file": ".github/workflows/tests.yaml",
-                "path": "jobs.unit"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "description": "Service with e2e check",
-      "valid": true,
-      "data": {
-        "services": [
-          {
-            "serviceTag": "generic-service",
-            "promotionType": "securePipelines",
-            "qualityGates": [
-              {
-                "checkType": "e2e",
-                "provider": "GitHub",
-                "phase": "pre-merge",
-                "file": ".github/workflows/tests.yaml",
-                "path": "jobs.unit"
+                "provider": "Stack Orchestrator",
+                "phase": "build",
+                "file": "infra/pipelines.tf"
               }
             ]
           }

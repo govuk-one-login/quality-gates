@@ -5,31 +5,25 @@
       "promotionType": "securePipelines",
       "qualityGates": [
         {
-          "checkTypes": ["unit"],
+          "checkType": "unit",
           "provider": "GitHub",
           "phase": "pre-merge",
-          "config": {
-            "file": ".github/workflows/check-code-quality.yaml",
-            "name": "Run pre-commit"
-          }
+          "file": ".github/workflows/check-code-quality.yaml",
+          "path": "jobs.pre-commit"
         },
         {
-          "checkTypes": ["unit"],
+          "checkType": "unit",
           "provider": "GitHub",
           "phase": "pre-merge",
-          "config": {
-            "file": "",
-            "name": "Run Gitlint"
-          }
+          "file": ".github/workflows/check-code-quality.yaml",
+          "path": "jobs.gitlint"
         },
         {
-          "checkTypes": ["unit"],
+          "checkType": "unit",
           "provider": "GitHub",
           "phase": "pre-merge",
-          "config": {
-            "file": "",
-            "name": "Run Checkov"
-          }
+          "file": ".github/workflows/check-code-quality.yaml",
+          "path": "jobs.checkov"
         }
       ]
     }

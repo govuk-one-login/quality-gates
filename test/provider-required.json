@@ -1,0 +1,53 @@
+{
+  "target": "../schemas/schema.json",
+  "$comment": "Tests confirming provider is required per gate and mixed providers work",
+  "tests": [
+    {
+      "description": "gate without provider is invalid",
+      "valid": false,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "qualityGates": [
+              {
+                "checkType": "unit",
+                "phase": "pre-merge",
+                "file": ".github/workflows/test.yml",
+                "path": "jobs.test"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "mixed providers in same service is valid",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "qualityGates": [
+              {
+                "checkType": "unit",
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "file": ".github/workflows/test.yml",
+                "path": "jobs.test"
+              },
+              {
+                "checkType": "integration",
+                "provider": "Stack Orchestrator",
+                "phase": "build",
+                "file": "infra/pipelines.tf"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

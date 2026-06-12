@@ -20,13 +20,11 @@ Reference the schema directly in your manifest file:
       "promotionType": "securePipelines",
       "qualityGates": [
         {
-          "checkTypes": ["unit"],
-          "phase": "pre-merge",
+          "checkType": "unit",
           "provider": "GitHub",
-          "config": {
-            "file": ".github/workflows/test.yml",
-            "path": "jobs.test"
-          }
+          "phase": "pre-merge",
+          "file": ".github/workflows/test.yml",
+          "path": "jobs.test"
         }
       ]
     }

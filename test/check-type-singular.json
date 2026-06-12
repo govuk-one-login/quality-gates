@@ -1,0 +1,66 @@
+{
+  "target": "../schemas/schema.json",
+  "$comment": "Tests for singular checkType string (new format)",
+  "tests": [
+    {
+      "description": "gate with singular checkType string is valid",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "qualityGates": [
+              {
+                "checkType": "unit",
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "file": "test.yaml"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "gate with old checkTypes array is invalid",
+      "valid": false,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "qualityGates": [
+              {
+                "checkTypes": ["unit"],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "file": "test.yaml"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "gate with unknown checkType is invalid",
+      "valid": false,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "qualityGates": [
+              {
+                "checkType": "unknown",
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "file": "test.yaml"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

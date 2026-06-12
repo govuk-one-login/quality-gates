@@ -1,22 +1,21 @@
 {
   "target": "../schemas/schema.json",
-  "$comment": "Check type tests",
+  "$comment": "Tests for flattened file/path at gate level (no config wrapper)",
   "tests": [
     {
-      "description": "Service with integration check - to be deprecated in the future",
+      "description": "gate with top-level file (no path) is valid",
       "valid": true,
       "data": {
         "services": [
           {
-            "serviceTag": "generic-service",
+            "serviceTag": "service",
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkType": "integration",
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "file": ".github/workflows/tests.yaml",
-                "path": "jobs.unit"
+                "file": "test.yaml"
               }
             ]
           }
@@ -24,20 +23,20 @@
       }
     },
     {
-      "description": "Service with component check",
+      "description": "gate with top-level file and path is valid",
       "valid": true,
       "data": {
         "services": [
           {
-            "serviceTag": "generic-service",
+            "serviceTag": "service",
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkType": "component",
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "file": ".github/workflows/tests.yaml",
-                "path": "jobs.unit"
+                "file": ".github/workflows/test.yml",
+                "path": "jobs.unit-tests"
               }
             ]
           }
@@ -45,20 +44,18 @@
       }
     },
     {
-      "description": "Service with product check",
-      "valid": true,
+      "description": "gate without file is invalid",
+      "valid": false,
       "data": {
         "services": [
           {
-            "serviceTag": "generic-service",
+            "serviceTag": "service",
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkType": "product",
+                "checkType": "unit",
                 "provider": "GitHub",
-                "phase": "pre-merge",
-                "file": ".github/workflows/tests.yaml",
-                "path": "jobs.unit"
+                "phase": "pre-merge"
               }
             ]
           }
@@ -66,20 +63,19 @@
       }
     },
     {
-      "description": "Service with neighbour check",
-      "valid": true,
+      "description": "gate with old nested config object is invalid",
+      "valid": false,
       "data": {
         "services": [
           {
-            "serviceTag": "generic-service",
+            "serviceTag": "service",
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkType": "neighbour",
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "file": ".github/workflows/tests.yaml",
-                "path": "jobs.unit"
+                "config": { "file": "test.yaml" }
               }
             ]
           }
@@ -87,20 +83,20 @@
       }
     },
     {
-      "description": "Service with e2e check",
+      "description": "gate with JSONPath step filter in path is valid",
       "valid": true,
       "data": {
         "services": [
           {
-            "serviceTag": "generic-service",
+            "serviceTag": "service",
             "promotionType": "securePipelines",
             "qualityGates": [
               {
-                "checkType": "e2e",
+                "checkType": "unit",
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "file": ".github/workflows/tests.yaml",
-                "path": "jobs.unit"
+                "file": ".github/workflows/test.yml",
+                "path": "jobs.run-tests.steps[?@.name=='Run Tests']"
               }
             ]
           }
