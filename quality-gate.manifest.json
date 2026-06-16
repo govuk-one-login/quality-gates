@@ -4,7 +4,7 @@
     {
       "serviceTag": "quality-gates",
       "promotionType": "library",
-      "qualityGates": [
+      "checks": [
         {
           "checkTypes": ["unit"],
           "phase": "pre-merge",

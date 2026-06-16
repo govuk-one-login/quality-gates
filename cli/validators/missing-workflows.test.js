@@ -8,7 +8,7 @@ describe("findMissingWorkflows", () => {
       manifest: {
         services: [{
           serviceTag: "my-service",
-          qualityGates: [{ config: { file: ".github/workflows/test.yml" } }],
+          checks: [{ config: { file: ".github/workflows/test.yml" } }],
         }],
       },
       workflows: [{ name: "test.yml", jobs: {} }],
@@ -21,7 +21,7 @@ describe("findMissingWorkflows", () => {
       manifest: {
         services: [{
           serviceTag: "my-service",
-          qualityGates: [{ config: { file: ".github/workflows/missing.yml" } }],
+          checks: [{ config: { file: ".github/workflows/missing.yml" } }],
         }],
       },
       workflows: [{ name: "other.yml", jobs: {} }],
@@ -39,7 +39,7 @@ describe("findMissingWorkflows", () => {
       manifest: {
         services: [{
           serviceTag: "svc",
-          qualityGates: [
+          checks: [
             { config: { file: ".github/workflows/a.yml" } },
             { config: { file: ".github/workflows/b.yml" } },
           ],

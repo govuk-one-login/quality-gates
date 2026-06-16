@@ -3,7 +3,7 @@
     {
       "serviceTag": "service-name",
       "promotionType": "securePipelines",
-      "qualityGates": [
+      "checks": [
         {
           "checkTypes": ["code style and linting"],
           "provider": "GitHub",

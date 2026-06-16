@@ -98,7 +98,7 @@ A manifest contains an array of **services**, each with:
 |-----------------|--------|--------------------------------------------------------------|
 | `serviceTag`    | string | Short identifier for the service                             |
 | `promotionType` | string | Promotion strategy (`securePipelines`, `gitFlow`, `library`) |
-| `qualityGates`  | array  | List of quality gate checks                                  |
+| `checks`        | array  | List of quality gate checks                                  |
 
 Each **quality gate** contains:
 

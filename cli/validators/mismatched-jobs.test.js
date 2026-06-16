@@ -2,9 +2,9 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { findMismatchedJobs } from "./mismatched-jobs.js";
 
-const makeData = (gates, jobs) => ({
+const makeData = (checks, jobs) => ({
   manifest: {
-    services: [{ serviceTag: "my-service", qualityGates: gates }],
+    services: [{ serviceTag: "my-service", checks: checks }],
   },
   workflows: [{ name: "ci.yml", jobs }],
 });
@@ -42,7 +42,7 @@ describe("findMismatchedJobs", () => {
     assert.equal(findMismatchedJobs(data).length, 2);
   });
 
-  it("skips gates whose workflow file does not exist", () => {
+  it("skips checks whose workflow file does not exist", () => {
     const data = makeData(
       [{ config: { file: ".github/workflows/missing.yml", path: "jobs.x" } }],
       { build: {} }
@@ -50,7 +50,7 @@ describe("findMismatchedJobs", () => {
     assert.deepEqual(findMismatchedJobs(data), []);
   });
 
-  it("skips gates with no path property", () => {
+  it("skips checks with no path property", () => {
     const data = makeData(
       [{ config: { file: ".github/workflows/ci.yml" } }],
       { build: {} }

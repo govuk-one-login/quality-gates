@@ -32,7 +32,7 @@
           {
             "serviceTag": "generic-service",
             "promotionType": "securePipelines",
-            "qualityGates": [
+            "checks": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -56,7 +56,7 @@
           {
             "serviceTag": "generic-service-1",
             "promotionType": "securePipelines",
-            "qualityGates": [
+            "checks": [
               {
                 "checkTypes": ["code style and linting"],
                 "provider": "GitHub",
@@ -72,7 +72,7 @@
           {
             "serviceTag": "generic-service-2",
             "promotionType": "securePipelines",
-            "qualityGates": [
+            "checks": [
               {
                 "checkTypes": ["code style and linting"],
                 "provider": "GitHub",
@@ -96,7 +96,7 @@
           {
             "serviceTag": "generic-service",
             "promotionType": "securePipelines",
-            "qualityGates": [
+            "checks": [
               {
                 "checkTypes": ["code style and linting"],
                 "provider": "GitHub",
@@ -112,7 +112,7 @@
           {
             "serviceTag": "generic-service",
             "promotionType": "securePipelines",
-            "qualityGates": [
+            "checks": [
               {
                 "checkTypes": ["code style and linting"],
                 "provider": "GitHub",
@@ -136,7 +136,7 @@
           {
             "serviceTag": "generic-service",
             "promotionType": "securePipelines",
-            "qualityGates": [
+            "checks": [
               {
                 "checkTypes": ["unknown"],
                 "provider": "GitHub",

@@ -8,7 +8,7 @@
         {
           "serviceTag": "service-name",
           "promotionType": "securePipelines",
-          "qualityGates": [
+          "checks": [
             {
               "checkTypes": ["code style and linting"],
               "provider": "GitHub",
@@ -108,19 +108,16 @@
         "$ref": "#/$defs/check-type"
       }
     },
-    "quality-gate": {
-      "$ref": "#/$defs/check"
-    },
-    "quality-gates": {
+    "checks": {
       "type": "array",
       "items": {
-        "$ref": "#/$defs/quality-gate"
+        "$ref": "#/$defs/check"
       }
     },
     "secure-pipelines-phases": {
       "type": "object",
       "properties": {
-        "qualityGates": {
+        "checks": {
           "items": {
             "properties": {
               "phase": {
@@ -134,7 +131,7 @@
     "git-flow-phases": {
       "type": "object",
       "properties": {
-        "qualityGates": {
+        "checks": {
           "items": {
             "properties": {
               "phase": {
@@ -148,7 +145,7 @@
     "library-phases": {
       "type": "object",
       "properties": {
-        "qualityGates": {
+        "checks": {
           "items": {
             "properties": {
               "phase": {
@@ -162,13 +159,13 @@
     "service": {
       "type": "object",
       "required": [
-        "qualityGates",
+        "checks",
         "serviceTag",
         "promotionType"
       ],
       "properties": {
-        "qualityGates": {
-          "$ref": "#/$defs/quality-gates"
+        "checks": {
+          "$ref": "#/$defs/checks"
         },
         "serviceTag": {
           "type": "string"

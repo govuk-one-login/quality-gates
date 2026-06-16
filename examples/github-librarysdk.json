@@ -3,7 +3,7 @@
     {
       "serviceTag": "service-name",
       "promotionType": "library",
-      "qualityGates": [
+      "checks": [
         {
           "checkTypes": ["unit"],
           "provider": "GitHub",

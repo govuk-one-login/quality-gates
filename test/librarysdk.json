@@ -10,7 +10,7 @@
           {
             "serviceTag": "generic-library",
             "promotionType": "library",
-            "qualityGates": [
+            "checks": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
