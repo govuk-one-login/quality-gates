@@ -15,7 +15,7 @@
               "phase": "pre-merge",
               "config": {
                 "file": ".github/workflows/check-code-quality.yaml",
-                "name": "Run pre-commit"
+                "path": "$.jobs.pre-commit"
               }
             }
           ]
@@ -62,11 +62,13 @@
       "type": "object",
       "properties": {
         "file": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[^:]*$"
         },
         "path": {
-          "description": "JMESPath compatible expression to identify relevant property or node",
-          "type": "string"
+          "description": "JSONPath (RFC 9535) expression identifying the relevant node in the file",
+          "type": "string",
+          "pattern": "^\\$"
         }
       },
       "required": [

@@ -15,7 +15,10 @@
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": { "file": "test.yaml" }
+                "config": {
+                  "file": ".github/workflows/test.yaml",
+                  "path": "$.jobs.test"
+                }
               }
             ]
           }
@@ -35,7 +38,9 @@
                 "checkTypes": ["unit"],
                 "provider": "Terraform",
                 "phase": "pre-merge",
-                "config": { "file": "test.yaml" }
+                "config": {
+                  "file": "terraform/main.tf"
+                }
               }
             ]
           }
@@ -55,7 +60,9 @@
                 "checkTypes": ["unit"],
                 "provider": "CloudFormation",
                 "phase": "pre-merge",
-                "config": { "file": "test.yaml" }
+                "config": {
+                  "file": "template.yaml"
+                }
               }
             ]
           }
@@ -75,7 +82,9 @@
                 "checkTypes": ["unit"],
                 "provider": "Stack Orchestration Tool",
                 "phase": "pre-merge",
-                "config": { "file": "test.yaml" }
+                "config": {
+                  "file": "ci/parameters.json"
+                }
               }
             ]
           }
@@ -95,7 +104,10 @@
                 "checkTypes": ["unit"],
                 "provider": "Jenkins",
                 "phase": "pre-merge",
-                "config": { "file": "test.yaml" }
+                "config": {
+                  "file": ".github/workflows/test.yaml",
+                  "path": "$.jobs.test"
+                }
               }
             ]
           }

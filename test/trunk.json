@@ -39,8 +39,7 @@
                 "phase": "pre-merge",
                 "config": {
                   "file": ".github/workflows/tests.yaml",
-                  "path": "jobs.unit",
-                  "jobName": "Run unit tests"
+                  "path": "$.jobs.unit"
                 }
               }
             ]
@@ -63,8 +62,7 @@
                 "phase": "pre-merge",
                 "config": {
                   "file": ".github/workflows/check-code-quality.yaml",
-                  "path": "jobs.pre-commit",
-                  "name": "Run pre-commit"
+                  "path": "$.jobs.pre-commit"
                 }
               }
             ]
@@ -79,8 +77,7 @@
                 "phase": "pre-merge",
                 "config": {
                   "file": ".github/workflows/check-code-quality.yaml",
-                  "path": "jobs.pre-commit",
-                  "name": "Run pre-commit"
+                  "path": "$.jobs.pre-commit"
                 }
               }
             ]
@@ -103,8 +100,7 @@
                 "phase": "pre-merge",
                 "config": {
                   "file": ".github/workflows/check-code-quality.yaml",
-                  "path": "jobs.pre-commit",
-                  "name": "Run pre-commit"
+                  "path": "$.jobs.pre-commit"
                 }
               }
             ]
@@ -119,8 +115,7 @@
                 "phase": "pre-merge",
                 "config": {
                   "file": ".github/workflows/check-code-quality.yaml",
-                  "path": "jobs.pre-commit",
-                  "name": "Run pre-commit"
+                  "path": "$.jobs.pre-commit"
                 }
               }
             ]
@@ -143,8 +138,7 @@
                 "phase": "pre-merge",
                 "config": {
                   "file": ".github/workflows/check-code-quality.yaml",
-                  "path": "jobs.pre-commit",
-                  "name": "Run pre-commit"
+                  "path": "$.jobs.pre-commit"
                 }
               }
             ]

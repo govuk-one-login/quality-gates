@@ -8,7 +8,7 @@
       "data": {
         "services": [
           {
-            "serviceTag": "generic-library",
+            "serviceTag": "generic-service",
             "promotionType": "library",
             "checks": [
               {
@@ -17,8 +17,7 @@
                 "phase": "pre-merge",
                 "config": {
                   "file": ".github/workflows/tests.yaml",
-                  "path": "jobs.unit",
-                  "jobName": "Run unit tests"
+                  "path": "$.jobs.unit"
                 }
               },
               {
@@ -27,8 +26,7 @@
                 "phase": "pre-release",
                 "config": {
                   "file": ".github/workflows/tests.yaml",
-                  "path": "jobs.unit",
-                  "jobName": "Run unit tests"
+                  "path": "$.jobs.unit"
                 }
               }
             ]

@@ -10,7 +10,7 @@
           "phase": "pre-merge",
           "config": {
             "file": ".github/workflows/check-code-quality.yaml",
-            "name": "Run pre-commit"
+            "path": "$.jobs.pre-commit"
           }
         },
         {
@@ -18,8 +18,8 @@
           "provider": "GitHub",
           "phase": "pre-merge",
           "config": {
-            "file": "",
-            "name": "Run Gitlint"
+            "file": ".github/workflows/check-code-quality.yaml",
+            "path": "$.jobs.gitlint"
           }
         },
         {
@@ -27,8 +27,8 @@
           "provider": "GitHub",
           "phase": "pre-merge",
           "config": {
-            "file": "",
-            "name": "Run Checkov"
+            "file": ".github/workflows/check-code-quality.yaml",
+            "path": "$.jobs.checkov"
           }
         }
       ]
