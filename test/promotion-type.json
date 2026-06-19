@@ -10,7 +10,7 @@
           {
             "serviceTag": "service",
             "promotionType": "securePipelines",
-            "qualityGates": [
+            "checks": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -30,7 +30,7 @@
           {
             "serviceTag": "service",
             "promotionType": "securePipelines",
-            "qualityGates": [
+            "checks": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -50,7 +50,7 @@
           {
             "serviceTag": "service",
             "promotionType": "gitFlow",
-            "qualityGates": [
+            "checks": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -70,7 +70,7 @@
           {
             "serviceTag": "service",
             "promotionType": "gitFlow",
-            "qualityGates": [
+            "checks": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -90,7 +90,7 @@
           {
             "serviceTag": "service",
             "promotionType": "library",
-            "qualityGates": [
+            "checks": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -110,7 +110,7 @@
           {
             "serviceTag": "service",
             "promotionType": "library",
-            "qualityGates": [
+            "checks": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -129,7 +129,7 @@
         "services": [
           {
             "serviceTag": "service",
-            "qualityGates": [
+            "checks": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -149,7 +149,7 @@
           {
             "serviceTag": "service",
             "promotionType": "unknown",
-            "qualityGates": [
+            "checks": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",

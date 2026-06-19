@@ -4,6 +4,7 @@ import { parseVersion, getTransforms, schemaUrl } from "./index.js";
 import { transform as v050 } from "./v0.5.0.js";
 import { transform as v070 } from "./v0.7.0.js";
 import { transform as v090 } from "./v0.9.0.js";
+import { transform as v0110 } from "./v0.11.0.js";
 
 describe("parseVersion", () => {
   it("extracts version from schema URL", () => {
@@ -19,20 +20,23 @@ describe("parseVersion", () => {
 
 describe("getTransforms", () => {
   it("returns all transforms for null version", () => {
-    assert.equal(getTransforms(null).length, 3);
+    assert.equal(getTransforms(null).length, 4);
   });
   it("returns all transforms for v0.1.0", () => {
-    assert.equal(getTransforms([0, 1, 0]).length, 3);
+    assert.equal(getTransforms([0, 1, 0]).length, 4);
   });
-  it("returns v0.7.0 and v0.9.0 for v0.5.0", () => {
+  it("returns v0.7.0 and v0.9.0 and v0.11.0 for v0.5.0", () => {
     const t = getTransforms([0, 5, 0]);
-    assert.equal(t.length, 2);
+    assert.equal(t.length, 3);
   });
-  it("returns only v0.9.0 for v0.7.0", () => {
-    assert.equal(getTransforms([0, 7, 0]).length, 1);
+  it("returns v0.9.0 and v0.11.0 for v0.7.0", () => {
+    assert.equal(getTransforms([0, 7, 0]).length, 2);
   });
-  it("returns nothing for v0.9.0", () => {
-    assert.equal(getTransforms([0, 9, 0]).length, 0);
+  it("returns only v0.11.0 for v0.9.0", () => {
+    assert.equal(getTransforms([0, 9, 0]).length, 1);
+  });
+  it("returns nothing for v0.11.0", () => {
+    assert.equal(getTransforms([0, 11, 0]).length, 0);
   });
 });
 
@@ -122,6 +126,19 @@ describe("v0.9.0 transform", () => {
     });
 });
 
+describe("v0.11.0 transform", () => {
+  it("renames qualityGates to checks", () => {
+    const input = {
+      $schema: schemaUrl("0.9.0"),
+      services: [{ serviceTag: "svc", promotionType: "securePipelines", qualityGates: [{ checkTypes: ["unit"], phase: "pre-merge", provider: "GitHub", config: { file: "a.yml" } }] }],
+    };
+    const result = v0110(input);
+    assert.deepEqual(result.services[0].checks[0].checkTypes, ["unit"]);
+    assert.equal(result.services[0].qualityGates, undefined);
+    assert.equal(result.$schema, schemaUrl("0.11.0"));
+  });
+});
+
 describe("full pipeline", () => {
   it("upgrades v0.1.0 manifest to v0.9.0", () => {
     const input = {
@@ -140,10 +157,10 @@ describe("full pipeline", () => {
       result = transform(result);
     }
 
-    assert.equal(result.$schema, schemaUrl("0.9.0"));
+    assert.equal(result.$schema, schemaUrl("0.11.0"));
     assert.equal(result.services[0].serviceTag, "example");
     assert.equal(result.services[0].promotionType, "securePipelines");
-    assert.deepEqual(result.services[0].qualityGates[0].checkTypes, ["integration"]);
-    assert.deepEqual(result.services[0].qualityGates[0].provider, "Stack Orchestration Tool")
+    assert.deepEqual(result.services[0].checks[0].checkTypes, ["integration"]);
+    assert.deepEqual(result.services[0].checks[0].provider, "Stack Orchestration Tool")
   });
 });

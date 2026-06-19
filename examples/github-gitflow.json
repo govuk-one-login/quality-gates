@@ -3,7 +3,7 @@
     {
       "serviceTag": "service-name",
       "promotionType": "gitFlow",
-      "qualityGates": [
+      "checks": [
         {
           "checkTypes": ["unit"],
           "provider": "GitHub",

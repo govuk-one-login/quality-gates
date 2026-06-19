@@ -5,8 +5,8 @@ export function findMismatchedJobs(data) {
 
   return data.manifest.services.flatMap((s) => {
     const service = s.serviceTag || s["service-tag"];
-    const gates = s.qualityGates || s["quality-gates"] || [];
-    return gates
+    const checks = s.checks || s.qualityGates || s["quality-gates"] || [];
+    return checks
       .filter((g) => {
         const jobKey = g.config.path?.split(".")[1];
         const filename = g.config.file.replace(".github/workflows/", "");

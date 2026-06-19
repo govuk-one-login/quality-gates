@@ -10,7 +10,7 @@
           {
             "serviceTag": "generic-service",
             "promotionType": "securePipelines",
-            "qualityGates": [
+            "checks": [
               {
                 "checkTypes": ["integration"],
                 "provider": "GitHub",
@@ -34,7 +34,7 @@
           {
             "serviceTag": "generic-service",
             "promotionType": "securePipelines",
-            "qualityGates": [
+            "checks": [
               {
                 "checkTypes": ["component"],
                 "provider": "GitHub",
@@ -58,7 +58,7 @@
           {
             "serviceTag": "generic-service",
             "promotionType": "securePipelines",
-            "qualityGates": [
+            "checks": [
               {
                 "checkTypes": ["product"],
                 "provider": "GitHub",
@@ -82,7 +82,7 @@
           {
             "serviceTag": "generic-service",
             "promotionType": "securePipelines",
-            "qualityGates": [
+            "checks": [
               {
                 "checkTypes": ["neighbour"],
                 "provider": "GitHub",
@@ -106,7 +106,7 @@
           {
             "serviceTag": "generic-service",
             "promotionType": "securePipelines",
-            "qualityGates": [
+            "checks": [
               {
                 "checkTypes": ["e2e"],
                 "provider": "GitHub",

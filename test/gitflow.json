@@ -10,7 +10,7 @@
           {
             "serviceTag": "generic-service",
             "promotionType": "gitFlow",
-            "qualityGates": [
+            "checks": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",

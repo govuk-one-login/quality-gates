@@ -4,8 +4,8 @@ export function findMissingWorkflows(data) {
 
   return data.manifest.services.flatMap((s) => {
     const service = s.serviceTag || s["service-tag"];
-    const gates = s.qualityGates || s["quality-gates"] || [];
-    return gates
+    const checks = s.checks || s.qualityGates || s["quality-gates"] || [];
+    return checks
       .filter((g) => !workflowNames.has(g.config.file.replace(".github/workflows/", "")))
       .map((g) => ({
         type: "missing-workflow",
