@@ -25,7 +25,7 @@ Reference the schema directly in your manifest file:
           "provider": "GitHub",
           "config": {
             "file": ".github/workflows/test.yml",
-            "path": "jobs.test"
+            "path": "$.jobs.test"
           }
         }
       ]

@@ -49,4 +49,20 @@ describe("findMissingWorkflows", () => {
     };
     assert.equal(findMissingWorkflows(data).length, 2);
   });
+
+  it("skips non-GitHub workflow file paths", () => {
+    const data = {
+      manifest: {
+        services: [{
+          serviceTag: "svc",
+          checks: [
+            { config: { file: "terraform/main.tf" } },
+            { config: { file: "ci/stack-orchestration/parameters.json" } },
+          ],
+        }],
+      },
+      workflows: [{ name: "ci.yml", jobs: {} }],
+    };
+    assert.deepEqual(findMissingWorkflows(data), []);
+  });
 });

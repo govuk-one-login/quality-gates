@@ -1,114 +1,22 @@
 {
   "target": "../schemas/schema.json",
-  "$comment": "promotionType conditional phase validation tests",
+  "$comment": "JSONPath config.path validation tests",
   "tests": [
     {
-      "description": "securePipelines with valid phase staging",
+      "description": "Valid JSONPath: $.jobs.test",
       "valid": true,
       "data": {
         "services": [
           {
             "serviceTag": "service",
             "promotionType": "securePipelines",
-            "checks": [
-              {
-                "checkTypes": ["unit"],
-                "provider": "GitHub",
-                "phase": "staging",
-                "config": {
-                  "file": ".github/workflows/test.yaml",
-                  "path": "$.jobs.test"
-                }
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "description": "securePipelines with invalid phase develop",
-      "valid": false,
-      "data": {
-        "services": [
-          {
-            "serviceTag": "service",
-            "promotionType": "securePipelines",
-            "checks": [
-              {
-                "checkTypes": ["unit"],
-                "provider": "GitHub",
-                "phase": "develop",
-                "config": {
-                  "file": ".github/workflows/test.yaml",
-                  "path": "$.jobs.test"
-                }
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "description": "gitFlow with valid phase develop",
-      "valid": true,
-      "data": {
-        "services": [
-          {
-            "serviceTag": "service",
-            "promotionType": "gitFlow",
-            "checks": [
-              {
-                "checkTypes": ["unit"],
-                "provider": "GitHub",
-                "phase": "develop",
-                "config": {
-                  "file": ".github/workflows/test.yaml",
-                  "path": "$.jobs.test"
-                }
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "description": "gitFlow with invalid phase staging",
-      "valid": false,
-      "data": {
-        "services": [
-          {
-            "serviceTag": "service",
-            "promotionType": "gitFlow",
-            "checks": [
-              {
-                "checkTypes": ["unit"],
-                "provider": "GitHub",
-                "phase": "staging",
-                "config": {
-                  "file": ".github/workflows/test.yaml",
-                  "path": "$.jobs.test"
-                }
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "description": "library with valid phase pre-merge",
-      "valid": true,
-      "data": {
-        "services": [
-          {
-            "serviceTag": "service",
-            "promotionType": "library",
             "checks": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
-                  "file": ".github/workflows/test.yaml",
+                  "file": ".github/workflows/test.yml",
                   "path": "$.jobs.test"
                 }
               }
@@ -118,21 +26,67 @@
       }
     },
     {
-      "description": "library with invalid phase build",
-      "valid": false,
+      "description": "Valid JSONPath: bracket notation $.jobs['my-job']",
+      "valid": true,
       "data": {
         "services": [
           {
             "serviceTag": "service",
-            "promotionType": "library",
+            "promotionType": "securePipelines",
             "checks": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": {
+                  "file": ".github/workflows/test.yml",
+                  "path": "$.jobs['my-job']"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "Valid JSONPath: step filter by name",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "checks": [
+              {
+                "checkTypes": ["unit"],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": {
+                  "file": ".github/workflows/test.yml",
+                  "path": "$.jobs.build.steps[?@.name=='Run tests']"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "Valid JSONPath: Stack Orchestration Tool filter",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "checks": [
+              {
+                "checkTypes": ["integration"],
+                "provider": "Stack Orchestration Tool",
                 "phase": "build",
                 "config": {
-                  "file": ".github/workflows/test.yaml",
-                  "path": "$.jobs.test"
+                  "file": "ci/stack-orchestration/parameters.json",
+                  "path": "$[?@.ParameterKey=='X']"
                 }
               }
             ]
@@ -141,20 +95,21 @@
       }
     },
     {
-      "description": "service without promotionType is invalid",
+      "description": "Invalid: path without $ prefix",
       "valid": false,
       "data": {
         "services": [
           {
             "serviceTag": "service",
+            "promotionType": "securePipelines",
             "checks": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
-                  "file": ".github/workflows/test.yaml",
-                  "path": "$.jobs.test"
+                  "file": ".github/workflows/test.yml",
+                  "path": "jobs.test"
                 }
               }
             ]
@@ -163,21 +118,64 @@
       }
     },
     {
-      "description": "service with unknown promotionType is invalid",
+      "description": "Invalid: file with colon (external reference)",
       "valid": false,
       "data": {
         "services": [
           {
             "serviceTag": "service",
-            "promotionType": "unknown",
+            "promotionType": "securePipelines",
+            "checks": [
+              {
+                "checkTypes": ["unit"],
+                "provider": "Terraform",
+                "phase": "build",
+                "config": {
+                  "file": "other-repo:terraform/main.tf"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "Valid: Terraform check without path",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
+            "checks": [
+              {
+                "checkTypes": ["integration"],
+                "provider": "Terraform",
+                "phase": "build",
+                "config": {
+                  "file": "terraform/main.tf"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "Valid: GitHub check without path",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "securePipelines",
             "checks": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
-                  "file": ".github/workflows/test.yaml",
-                  "path": "$.jobs.test"
+                  "file": ".github/workflows/test.yml"
                 }
               }
             ]

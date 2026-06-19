@@ -9,8 +9,17 @@
           "provider": "GitHub",
           "phase": "pre-merge",
           "config": {
-            "file": ".github/workflows/check-code-quality.yaml",
-            "name": "Run pre-commit"
+            "file": ".github/workflows/tests.yaml",
+            "path": "$.jobs.unit"
+          }
+        },
+        {
+          "checkTypes": ["code style and linting"],
+          "provider": "GitHub",
+          "phase": "pre-merge",
+          "config": {
+            "file": ".github/workflows/quality.yaml",
+            "path": "$.jobs.lint.steps[?@.name=='Run linter']"
           }
         },
         {
@@ -18,17 +27,8 @@
           "provider": "GitHub",
           "phase": "pre-release",
           "config": {
-            "file": "",
-            "name": "Run Gitlint"
-          }
-        },
-        {
-          "checkTypes": ["unit"],
-          "provider": "GitHub",
-          "phase": "pre-merge",
-          "config": {
-            "file": "",
-            "name": "Run Checkov"
+            "file": ".github/workflows/release.yaml",
+            "path": "$.jobs.test"
           }
         }
       ]

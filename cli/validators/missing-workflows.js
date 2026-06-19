@@ -6,6 +6,7 @@ export function findMissingWorkflows(data) {
     const service = s.serviceTag || s["service-tag"];
     const checks = s.checks || s.qualityGates || s["quality-gates"] || [];
     return checks
+      .filter((g) => g.config.file.startsWith(".github/workflows/"))
       .filter((g) => !workflowNames.has(g.config.file.replace(".github/workflows/", "")))
       .map((g) => ({
         type: "missing-workflow",
