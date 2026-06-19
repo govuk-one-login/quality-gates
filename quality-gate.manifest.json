@@ -11,7 +11,7 @@
           "provider": "GitHub",
           "config": {
             "file": ".github/workflows/schema.yml",
-            "path": "jobs.run-tests"
+            "path": "$.jobs.run-tests"
           }
         },
         {
@@ -20,7 +20,7 @@
           "provider": "GitHub",
           "config": {
             "file": ".github/workflows/visualiser.yml",
-            "path": "jobs.run-tests"
+            "path": "$.jobs.run-tests"
           }
         },
         {
@@ -29,7 +29,7 @@
           "provider": "GitHub",
           "config": {
             "file": ".github/workflows/quality.yml",
-            "path": "jobs.codeql"
+            "path": "$.jobs.codeql"
           }
         },
         {
@@ -38,7 +38,7 @@
           "provider": "GitHub",
           "config": {
             "file": ".github/workflows/quality.yml",
-            "path": "jobs.pre-commit"
+            "path": "$.jobs.pre-commit"
           }
         }
       ]
