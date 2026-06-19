@@ -130,4 +130,18 @@ Valid phases depend on the service's `promotionType`:
 | Field  | Required | Description                                       |
 |--------|----------|---------------------------------------------------|
 | `file` | Yes      | Path to the workflow/config file                  |
-| `path` | No       | JMESPath expression identifying the relevant node |
+| `path` | No       | JSONPath (RFC 9535) expression identifying the relevant node |
+
+#### Provider path examples
+
+| Provider | File format | Example `path` |
+|----------|-------------|-----------------|
+| GitHub | YAML workflow | `$.jobs.build.steps[?@.name=='Run tests']` |
+| Terraform | HCL (`.tf`) | `$.module.my-pipeline.parameters.TestImageRepositoryUri` |
+| Stack Orchestration Tool | JSON parameters | `$[?@.ParameterKey=='LambdaCanaryDeployment']` |
+| CloudFormation | YAML/JSON template | `$.Resources.MyFunction.Properties.Handler` |
+
+Notes:
+- The `path` field must start with `$` (the JSONPath root identifier)
+- The `file` field must not contain `:` (external cross-repo references are not supported)
+- For GitHub providers, `path` typically references jobs and steps: `$.jobs.<name>` or `$.jobs.<name>.steps[?@.name=='<step>']`

@@ -5,12 +5,12 @@
       "promotionType": "gitFlow",
       "checks": [
         {
-          "checkTypes": ["unit"],
+          "checkTypes": ["code style and linting"],
           "provider": "GitHub",
           "phase": "pre-develop",
           "config": {
             "file": ".github/workflows/lint.yaml",
-            "name": "Lint"
+            "path": "$.jobs.lint"
           }
         },
         {
@@ -18,35 +18,35 @@
           "provider": "GitHub",
           "phase": "develop",
           "config": {
-            "file": ".github/workflows/lint.yaml",
-            "name": "Lint"
+            "file": ".github/workflows/tests.yaml",
+            "path": "$.jobs.unit"
           }
         },
         {
-          "checkTypes": ["unit"],
+          "checkTypes": ["integration"],
           "provider": "GitHub",
           "phase": "pre-release",
           "config": {
-            "file": ".github/workflows/lint.yaml",
-            "name": "Lint"
+            "file": ".github/workflows/integration.yaml",
+            "path": "$.jobs.integration.steps[?@.name=='Run integration tests']"
           }
         },
         {
-          "checkTypes": ["unit"],
+          "checkTypes": ["e2e"],
           "provider": "GitHub",
-          "phase": "pre-release",
+          "phase": "release",
           "config": {
-            "file": ".github/workflows/lint.yaml",
-            "name": "Lint"
+            "file": ".github/workflows/e2e.yaml",
+            "path": "$.jobs.e2e"
           }
         },
         {
-          "checkTypes": ["unit"],
+          "checkTypes": ["smoke"],
           "provider": "GitHub",
           "phase": "main",
           "config": {
-            "file": ".github/workflows/lint.yaml",
-            "name": "Lint"
+            "file": ".github/workflows/smoke.yaml",
+            "path": "$.jobs.smoke"
           }
         }
       ]

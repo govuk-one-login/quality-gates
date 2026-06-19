@@ -55,9 +55,14 @@ These various usages are then annotated using the schema file to create a repres
 - Validation happens at authoring time (editor support) and in CI
 - Analysis and visualisation are separate concerns
 
-### JMESPath for config paths
+### JSONPath for config paths
 
-The `config.path` field uses JMESPath-compatible expressions to identify specific nodes within workflow files (e.g., `jobs.run-tests`). This provides a standard way to reference nested YAML/JSON structures without coupling to a specific CI platform's object model.
+The `config.path` field uses JSONPath (RFC 9535) expressions to identify specific nodes within workflow and configuration files (e.g., `$.jobs.run-tests`). This provides a standardised way to reference nested YAML/JSON structures without coupling to a specific CI platform's object model. JSONPath was chosen over alternatives (JMESPath, jq, JSON Pointer) because:
+
+- It is an IETF standard (RFC 9535, February 2024)
+- It supports filter expressions for addressing array elements by property (e.g., steps by name or id)
+- Hyphenated identifiers work in dot notation without quoting
+- The `$` root prefix makes expressions unambiguous and regex-validatable
 
 ### Dogfooding
 

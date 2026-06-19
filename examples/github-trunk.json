@@ -9,26 +9,26 @@
           "provider": "GitHub",
           "phase": "pre-merge",
           "config": {
-            "file": ".github/workflows/check-code-quality.yaml",
-            "name": "Run pre-commit"
+            "file": ".github/workflows/tests.yaml",
+            "path": "$.jobs.unit"
           }
         },
         {
-          "checkTypes": ["unit"],
+          "checkTypes": ["code style and linting"],
           "provider": "GitHub",
           "phase": "pre-merge",
           "config": {
-            "file": "",
-            "name": "Run Gitlint"
+            "file": ".github/workflows/quality.yaml",
+            "path": "$.jobs.pre-commit"
           }
         },
         {
-          "checkTypes": ["unit"],
+          "checkTypes": ["vulnerability detection"],
           "provider": "GitHub",
           "phase": "pre-merge",
           "config": {
-            "file": "",
-            "name": "Run Checkov"
+            "file": ".github/workflows/quality.yaml",
+            "path": "$.jobs.codeql"
           }
         }
       ]
