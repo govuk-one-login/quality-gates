@@ -13,7 +13,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Install the JSON Schema CLI
-      uses: sourcemeta/jsonschema@v15.9.0
+      uses: sourcemeta/jsonschema@v16.0.0
 
     - name: Validate quality-gate.manifest.json
       run: jsonschema validate schemas/schema.json quality-gate.manifest.json
