@@ -1,0 +1,20 @@
+{
+  "services": [
+    {
+      "serviceTag": "service-name",
+      "promotionType": "other",
+      "promotionTypeDetails": ["custom deployment tool"],
+      "checks": [
+        {
+          "checkTypes": ["unit"],
+          "provider": "GitHub",
+          "phase": "deploy",
+          "config": {
+            "file": ".github/workflows/tests.yaml",
+            "path": "$.jobs.unit"
+          }
+        }
+      ]
+    }
+  ]
+}

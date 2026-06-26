@@ -1,180 +1,69 @@
 {
   "target": "../schemas/schema.json",
-  "$comment": "promotionType conditional phase validation tests",
+  "$comment": "promotionType other with promotionTypeDetails tests",
   "tests": [
     {
-      "description": "securePipelines with valid phase staging",
+      "description": "other with promotionTypeDetails and custom phase is valid",
       "valid": true,
       "data": {
         "services": [
           {
             "serviceTag": "service",
-            "promotionType": "securePipelines",
+            "promotionType": "other",
+            "promotionTypeDetails": ["custom pipeline"],
+            "checks": [
+              {
+                "checkTypes": ["unit"],
+                "provider": "GitHub",
+                "phase": "my-custom-phase",
+                "config": {
+                  "file": ".github/workflows/test.yaml",
+                  "path": "$.jobs.test"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "other with multiple promotionTypeDetails is valid",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "other",
+            "promotionTypeDetails": ["custom pipeline", "manual approval"],
+            "checks": [
+              {
+                "checkTypes": ["unit"],
+                "provider": "GitHub",
+                "phase": "deploy-canary",
+                "config": {
+                  "file": ".github/workflows/test.yaml",
+                  "path": "$.jobs.test"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "other with phase value from another promotionType is valid",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "other",
+            "promotionTypeDetails": ["custom deployment tool"],
             "checks": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
                 "phase": "staging",
-                "config": {
-                  "file": ".github/workflows/test.yaml",
-                  "path": "$.jobs.test"
-                }
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "description": "securePipelines with invalid phase develop",
-      "valid": false,
-      "data": {
-        "services": [
-          {
-            "serviceTag": "service",
-            "promotionType": "securePipelines",
-            "checks": [
-              {
-                "checkTypes": ["unit"],
-                "provider": "GitHub",
-                "phase": "develop",
-                "config": {
-                  "file": ".github/workflows/test.yaml",
-                  "path": "$.jobs.test"
-                }
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "description": "gitFlow with valid phase develop",
-      "valid": true,
-      "data": {
-        "services": [
-          {
-            "serviceTag": "service",
-            "promotionType": "gitFlow",
-            "checks": [
-              {
-                "checkTypes": ["unit"],
-                "provider": "GitHub",
-                "phase": "develop",
-                "config": {
-                  "file": ".github/workflows/test.yaml",
-                  "path": "$.jobs.test"
-                }
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "description": "gitFlow with invalid phase staging",
-      "valid": false,
-      "data": {
-        "services": [
-          {
-            "serviceTag": "service",
-            "promotionType": "gitFlow",
-            "checks": [
-              {
-                "checkTypes": ["unit"],
-                "provider": "GitHub",
-                "phase": "staging",
-                "config": {
-                  "file": ".github/workflows/test.yaml",
-                  "path": "$.jobs.test"
-                }
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "description": "library with valid phase pre-merge",
-      "valid": true,
-      "data": {
-        "services": [
-          {
-            "serviceTag": "service",
-            "promotionType": "library",
-            "checks": [
-              {
-                "checkTypes": ["unit"],
-                "provider": "GitHub",
-                "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/test.yaml",
-                  "path": "$.jobs.test"
-                }
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "description": "library with invalid phase build",
-      "valid": false,
-      "data": {
-        "services": [
-          {
-            "serviceTag": "service",
-            "promotionType": "library",
-            "checks": [
-              {
-                "checkTypes": ["unit"],
-                "provider": "GitHub",
-                "phase": "build",
-                "config": {
-                  "file": ".github/workflows/test.yaml",
-                  "path": "$.jobs.test"
-                }
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "description": "service without promotionType is invalid",
-      "valid": false,
-      "data": {
-        "services": [
-          {
-            "serviceTag": "service",
-            "checks": [
-              {
-                "checkTypes": ["unit"],
-                "provider": "GitHub",
-                "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/test.yaml",
-                  "path": "$.jobs.test"
-                }
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "description": "service with unknown promotionType is invalid",
-      "valid": false,
-      "data": {
-        "services": [
-          {
-            "serviceTag": "service",
-            "promotionType": "unknown",
-            "checks": [
-              {
-                "checkTypes": ["unit"],
-                "provider": "GitHub",
-                "phase": "pre-merge",
                 "config": {
                   "file": ".github/workflows/test.yaml",
                   "path": "$.jobs.test"
@@ -197,7 +86,55 @@
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
-                "phase": "pre-merge",
+                "phase": "deploy",
+                "config": {
+                  "file": ".github/workflows/test.yaml",
+                  "path": "$.jobs.test"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "other with empty promotionTypeDetails is invalid",
+      "valid": false,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "other",
+            "promotionTypeDetails": [],
+            "checks": [
+              {
+                "checkTypes": ["unit"],
+                "provider": "GitHub",
+                "phase": "deploy",
+                "config": {
+                  "file": ".github/workflows/test.yaml",
+                  "path": "$.jobs.test"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "other with non-string in promotionTypeDetails is invalid",
+      "valid": false,
+      "data": {
+        "services": [
+          {
+            "serviceTag": "service",
+            "promotionType": "other",
+            "promotionTypeDetails": [123],
+            "checks": [
+              {
+                "checkTypes": ["unit"],
+                "provider": "GitHub",
+                "phase": "deploy",
                 "config": {
                   "file": ".github/workflows/test.yaml",
                   "path": "$.jobs.test"
