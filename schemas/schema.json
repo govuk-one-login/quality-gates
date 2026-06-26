@@ -176,8 +176,14 @@
           "enum": [
             "securePipelines",
             "gitFlow",
-            "library"
+            "library",
+            "other"
           ]
+        },
+        "promotionTypeDetails": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
         }
       },
       "allOf": [
@@ -218,6 +224,19 @@
           },
           "then": {
             "$ref": "#/$defs/library-phases"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "promotionType": {
+                "const": "other"
+              }
+            },
+            "required": ["promotionType"]
+          },
+          "then": {
+            "required": ["promotionTypeDetails"]
           }
         }
       ]
