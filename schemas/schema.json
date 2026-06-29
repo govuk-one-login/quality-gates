@@ -6,7 +6,8 @@
     {
       "services": [
         {
-          "serviceTag": "service-name",
+          "product": "service-name",
+          "component": "frontend",
           "promotionType": "securePipelines",
           "checks": [
             {
@@ -162,14 +163,18 @@
       "type": "object",
       "required": [
         "checks",
-        "serviceTag",
+        "product",
+        "component",
         "promotionType"
       ],
       "properties": {
         "checks": {
           "$ref": "#/$defs/checks"
         },
-        "serviceTag": {
+        "product": {
+          "type": "string"
+        },
+        "component": {
           "type": "string"
         },
         "promotionType": {
