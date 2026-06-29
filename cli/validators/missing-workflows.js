@@ -3,7 +3,7 @@ export function findMissingWorkflows(data) {
   const available = [...workflowNames];
 
   return data.manifest.services.flatMap((s) => {
-    const service = s.serviceTag || s["service-tag"];
+    const service = s.product || s.serviceTag || s["service-tag"];
     const checks = s.checks || s.qualityGates || s["quality-gates"] || [];
     return checks
       .filter((g) => g.config.file.startsWith(".github/workflows/"))
