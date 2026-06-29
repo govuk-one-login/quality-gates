@@ -30,7 +30,8 @@
       "data": {
         "services": [
           {
-            "serviceTag": "generic-service",
+            "product": "generic-service",
+            "component": "api",
             "promotionType": "securePipelines",
             "checks": [
               {
@@ -53,7 +54,8 @@
       "data": {
         "services": [
           {
-            "serviceTag": "generic-service-1",
+            "product": "generic-service-1",
+            "component": "api",
             "promotionType": "securePipelines",
             "checks": [
               {
@@ -68,7 +70,8 @@
             ]
           },
           {
-            "serviceTag": "generic-service-2",
+            "product": "generic-service-2",
+            "component": "api",
             "promotionType": "securePipelines",
             "checks": [
               {
@@ -91,7 +94,8 @@
       "data": {
         "services": [
           {
-            "serviceTag": "generic-service",
+            "product": "generic-service",
+            "component": "api",
             "promotionType": "securePipelines",
             "checks": [
               {
@@ -106,7 +110,8 @@
             ]
           },
           {
-            "serviceTag": "generic-service",
+            "product": "generic-service",
+            "component": "api",
             "promotionType": "securePipelines",
             "checks": [
               {
@@ -129,7 +134,8 @@
       "data": {
         "services": [
           {
-            "serviceTag": "generic-service",
+            "product": "generic-service",
+            "component": "api",
             "promotionType": "securePipelines",
             "checks": [
               {

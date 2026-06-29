@@ -94,11 +94,12 @@ Most JSON editors support `$schema` for autocompletion and validation. For VS Co
 
 A manifest contains an array of **services**, each with:
 
-| Field           | Type   | Description                                                  |
-|-----------------|--------|--------------------------------------------------------------|
-| `serviceTag`    | string | Short identifier for the service                             |
-| `promotionType` | string | Promotion strategy (`securePipelines`, `gitFlow`, `library`) |
-| `checks`        | array  | List of quality gate checks                                  |
+| Field           | Type   | Description                                                           |
+|-----------------|--------|-----------------------------------------------------------------------|
+| `product`       | string | General name for a service                                            |
+| `component`     | string | Component within the product                                          |
+| `promotionType` | string | Promotion strategy (`securePipelines`, `gitFlow`, `library`, `other`) |
+| `checks`        | array  | List of quality gate checks                                           |
 
 Each **quality gate** contains:
 

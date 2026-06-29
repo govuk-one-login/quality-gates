@@ -8,7 +8,8 @@
       "data": {
         "services": [
           {
-            "serviceTag": "generic-service",
+            "product": "generic-service",
+            "component": "api",
             "promotionType": "library",
             "checks": [
               {

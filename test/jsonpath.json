@@ -8,7 +8,8 @@
       "data": {
         "services": [
           {
-            "serviceTag": "service",
+            "product": "service",
+            "component": "api",
             "promotionType": "securePipelines",
             "checks": [
               {
@@ -31,7 +32,8 @@
       "data": {
         "services": [
           {
-            "serviceTag": "service",
+            "product": "service",
+            "component": "api",
             "promotionType": "securePipelines",
             "checks": [
               {
@@ -54,7 +56,8 @@
       "data": {
         "services": [
           {
-            "serviceTag": "service",
+            "product": "service",
+            "component": "api",
             "promotionType": "securePipelines",
             "checks": [
               {
@@ -77,7 +80,8 @@
       "data": {
         "services": [
           {
-            "serviceTag": "service",
+            "product": "service",
+            "component": "api",
             "promotionType": "securePipelines",
             "checks": [
               {
@@ -100,7 +104,8 @@
       "data": {
         "services": [
           {
-            "serviceTag": "service",
+            "product": "service",
+            "component": "api",
             "promotionType": "securePipelines",
             "checks": [
               {
@@ -123,7 +128,8 @@
       "data": {
         "services": [
           {
-            "serviceTag": "service",
+            "product": "service",
+            "component": "api",
             "promotionType": "securePipelines",
             "checks": [
               {
@@ -145,7 +151,8 @@
       "data": {
         "services": [
           {
-            "serviceTag": "service",
+            "product": "service",
+            "component": "api",
             "promotionType": "securePipelines",
             "checks": [
               {
@@ -167,7 +174,8 @@
       "data": {
         "services": [
           {
-            "serviceTag": "service",
+            "product": "service",
+            "component": "api",
             "promotionType": "securePipelines",
             "checks": [
               {

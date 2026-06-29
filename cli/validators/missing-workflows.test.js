@@ -7,7 +7,8 @@ describe("findMissingWorkflows", () => {
     const data = {
       manifest: {
         services: [{
-          serviceTag: "my-service",
+          product: "my-service",
+          component: "api",
           checks: [{ config: { file: ".github/workflows/test.yml" } }],
         }],
       },
@@ -20,7 +21,8 @@ describe("findMissingWorkflows", () => {
     const data = {
       manifest: {
         services: [{
-          serviceTag: "my-service",
+          product: "my-service",
+          component: "api",
           checks: [{ config: { file: ".github/workflows/missing.yml" } }],
         }],
       },
@@ -38,7 +40,8 @@ describe("findMissingWorkflows", () => {
     const data = {
       manifest: {
         services: [{
-          serviceTag: "svc",
+          product: "svc",
+          component: "api",
           checks: [
             { config: { file: ".github/workflows/a.yml" } },
             { config: { file: ".github/workflows/b.yml" } },
@@ -54,7 +57,8 @@ describe("findMissingWorkflows", () => {
     const data = {
       manifest: {
         services: [{
-          serviceTag: "svc",
+          product: "svc",
+          component: "api",
           checks: [
             { config: { file: "terraform/main.tf" } },
             { config: { file: "ci/stack-orchestration/parameters.json" } },

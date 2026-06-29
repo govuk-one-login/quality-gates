@@ -1,7 +1,8 @@
 {
   "services": [
     {
-      "serviceTag": "service-name",
+      "product": "service-name",
+      "component": "frontend",
       "promotionType": "library",
       "checks": [
         {
