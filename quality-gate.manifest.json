@@ -2,7 +2,8 @@
   "$schema": "./schemas/schema.json",
   "services": [
     {
-      "serviceTag": "quality-gates",
+      "product": "quality-gates",
+      "component": "quality-gates",
       "promotionType": "library",
       "checks": [
         {
