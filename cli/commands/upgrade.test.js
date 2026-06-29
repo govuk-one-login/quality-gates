@@ -30,10 +30,12 @@ describe("upgrade command", () => {
     handler({ path: file, dryRun: false, verbose: false });
 
     const result = JSON.parse(readFileSync(file, "utf8"));
-    assert.equal(result.services[0].serviceTag, "svc");
+    assert.equal(result.services[0].product, "svc");
+    assert.equal(result.services[0].component, "svc");
+    assert.equal(result.services[0].serviceTag, undefined);
     assert.equal(result.services[0].promotionType, "securePipelines");
     assert.deepEqual(result.services[0].checks[0].checkTypes, ["unit"]);
-    assert.match(result.$schema, /v0\.12\.0/);
+    assert.match(result.$schema, /v0\.13\.0/);
   });
 
   it("does not write files in dry-run mode", () => {
@@ -62,8 +64,8 @@ describe("upgrade command", () => {
 
   it("skips manifests already at latest version", () => {
     const file = createManifest(TMP, {
-      $schema: "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.12.0/schemas/schema.json",
-      services: [{ serviceTag: "x", promotionType: "securePipelines", checks: [] }],
+      $schema: "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.13.0/schemas/schema.json",
+      services: [{ product: "x", component: "x", promotionType: "securePipelines", checks: [] }],
     });
     const before = readFileSync(file, "utf8");
 
@@ -86,9 +88,10 @@ describe("upgrade command", () => {
 
     const a = JSON.parse(readFileSync(join(TMP, "a", "quality-gate.manifest.json"), "utf8"));
     const b = JSON.parse(readFileSync(join(TMP, "b", "quality-gate.manifest.json"), "utf8"));
-    assert.match(a.$schema, /v0\.12\.0/);
-    assert.match(b.$schema, /v0\.12\.0/);
-    assert.equal(b.services[0].serviceTag, "b");
+    assert.match(a.$schema, /v0\.13\.0/);
+    assert.match(b.$schema, /v0\.13\.0/);
+    assert.equal(b.services[0].product, "b");
+    assert.equal(b.services[0].component, "b");
   });
 
   it("reports error for non-existent path", () => {
