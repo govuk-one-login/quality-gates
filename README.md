@@ -16,7 +16,8 @@ Reference the schema directly in your manifest file:
   "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.0.0/schemas/schema.json",
   "services": [
     {
-      "serviceTag": "my-service",
+      "product": "my-service",
+      "component": "frontend",
       "promotionType": "securePipelines",
       "checks": [
         {
