@@ -4,7 +4,7 @@ import { findMismatchedJobs } from "./mismatched-jobs.js";
 
 const makeData = (checks, jobs) => ({
   manifest: {
-    services: [{ serviceTag: "my-service", checks }],
+    services: [{ product: "my-service", component: "api", checks }],
   },
   workflows: [{ name: "ci.yml", jobs }],
 });
