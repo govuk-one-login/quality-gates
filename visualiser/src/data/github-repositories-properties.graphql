@@ -26,21 +26,6 @@ query GetAllRepositories($org: String!, $cursor: String) {
                 teamResponsible: repositoryCustomPropertyValue(propertyName: "team-responsible") {
                     value
                 }
-
-                manifest: object(expression: "HEAD:quality-gate.manifest.json") {
-                    commitUrl
-                    ... on Blob {
-                        isBinary
-                        text
-                    }
-                }
-                preCommitConfig: object(expression: "HEAD:.pre-commit-config.yaml") {
-                    commitUrl
-                    ... on Blob {
-                        isBinary
-                        text
-                    }
-                }
             }
         }
     }

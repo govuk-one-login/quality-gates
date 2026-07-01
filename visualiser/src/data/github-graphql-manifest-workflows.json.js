@@ -53,25 +53,9 @@ for await (const response of repoIterator) {
     data.rateLimit = response.rateLimit
 
     for await (const repo of response.organization.repositories.nodes) {
-        // quality-gates.manifest.json
-        try {
-            if (repo.manifest?.text) repo.manifest.text = JSON.parse(repo.manifest.text);
-        } catch (e) {
-            console.error(`Error parsing manifest for ${ORG}/${repo.name}`)
-            console.error(e.message)
-            repo.manifest.text = {}
-        }
-
-        // .pre-commit-config.yaml
-        try {
-            if (repo.preCommitConfig?.text) repo.preCommitConfig.text = YAML.parse(repo.preCommitConfig.text);
-        } catch (e) {
-            console.error(`Error parsing .pre-commit-config.yaml for ${ORG}/${repo.name}`)
-            console.error(e.message)
-            repo.preCommitConfig.text = {}
-        }
-
         let workflows;
+        let manifest = null;
+        let preCommitConfig = null;
         let parsedWorkflows = {
             entries: [],
             __errors: []
@@ -83,6 +67,30 @@ for await (const response of repoIterator) {
             console.error(`Error fetching workflows for ${ORG}/${repo.name}`)
             console.error(e.message)
             parsedWorkflows.__errors.push(`Error fetching workflows for ${ORG}/${repo.name}`)
+        }
+
+        // quality-gates.manifest.json
+        manifest = workflows?.repository?.manifest ?? null;
+        if (manifest?.text) {
+            try {
+                manifest.text = JSON.parse(manifest.text);
+            } catch (e) {
+                console.error(`Error parsing manifest for ${ORG}/${repo.name}`)
+                console.error(e.message)
+                manifest.text = {}
+            }
+        }
+
+        // .pre-commit-config.yaml
+        preCommitConfig = workflows?.repository?.preCommitConfig ?? null;
+        if (preCommitConfig?.text) {
+            try {
+                preCommitConfig.text = YAML.parse(preCommitConfig.text);
+            } catch (e) {
+                console.error(`Error parsing .pre-commit-config.yaml for ${ORG}/${repo.name}`)
+                console.error(e.message)
+                preCommitConfig.text = {}
+            }
         }
 
         if (workflows?.repository?.workflows?.entries) {
@@ -106,6 +114,8 @@ for await (const response of repoIterator) {
 
         data.organization.repositories.nodes.push({
             ...repo,
+            manifest,
+            preCommitConfig,
             workflows: parsedWorkflows
         })
     }
