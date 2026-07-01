@@ -2,12 +2,12 @@ import "dotenv/config";
 import { Octokit } from "@octokit/core";
 import { paginateGraphQL } from "@octokit/plugin-paginate-graphql";
 
-import { readFileSync } from "fs";
+import { readFileSync, existsSync, readdirSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import YAML from 'yaml'
 
-const { GITHUB_TOKEN, GITHUB_ORG:ORG } = process.env;
+const { GITHUB_TOKEN, GITHUB_ORG:ORG, LOCAL_REPOSITORIES_ROOT } = process.env;
 
 const PaginatedOctokit = Octokit.plugin(paginateGraphQL);
 const octokit = new PaginatedOctokit({ auth: GITHUB_TOKEN });
@@ -21,6 +21,52 @@ const workflowsQuery = readFileSync(
     join(dirname(fileURLToPath(import.meta.url)), "github-workflows.graphql"),
     "utf8"
 );
+
+function readLocalRepository(repoDir) {
+    const result = {
+        repository: {
+            name: repoDir.split("/").at(-1),
+            workflows: null,
+            manifest: null,
+            preCommitConfig: null
+        }
+    };
+
+    // .github/workflows/
+    const workflowsDir = join(repoDir, ".github", "workflows");
+    if (existsSync(workflowsDir)) {
+        const entries = readdirSync(workflowsDir)
+            .filter((name) => name.endsWith(".yml") || name.endsWith(".yaml"))
+            .map((name) => ({
+                name,
+                object: {
+                    text: readFileSync(join(workflowsDir, name), "utf8"),
+                    isBinary: false
+                }
+            }));
+        result.repository.workflows = { entries };
+    }
+
+    // quality-gate.manifest.json
+    const manifestPath = join(repoDir, "quality-gate.manifest.json");
+    if (existsSync(manifestPath)) {
+        result.repository.manifest = {
+            isBinary: false,
+            text: readFileSync(manifestPath, "utf8")
+        };
+    }
+
+    // .pre-commit-config.yaml
+    const preCommitPath = join(repoDir, ".pre-commit-config.yaml");
+    if (existsSync(preCommitPath)) {
+        result.repository.preCommitConfig = {
+            isBinary: false,
+            text: readFileSync(preCommitPath, "utf8")
+        };
+    }
+
+    return result;
+}
 
 
 let data = {
@@ -61,12 +107,22 @@ for await (const response of repoIterator) {
             __errors: []
         }
 
-        try {
-            workflows = await octokit.graphql(workflowsQuery, {org: ORG, repo: repo.name})
-        } catch(e) {
-            console.error(`Error fetching workflows for ${ORG}/${repo.name}`)
-            console.error(e.message)
-            parsedWorkflows.__errors.push(`Error fetching workflows for ${ORG}/${repo.name}`)
+        if (LOCAL_REPOSITORIES_ROOT) {
+            const repoDir = join(LOCAL_REPOSITORIES_ROOT, repo.name);
+            if (existsSync(repoDir)) {
+                workflows = readLocalRepository(repoDir);
+                console.warn(`Local: ${repo.name}`)
+            } else {
+                console.warn(`Local: ${repo.name} (not found)`)
+            }
+        } else {
+            try {
+                workflows = await octokit.graphql(workflowsQuery, {org: ORG, repo: repo.name})
+            } catch(e) {
+                console.error(`Error fetching workflows for ${ORG}/${repo.name}`)
+                console.error(e.message)
+                parsedWorkflows.__errors.push(`Error fetching workflows for ${ORG}/${repo.name}`)
+            }
         }
 
         // quality-gates.manifest.json
