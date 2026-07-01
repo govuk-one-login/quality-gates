@@ -19,6 +19,10 @@ const currentSchema = FileAttachment("./data/schema.json").json();
 const allCheckTypes = currentSchema["$defs"]["check-type"].enum
 ```
 
+```js
+import { parseCheckPath } from "./components/jsonpath.js";
+```
+
 
 ```js
 const nodes = githubManifestAndWorkflows.organization.repositories.nodes
@@ -171,17 +175,28 @@ Inputs.table(
 ```js
 function findGatesWithmismatchedJobs(node) {
     const workflowJobs = new Map(
-        node.workflows.entries.map(({ name, object }) => [name, new Set(Object.keys(object.text.jobs ?? {}))])
+        node.workflows.entries.map(({ name, object }) => [name, object.text.jobs ?? {}])
     );
     const { manifest, workflows, ...rest } = node;
     return (node.manifest.text.services ?? []).flatMap((s) =>
         (s.checks ?? [])
-            .filter((g) => {
-                const jobKey = g.config.path?.split(".")[1];
+            .filter((g) => g.provider === "GitHub" && g.config.path)
+            .flatMap((g) => {
+                const parsed = parseCheckPath(g.config.path);
+                if (!parsed.valid) return [];
                 const filename = g.config.file.replace(".github/workflows/", "");
-                return jobKey && !workflowJobs.get(filename)?.has(jobKey);
+                const jobs = workflowJobs.get(filename);
+                if (!jobs) return [];
+                if (!(parsed.job in jobs)) {
+                    return [{ ...rest, ...g, mismatchedJobNames: parsed.job }];
+                }
+                if (parsed.step) {
+                    const steps = jobs[parsed.job].steps ?? [];
+                    const match = steps.some((st) => st[parsed.step.by] === parsed.step.value);
+                    if (!match) return [{ ...rest, ...g, mismatchedJobNames: `${parsed.job} → step ${parsed.step.by}='${parsed.step.value}'` }];
+                }
+                return [];
             })
-            .map((g) => ({ ...rest, ...g, mismatchedJobNames: g.config.path?.split(".")[1] }))
     );
 }
 
@@ -237,4 +252,54 @@ Inputs.table(
             "config.file": (s) => s.split("workflows/")[1]
         }
     })
+```
+
+---
+
+## Invalid JSONPath Syntax
+
+```js
+function findGatesWithInvalidPaths(node) {
+    const { manifest, workflows, ...rest } = node;
+    return (node.manifest.text.services ?? []).flatMap((s) =>
+        (s.checks ?? [])
+            .filter((g) => g.provider === "GitHub" && g.config.path && !parseCheckPath(g.config.path).valid)
+            .map((g) => ({ ...rest, ...g, invalidPath: g.config.path }))
+    );
+}
+
+const gatesWithInvalidPaths = nodesWithManifest.flatMap(findGatesWithInvalidPaths);
+```
+
+#### ${gatesWithInvalidPaths.length} gates with invalid JSONPath syntax
+
+```js
+Plot.plot({
+    marginLeft: 150,
+    color: {scheme: "observable10"},
+    marks: [Plot.barX(gatesWithInvalidPaths, Plot.groupY({x: "count", fill: "count"}, {y: d => d.pod.value, sort: {y: "x", reverse: true}}))]
+})
+```
+
+```js
+Plot.plot({
+    marginLeft: 150,
+    color: {scheme: "observable10"},
+    marks: [Plot.barX(gatesWithInvalidPaths, Plot.groupY({x: "count", fill: "count"}, {y: d => d.teamResponsible.value, sort: {y: "x", reverse: true}}))]
+})
+```
+
+```js
+Plot.plot({
+    marginLeft: 200,
+    color: {scheme: "observable10"},
+    marks: [Plot.barX(gatesWithInvalidPaths, Plot.groupY({x: "count", fill: "count"}, {y: "name", sort: {y: "x", reverse: true}}))]
+})
+```
+
+```js
+view(Inputs.table(gatesWithInvalidPaths, {
+    columns: ["name", "invalidPath"],
+    multiple: false
+}))
 ```

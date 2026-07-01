@@ -1,3 +1,5 @@
+import { parseCheckPath } from "./jsonpath.js";
+
 export function nodesWithManifests(nodes) {
     return nodes
         .filter((n) => n.manifest).map((n) => ({
@@ -35,11 +37,13 @@ export function flattenQualityGatesJobs(nodes) {
         (node.manifest?.text?.services ?? []).flatMap((service) =>
             (service.checks ?? []).flatMap((gate) => {
                 if (!gate.config?.file || !gate.config?.path) return [];
+                const parsed = parseCheckPath(gate.config.path);
+                if (!parsed.valid) return [];
                 const fileName = gate.config.file.split("/").at(-1);
-                const jobKey = gate.config.path.split(".").at(-1);
                 const workflow = (node.workflows?.entries ?? []).find((e) => e.name === fileName);
                 if (!workflow) return [];
-                const job = workflow.object.text.jobs[jobKey];
+                const job = workflow.object.text.jobs[parsed.job];
+                if (!job) return [];
                 return {
                     checkTypes: gate.checkTypes,
                     job: {
