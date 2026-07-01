@@ -8,8 +8,14 @@ import { readFileSync } from "fs";
 // Fetch checks from schema
 const schemaUrl = new URL("../../../schemas/schema.json", import.meta.url)
 const schema = JSON.parse(readFileSync(schemaUrl, "utf8"))
-const checkTypes = schema.$defs["check-type"].items.oneOf.flatMap((oneOf) => oneOf.enum)
-const phases = schema.$defs.check.properties.phase.items.oneOf.flatMap((oneOf) => oneOf.enum)
+const checkTypes = schema.$defs["check-type"].enum
+const phases = [
+    ...new Set([
+        ...schema.$defs["secure-pipelines-phases"].properties.checks.items.properties.phase.enum,
+        ...schema.$defs["git-flow-phases"].properties.checks.items.properties.phase.enum,
+        ...schema.$defs["library-phases"].properties.checks.items.properties.phase.enum,
+    ])
+]
 
 // Manipulate Environment variables
 const { LEVEL_GROUP_DELIMITER:DELIMITER, LEVEL_GROUP_PREFIX:PREFIX } = process.env;

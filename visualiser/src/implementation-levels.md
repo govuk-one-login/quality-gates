@@ -15,7 +15,7 @@ const currentSchema = FileAttachment("./data/schema.json").json();
 ```
 
 ```js
-const allCheckTypes = currentSchema["$defs"]["check-type"].items.oneOf.flatMap((oneOf) => oneOf.enum)
+const allCheckTypes = currentSchema["$defs"]["check-type"].enum
 ```
 
 ```js
@@ -138,7 +138,7 @@ const nodesWithManifest = filteredManifestAndWorkflows.organization.repositories
 
 ```js
 const nodesByServiceTag = Object.groupBy(
-  nodesWithManifest.flatMap((n) => n.manifest.text.services.map((s) => ({ ...n, serviceTag: s["service-tag"] }))),
+  nodesWithManifest.flatMap((n) => (n.manifest.text.services ?? []).map((s) => ({ ...n, serviceTag: s.product }))),
   (n) => n.serviceTag
 )
 ```
@@ -155,20 +155,20 @@ const serviceItems = Object.keys(nodesByServiceTag).reduce((acc, tag) =>
   acc.concat(nodesByServiceTag[tag].map((n) => ({
     service__repo: `${tag} / ${n.name}`,
       ...n,
-    ...n.manifest.text.services.find((s) => s["service-tag"] === tag)
+    ...(n.manifest.text.services ?? []).find((s) => s.product === tag)
   }))),
 [])
 ```
 
 ```js
-const flattenedQualityGates = serviceItems.flatMap(({ "quality-gates": qg, ...rest }) =>
-  qg.map((gate) => ({ ...rest, ...gate }))
+const flattenedQualityGates = serviceItems.flatMap(({ checks: qg, ...rest }) =>
+  (qg ?? []).map((gate) => ({ ...rest, ...gate }))
 )
 ```
 
 ```js
-const flattenedCheckTypes = flattenedQualityGates.flatMap(({ "check-types": ct, ...rest }) =>
-  ct.map((checkType) => ({ ...rest, "check-type": checkType }))
+const flattenedCheckTypes = flattenedQualityGates.flatMap(({ checkTypes: ct, ...rest }) =>
+  (ct ?? []).map((checkType) => ({ ...rest, "check-type": checkType }))
 )
 ```
 

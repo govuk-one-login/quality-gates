@@ -20,13 +20,12 @@ const toggleProductionOnly = view(Inputs.toggle({label: "Production Only", value
 const currentSchema = FileAttachment("./data/schema.json").json();
 ```
 ```js
-const allCheckTypes = currentSchema["$defs"]["check-type"].items.oneOf.flatMap((oneOf) => oneOf.enum)
+const allCheckTypes = currentSchema["$defs"]["check-type"].enum
 ```
 
 ```js
 const preMergeChecks = view(Inputs.checkbox(allCheckTypes, {label: "Check Types", value: allCheckTypes}));
 ```
-
 
 ```js
 const nodes = githubManifestAndWorkflows.organization.repositories.nodes
@@ -82,15 +81,15 @@ const stats = nodesWithManifest.flatMap((node) => {
     ])
   );
 
-  return node.manifest.text.services.flatMap((service) =>
-    service["quality-gates"].flatMap((gate) => {
+  return (node.manifest.text.services ?? []).flatMap((service) =>
+    (service.checks ?? []).flatMap((gate) => {
       const workflowKey = gate.config.file
         .replace(".github/workflows/", "")
         .replace(/\.ya?ml$/, "");
       const jobs = workflowsByName[workflowKey];
       const jobKey = gate.config.path?.replace("jobs.", "");
       const job = jobs?.[jobKey];
-      return gate["check-types"].map((checkType) => ({ ...node, ...gate, ...gate.config, repo: node.name, service: service["service-tag"], job, checkType, stepsCount: job?.steps?.length }));
+      return (gate.checkTypes ?? []).map((checkType) => ({ ...node, ...gate, ...gate.config, repo: node.name, service: service.product, job, checkType, stepsCount: job?.steps?.length }));
     })
   );
 })

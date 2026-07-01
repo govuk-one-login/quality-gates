@@ -33,22 +33,22 @@ export function flattenJobs (nodes) {
 export function flattenQualityGatesJobs(nodes) {
     return nodes.flatMap((node) =>
         (node.manifest?.text?.services ?? []).flatMap((service) =>
-            (service["quality-gates"] ?? []).flatMap((gate) => {
+            (service.checks ?? []).flatMap((gate) => {
                 if (!gate.config?.file || !gate.config?.path) return [];
                 const fileName = gate.config.file.split("/").at(-1);
                 const jobKey = gate.config.path.split(".").at(-1);
-                const workflow = node.workflows.entries.find((e) => e.name === fileName);
+                const workflow = (node.workflows?.entries ?? []).find((e) => e.name === fileName);
                 if (!workflow) return [];
                 const job = workflow.object.text.jobs[jobKey];
                 return {
-                    "check-types": gate["check-types"],
+                    checkTypes: gate.checkTypes,
                     job: {
                         ...job,
                         "__workflow-file": fileName,
                         "__workflow-name": workflow.object.text.name,
                         "__path": gate.config.path,
                         "__repoName": node.name,
-                        "__serviceTag": service["service-tag"]
+                        "__serviceTag": service.product
                     }
                 };
             })
@@ -61,9 +61,9 @@ export function cleanupValues(value) {
 }
 
 export function qualityGatesJobsToCheckStepRunUses(qualityGatesJobs) {
-    return qualityGatesJobs.flatMap(({ "check-types": checkTypes, job }) =>
+    return qualityGatesJobs.flatMap(({ checkTypes, job }) =>
         (job.steps ?? []).flatMap((step) =>
-            checkTypes.flatMap((checkType) =>
+            (checkTypes ?? []).flatMap((checkType) =>
                 [
                     step.uses && { "check-type": checkType, "run-use-type": "use", value: step.uses },
                     step.run  && { "check-type": checkType, "run-use-type": "run", value: step.run },
