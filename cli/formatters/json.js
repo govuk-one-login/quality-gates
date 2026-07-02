@@ -1,6 +1,9 @@
 import { suggest } from "../utils/suggest.js";
 
-export function formatJson(errors) {
+export function formatJson(results) {
+  const warnings = results.filter((r) => r.severity === "warning");
+  const errors = results.filter((r) => r.severity !== "warning");
+
   const enriched = errors.map((e) => {
     let input, candidates;
     if (e.type === "missing-workflow") {
@@ -19,9 +22,16 @@ export function formatJson(errors) {
     return match ? { ...e, suggestion: match } : e;
   });
 
-  const summary = { total: enriched.length, byType: {} };
+  const summary = {
+    total: enriched.length,
+    warnings: warnings.length,
+    byType: {},
+  };
   for (const e of enriched) {
     summary.byType[e.type] = (summary.byType[e.type] || 0) + 1;
   }
-  return JSON.stringify({ summary, errors: enriched }, null, 2);
+  for (const w of warnings) {
+    summary.byType[w.type] = (summary.byType[w.type] || 0) + 1;
+  }
+  return JSON.stringify({ summary, errors: enriched, warnings }, null, 2);
 }
