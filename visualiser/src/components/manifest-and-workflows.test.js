@@ -43,46 +43,46 @@ describe("manifest-and-workflows", () => {
                         text: {
                             services: [
                                 {
-                                    "service-tag": "service-a",
-                                    "quality-gates": [
+                                    "product": "service-a",
+                                    "checks": [
                                         {
-                                            "check-types": ["code style and linting", "vulnerability detection"],
+                                            "checkTypes": ["code style and linting", "vulnerability detection"],
                                             "config": {
                                                 file: ".github/workflows/ci.yaml",
-                                                path: "jobs.build"
+                                                path: "$.jobs.build"
                                             }
                                         },
                                         {
-                                            "check-types": ["unit"],
+                                            "checkTypes": ["unit"],
                                             "config": {
                                                 file: ".github/workflows/ci.yaml",
-                                                path: "jobs.test"
+                                                path: "$.jobs.test"
                                             }
                                         }
                                     ]
                                 },
                                 {
-                                    "service-tag": "service-b",
-                                    "quality-gates": [
+                                    "product": "service-b",
+                                    "checks": [
                                         {
-                                            "check-types": ["code style and linting", "vulnerability detection"],
+                                            "checkTypes": ["code style and linting", "vulnerability detection"],
                                             "config": {
                                                 file: ".github/workflows/ci.yaml",
-                                                path: "jobs.build"
+                                                path: "$.jobs.build"
                                             }
                                         },
                                         {
-                                            "check-types": ["unit"],
+                                            "checkTypes": ["unit"],
                                             "config": {
                                                 file: ".github/workflows/ci.yaml",
-                                                path: "jobs.test"
+                                                path: "$.jobs.test"
                                             }
                                         },
                                         {
-                                            "check-types": ["component", "regression"],
+                                            "checkTypes": ["component", "regression"],
                                             "config": {
                                                 file: ".github/workflows/ci.yaml",
-                                                path: "jobs.integration-test"
+                                                path: "$.jobs.integration-test"
                                             }
                                         }
                                     ]
@@ -121,55 +121,55 @@ describe("manifest-and-workflows", () => {
 
             const flattenedQualityGatesJobs = [
                 {
-                    "check-types": ["code style and linting", "vulnerability detection"],
+                    "checkTypes": ["code style and linting", "vulnerability detection"],
                     "job": {
                         "__workflow-file": "ci.yaml",
                         "__workflow-name": "CI",
-                        "__path": "jobs.build",
+                        "__path": "$.jobs.build",
                         "__repoName": "repo-a",
                         "__serviceTag": "service-a",
                         name: "Build"
                     }
                 },
                 {
-                    "check-types": ["unit"],
+                    "checkTypes": ["unit"],
                     "job": {
                         "__workflow-file": "ci.yaml",
                         "__workflow-name": "CI",
-                        "__path": "jobs.test",
+                        "__path": "$.jobs.test",
                         "__repoName": "repo-a",
                         "__serviceTag": "service-a",
                         name: "Run Tests"
                     }
                 },
                 {
-                    "check-types": ["code style and linting", "vulnerability detection"],
+                    "checkTypes": ["code style and linting", "vulnerability detection"],
                     "job": {
                         "__workflow-file": "ci.yaml",
                         "__workflow-name": "CI",
-                        "__path": "jobs.build",
+                        "__path": "$.jobs.build",
                         "__repoName": "repo-a",
                         "__serviceTag": "service-b",
                         name: "Build"
                     }
                 },
                 {
-                    "check-types": ["unit"],
+                    "checkTypes": ["unit"],
                     "job": {
                         "__workflow-file": "ci.yaml",
                         "__workflow-name": "CI",
-                        "__path": "jobs.test",
+                        "__path": "$.jobs.test",
                         "__repoName": "repo-a",
                         "__serviceTag": "service-b",
                         name: "Run Tests"
                     }
                 },
                 {
-                    "check-types": ["component", "regression"],
+                    "checkTypes": ["component", "regression"],
                     "job": {
                         "__workflow-file": "ci.yaml",
                         "__workflow-name": "CI",
-                        "__path": "jobs.integration-test",
+                        "__path": "$.jobs.integration-test",
                         "__repoName": "repo-a",
                         "__serviceTag": "service-b",
                         name: "Run Integration Tests"
@@ -182,10 +182,138 @@ describe("manifest-and-workflows", () => {
             assert.deepEqual(result, flattenedQualityGatesJobs);
         })
 
-        it("returns empty array for service with empty quality-gates", () => {
+        it("handles bracket-notation paths", () => {
             const nodes = [{
                 name: "repo-a",
-                manifest: {text: {services: [{"service-tag": "service-a", "quality-gates": []}]}},
+                manifest: {
+                    text: {
+                        services: [{
+                            "product": "service-a",
+                            "checks": [{
+                                "checkTypes": ["unit"],
+                                "config": {file: ".github/workflows/ci.yaml", path: "$.jobs['my-job']"}
+                            }]
+                        }]
+                    }
+                },
+                workflows: {
+                    entries: [{
+                        name: "ci.yaml",
+                        object: {text: {name: "CI", jobs: {"my-job": {name: "My Job"}}}}
+                    }]
+                }
+            }];
+            const result = flattenQualityGatesJobs(nodes);
+            assert.equal(result.length, 1);
+            assert.equal(result[0].job.name, "My Job");
+            assert.equal(result[0].job["__path"], "$.jobs['my-job']");
+        })
+
+        it("extracts job from step-level paths", () => {
+            const nodes = [{
+                name: "repo-a",
+                manifest: {
+                    text: {
+                        services: [{
+                            "product": "service-a",
+                            "checks": [{
+                                "checkTypes": ["unit"],
+                                "config": {file: ".github/workflows/ci.yaml", path: "$.jobs.build.steps[?@.name=='Run tests']"}
+                            }]
+                        }]
+                    }
+                },
+                workflows: {
+                    entries: [{
+                        name: "ci.yaml",
+                        object: {text: {name: "CI", jobs: {build: {name: "Build", steps: [{name: "Run tests"}]}}}}
+                    }]
+                }
+            }];
+            const result = flattenQualityGatesJobs(nodes);
+            assert.equal(result.length, 1);
+            assert.equal(result[0].job.name, "Build");
+            assert.equal(result[0].job["__path"], "$.jobs.build.steps[?@.name=='Run tests']");
+        })
+
+        it("skips invalid JSONPath paths", () => {
+            const nodes = [{
+                name: "repo-a",
+                manifest: {
+                    text: {
+                        services: [{
+                            "product": "service-a",
+                            "checks": [{
+                                "checkTypes": ["unit"],
+                                "config": {file: ".github/workflows/ci.yaml", path: "$.invalid[syntax"}
+                            }]
+                        }]
+                    }
+                },
+                workflows: {
+                    entries: [{
+                        name: "ci.yaml",
+                        object: {text: {name: "CI", jobs: {build: {name: "Build"}}}}
+                    }]
+                }
+            }];
+            assert.deepEqual(flattenQualityGatesJobs(nodes), []);
+        })
+
+        it("skips when parsed job does not exist in workflow", () => {
+            const nodes = [{
+                name: "repo-a",
+                manifest: {
+                    text: {
+                        services: [{
+                            "product": "service-a",
+                            "checks": [{
+                                "checkTypes": ["unit"],
+                                "config": {file: ".github/workflows/ci.yaml", path: "$.jobs.missing"}
+                            }]
+                        }]
+                    }
+                },
+                workflows: {
+                    entries: [{
+                        name: "ci.yaml",
+                        object: {text: {name: "CI", jobs: {build: {name: "Build"}}}}
+                    }]
+                }
+            }];
+            assert.deepEqual(flattenQualityGatesJobs(nodes), []);
+        })
+
+        it("still supports legacy paths without $ prefix", () => {
+            const nodes = [{
+                name: "repo-a",
+                manifest: {
+                    text: {
+                        services: [{
+                            "product": "service-a",
+                            "checks": [{
+                                "checkTypes": ["unit"],
+                                "config": {file: ".github/workflows/ci.yaml", path: "jobs.build"}
+                            }]
+                        }]
+                    }
+                },
+                workflows: {
+                    entries: [{
+                        name: "ci.yaml",
+                        object: {text: {name: "CI", jobs: {build: {name: "Build"}}}}
+                    }]
+                }
+            }];
+            const result = flattenQualityGatesJobs(nodes);
+            assert.equal(result.length, 1);
+            assert.equal(result[0].job.name, "Build");
+        })
+
+        it("returns empty array for service with empty checks", () => {
+            const nodes = [{
+                name: "repo-a",
+                manifest: {text: {services: [{"product": "service-a", "checks": []}]}},
                 workflows: {entries: []}
             }];
             assert.deepEqual(flattenQualityGatesJobs(nodes), []);
@@ -197,9 +325,9 @@ describe("manifest-and-workflows", () => {
                 manifest: {
                     text: {
                         services: [{
-                            "service-tag": "service-a", "quality-gates": [{
-                                "check-types": ["unit"],
-                                "config": {file: ".github/workflows/missing.yaml", path: "jobs.test"}
+                            "product": "service-a", "checks": [{
+                                "checkTypes": ["unit"],
+                                "config": {file: ".github/workflows/missing.yaml", path: "$.jobs.test"}
                             }]
                         }]
                     }
@@ -215,8 +343,8 @@ describe("manifest-and-workflows", () => {
                 manifest: {
                     text: {
                         services: [{
-                            "service-tag": "service-a",
-                            "quality-gates": [{"check-types": ["unit"]}]
+                            "product": "service-a",
+                            "checks": [{"checkTypes": ["unit"]}]
                         }]
                     }
                 },
@@ -231,7 +359,7 @@ describe("manifest-and-workflows", () => {
         it("transforms", () => {
             const qualityGatesJobs = [
                 {
-                    "check-types": ["code style and linting"],
+                    "checkTypes": ["code style and linting"],
                     "job": {
                         steps: [
                             {

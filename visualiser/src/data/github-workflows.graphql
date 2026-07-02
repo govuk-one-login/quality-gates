@@ -18,6 +18,18 @@ query GetManifestAndWorkflows($org: String!, $repo: String!) {
                 }
             }
         }
+        manifest: object(expression: "HEAD:quality-gate.manifest.json") {
+            ... on Blob {
+                isBinary
+                text
+            }
+        }
+        preCommitConfig: object(expression: "HEAD:.pre-commit-config.yaml") {
+            ... on Blob {
+                isBinary
+                text
+            }
+        }
 
     }
 
