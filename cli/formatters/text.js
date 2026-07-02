@@ -1,9 +1,25 @@
 import { suggest } from "../utils/suggest.js";
 
-export function formatText(errors) {
-  if (!errors.length) return "✅ No validation errors found.";
+export function formatText(results) {
+  const warnings = results.filter((r) => r.severity === "warning");
+  const errors = results.filter((r) => r.severity !== "warning");
 
-  const lines = [`Found ${errors.length} validation error${errors.length > 1 ? "s" : ""}:\n`];
+  const lines = [];
+
+  for (const warning of warnings) {
+    if (warning.type === "terraform-binary-missing") {
+      lines.push(`⚠️  ${warning.message}`);
+      lines.push(`   Service: ${warning.service}`);
+    }
+    lines.push("");
+  }
+
+  if (!errors.length) {
+    lines.push("✅ No validation errors found.");
+    return lines.join("\n");
+  }
+
+  lines.push(`Found ${errors.length} validation error${errors.length > 1 ? "s" : ""}:\n`);
 
   for (const error of errors) {
     if (error.type === "missing-workflow") {
@@ -34,6 +50,17 @@ export function formatText(errors) {
       lines.push(`❌ Invalid path syntax: ${error.details.path}`);
       lines.push(`   Service: ${error.service}`);
       lines.push(`   Expected format: $.jobs.<name> or $.jobs.<name>.steps[?@.name=='<step>']`);
+    } else if (error.type === "missing-terraform-file") {
+      lines.push(`❌ Terraform file not found: ${error.details.file}`);
+      lines.push(`   Service: ${error.service}`);
+    } else if (error.type === "terraform-parse-error") {
+      lines.push(`❌ Failed to parse Terraform file: ${error.details.file}`);
+      lines.push(`   Service: ${error.service}`);
+    } else if (error.type === "mismatched-terraform-path") {
+      lines.push(`❌ Terraform path not found: ${error.details.path}`);
+      lines.push(`   Service: ${error.service}`);
+      lines.push(`   File: ${error.details.file}`);
+      if (error.details.failedAt) lines.push(`   Failed at segment: ${error.details.failedAt}`);
     }
     lines.push("");
   }
