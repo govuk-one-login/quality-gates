@@ -61,6 +61,21 @@ export function formatText(results) {
       lines.push(`   Service: ${error.service}`);
       lines.push(`   File: ${error.details.file}`);
       if (error.details.failedAt) lines.push(`   Failed at segment: ${error.details.failedAt}`);
+    } else if (error.type === "missing-stack-orch-file") {
+      lines.push(`❌ Stack Orchestration file not found: ${error.details.file}`);
+      lines.push(`   Service: ${error.service}`);
+    } else if (error.type === "stack-orch-parse-error") {
+      lines.push(`❌ Failed to parse Stack Orchestration file: ${error.details.file}`);
+      lines.push(`   Service: ${error.service}`);
+    } else if (error.type === "mismatched-stack-orch-path") {
+      lines.push(`❌ Parameter not found: ${error.details.path}`);
+      lines.push(`   Service: ${error.service}`);
+      lines.push(`   File: ${error.details.file}`);
+      if (error.details.failedAt) {
+        const match = suggest(error.details.failedAt, error.details.available || []);
+        if (match) lines.push(`   Did you mean: $[?@.ParameterKey=='${match}']?`);
+        if (error.details.available) lines.push(`   Available parameters: ${error.details.available.join(", ")}`);
+      }
     }
     lines.push("");
   }
