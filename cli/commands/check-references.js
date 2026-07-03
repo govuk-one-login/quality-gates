@@ -1,15 +1,17 @@
 import { existsSync } from "node:fs";
 import { loadManifest } from "../middleware/load-manifest.js";
 import { loadWorkflows } from "../middleware/load-workflows.js";
+import { loadTerraform } from "../middleware/load-terraform.js";
 import { findMissingWorkflows } from "../validators/missing-workflows.js";
 import { findMismatchedJobs } from "../validators/mismatched-jobs.js";
+import { findMismatchedTerraform } from "../validators/mismatched-terraform.js";
 import { formatText } from "../formatters/text.js";
 import { formatJson } from "../formatters/json.js";
 
 const formatters = { text: formatText, json: formatJson };
 
 export const command = "check-references [directory]";
-export const describe = "Validate quality gate manifest references against workflow files";
+export const describe = "Validate quality gate manifest references against workflow and Terraform files";
 
 export function builder(yargs) {
   yargs
@@ -24,7 +26,7 @@ export function builder(yargs) {
       }
       return true;
     })
-    .middleware([loadManifest, loadWorkflows])
+    .middleware([loadManifest, loadWorkflows, loadTerraform])
     .example("$0 check-references", "Validate current directory")
     .example("$0 check-references ../my-repo", "Validate a specific project")
     .example("$0 check-references . --format json", "Output as JSON");
@@ -36,12 +38,14 @@ export function handler(argv) {
     process.exitCode = 2;
     return;
   }
-  const data = { manifest: argv.manifest, workflows: argv.workflows };
-  const errors = [
+  const data = { manifest: argv.manifest, workflows: argv.workflows, terraform: argv.terraform };
+  const results = [
     ...findMissingWorkflows(data),
     ...findMismatchedJobs(data),
+    ...findMismatchedTerraform(data),
   ];
-  const output = formatters[argv.format](errors);
+  const output = formatters[argv.format](results);
   console.log(output);
+  const errors = results.filter((r) => r.severity !== "warning");
   process.exitCode = errors.length ? 1 : 0;
 }
