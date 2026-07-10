@@ -162,7 +162,7 @@ const serviceItems = Object.keys(nodesByServiceTag).reduce((acc, tag) =>
 
 ```js
 const flattenedQualityGates = serviceItems.flatMap(({ "quality-gates": qg, ...rest }) =>
-  qg.map((gate) => ({ ...rest, ...gate }))
+    qg ? qg.map((gate) => ({ ...rest, ...gate })) : []
 )
 ```
 
