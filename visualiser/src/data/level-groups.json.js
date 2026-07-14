@@ -24,7 +24,12 @@ const groupEnvVars = Object.keys(process.env)
     .filter(key => key.startsWith(PREFIX))
 
 const data = groupEnvVars.reduce((acc, envvar) => {
-    const [ __, level, phase ] = envvar.split(DELIMITER)
+    const [ __, promotionType, level, phase ] = envvar.split(DELIMITER)
+
+    if(!phase) {
+        // Skip entries that don't match the expected format (e.g. PREFIX itself or DELIMITER/PREFIX vars)
+        return acc
+    }
 
     if(!phases.includes(phase.toLowerCase().replace("_","-"))) {
         console.error(`Invalid phase in ${envvar} - ${phase}`)
@@ -41,6 +46,7 @@ const data = groupEnvVars.reduce((acc, envvar) => {
     }
 
     const setting = {
+        promotionType: promotionType.toLowerCase().replace("_","-"),
         name: level.toLowerCase().replace("_","-"),
         phase: phase.toLowerCase().replace("_","-"),
         checks: validEnvChecks.sort()
