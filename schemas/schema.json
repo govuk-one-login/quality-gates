@@ -9,7 +9,7 @@
           "product": "service-name",
           "component": "frontend",
           "promotionType": "securePipelines",
-          "checks": [
+          "automated": [
             {
               "checkTypes": ["code style and linting"],
               "provider": "GitHub",
@@ -31,7 +31,7 @@
     }
   },
   "$defs": {
-    "check": {
+    "automated-check": {
       "type": "object",
       "properties": {
         "checkTypes": {
@@ -57,6 +57,72 @@
         "phase",
         "provider",
         "config"
+      ]
+    },
+    "manual-check": {
+      "type": "object",
+      "properties": {
+        "checkTypes": {
+          "$ref": "#/$defs/check-types"
+        },
+        "phase": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "checkTypes",
+        "phase",
+        "details"
+      ]
+    },
+    "out-of-band-check": {
+      "type": "object",
+      "properties": {
+        "checkTypes": {
+          "$ref": "#/$defs/check-types"
+        },
+        "phase": {
+          "type": "string"
+        },
+        "provider": {
+          "enum": [
+            "CloudFormation",
+            "GitHub",
+            "Stack Orchestration Tool",
+            "Terraform"
+          ]
+        },
+        "config": {
+          "$ref": "#/$defs/check-config"
+        }
+      },
+      "required": [
+        "checkTypes",
+        "phase",
+        "provider",
+        "config"
+      ]
+    },
+    "not-applicable": {
+      "type": "object",
+      "properties": {
+        "checkTypes": {
+          "$ref": "#/$defs/check-types"
+        },
+        "details": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "checkTypes",
+        "details"
       ]
     },
     "check-config": {
@@ -101,7 +167,6 @@
         "unit",
         "visual regression",
         "vulnerability detection",
-        "manual",
         "integration"
       ]
     },
@@ -111,16 +176,46 @@
         "$ref": "#/$defs/check-type"
       }
     },
-    "checks": {
+    "automated-checks": {
       "type": "array",
       "items": {
-        "$ref": "#/$defs/check"
+        "$ref": "#/$defs/automated-check"
+      }
+    },
+    "manual-checks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/manual-check"
+      }
+    },
+    "out-of-band-checks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/out-of-band-check"
       }
     },
     "secure-pipelines-phases": {
       "type": "object",
       "properties": {
-        "checks": {
+        "automated": {
+          "items": {
+            "properties": {
+              "phase": {
+                "enum": ["pre-merge", "pre-upload", "build", "staging", "production", "integration"]
+              }
+            }
+          }
+        },
+        "manual": {
+          "items": {
+            "properties": {
+              "phase": {
+                "enum": ["pre-merge", "pre-upload", "build", "staging", "production", "integration"]
+              }
+            }
+          }
+        },
+        "outOfBand": {
           "items": {
             "properties": {
               "phase": {
@@ -134,7 +229,25 @@
     "git-flow-phases": {
       "type": "object",
       "properties": {
-        "checks": {
+        "automated": {
+          "items": {
+            "properties": {
+              "phase": {
+                "enum": ["pre-develop", "develop", "pre-release", "release", "main"]
+              }
+            }
+          }
+        },
+        "manual": {
+          "items": {
+            "properties": {
+              "phase": {
+                "enum": ["pre-develop", "develop", "pre-release", "release", "main"]
+              }
+            }
+          }
+        },
+        "outOfBand": {
           "items": {
             "properties": {
               "phase": {
@@ -148,7 +261,25 @@
     "library-phases": {
       "type": "object",
       "properties": {
-        "checks": {
+        "automated": {
+          "items": {
+            "properties": {
+              "phase": {
+                "enum": ["pre-merge", "pre-release"]
+              }
+            }
+          }
+        },
+        "manual": {
+          "items": {
+            "properties": {
+              "phase": {
+                "enum": ["pre-merge", "pre-release"]
+              }
+            }
+          }
+        },
+        "outOfBand": {
           "items": {
             "properties": {
               "phase": {
@@ -162,15 +293,11 @@
     "service": {
       "type": "object",
       "required": [
-        "checks",
         "product",
         "component",
         "promotionType"
       ],
       "properties": {
-        "checks": {
-          "$ref": "#/$defs/checks"
-        },
         "product": {
           "type": "string"
         },
@@ -189,6 +316,18 @@
           "type": "array",
           "items": { "type": "string" },
           "minItems": 1
+        },
+        "automated": {
+          "$ref": "#/$defs/automated-checks"
+        },
+        "manual": {
+          "$ref": "#/$defs/manual-checks"
+        },
+        "outOfBand": {
+          "$ref": "#/$defs/out-of-band-checks"
+        },
+        "notApplicable": {
+          "$ref": "#/$defs/not-applicable"
         }
       },
       "allOf": [
