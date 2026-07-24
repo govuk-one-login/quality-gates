@@ -37,8 +37,8 @@ const nodesWithManifest = nodes
       manifest: {
         ...n.manifest,
         text: {
-          ...n.manifest.text,
-          version: n.manifest.text.$schema.match(/tags\/v(.+?)\/schemas\/schema\.json/)?.[1]
+          ...n?.manifest?.text,
+          version: n?.manifest?.text?.$schema?.match(/tags\/v(.+?)\/schemas\/schema\.json/)?.[1]
         }
       }
     }))
