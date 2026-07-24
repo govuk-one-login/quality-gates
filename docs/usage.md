@@ -10,7 +10,7 @@ Add a `$schema` property pointing to a tagged release:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.0.0/schemas/schema.json"
+  "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.14.0/schemas/schema.json"
 }
 ```
 
@@ -70,6 +70,31 @@ node cli/index.js cache clear
 > **Note:** Schema URLs pointing to branches (e.g. `refs/heads/...`) may become stale.
 > Use `--force` on the validate command to re-download, or `cache clear` to wipe all cached schemas.
 
+#### `upgrade`
+
+Incrementally upgrades manifest files to the latest schema version. Each version migration is applied in sequence.
+
+```shell
+# Upgrade manifest in the current directory
+node cli/index.js upgrade
+
+# Upgrade a specific file
+node cli/index.js upgrade path/to/quality-gate.manifest.json
+
+# Upgrade all manifests in a directory tree
+node cli/index.js upgrade path/to/repos/
+
+# Preview changes without writing
+node cli/index.js upgrade . --dry-run
+```
+
+The upgrade command handles all historical schema migrations automatically, including:
+
+- Kebab-case to camelCase property renames (pre-v0.5.0)
+- `qualityGates` → `checks` rename (v0.10.0)
+- `serviceTag` → `product`/`component` (v0.13.0)
+- `checks` → `automated` execution mode split (v0.14.0)
+
 ### Exit codes
 
 | Code | Meaning                     |
@@ -99,22 +124,61 @@ A manifest contains an array of **services**, each with:
 | `product`       | string | General name for a service                                            |
 | `component`     | string | Component within the product                                          |
 | `promotionType` | string | Promotion strategy (`securePipelines`, `gitFlow`, `library`, `other`) |
-| `checks`        | array  | List of quality gate checks                                           |
+| `automated`     | array  | Checks that run in CI/CD automatically (optional)                     |
+| `manual`        | array  | Checks performed by a human (optional)                                |
+| `outOfBand`     | array  | Checks that run outside the deployment pipeline (optional)            |
+| `notApplicable` | object | Check types consciously declared as not relevant (optional)           |
 
-Each **quality gate** contains:
+### Execution modes
 
-| Field         | Type     | Description                                                 |
-|---------------|----------|-------------------------------------------------------------|
-| `check-types` | string[] | Categories of check (see [check types](#check-types))       |
-| `phase`       | string   | SDLC phase where the check runs                             |
-| `provider`    | string   | Platform running the check (`GitHub`, `Stack Orchestrator`) |
-| `config`      | object   | Location of the check definition                            |
+Quality gate checks are grouped by how they are executed. This separates the *category* of check (e.g. "accessibility") from the *mechanism* by which it is verified.
+
+#### `automated`
+
+Checks that run automatically in CI/CD with no human involvement.
+
+| Field       | Type     | Required | Description                                      |
+|-------------|----------|----------|--------------------------------------------------|
+| `checkTypes`| string[] | Yes      | Categories of check (see [check types](#check-types)) |
+| `phase`     | string   | Yes      | SDLC phase where the check runs                  |
+| `provider`  | string   | Yes      | Platform running the check (`GitHub`, `Terraform`, `CloudFormation`, `Stack Orchestration Tool`) |
+| `config`    | object   | Yes      | Location of the check definition                 |
+
+#### `manual`
+
+Checks performed by a human (e.g. accessibility audit, pen test, manual approval gate).
+
+| Field       | Type     | Required | Description                                      |
+|-------------|----------|----------|--------------------------------------------------|
+| `checkTypes`| string[] | Yes      | Categories of check                              |
+| `phase`     | string   | Yes      | SDLC phase where the check is performed          |
+| `details`   | string[] | Yes      | Description of the manual process                |
+
+#### `outOfBand`
+
+Checks that happen outside the deployment pipeline (e.g. daily smoke tests, periodic security scans, external audits).
+
+| Field       | Type     | Required | Description                                      |
+|-------------|----------|----------|--------------------------------------------------|
+| `checkTypes`| string[] | Yes      | Categories of check                              |
+| `phase`     | string   | Yes      | SDLC phase the check relates to                  |
+| `provider`  | string   | Yes      | Platform running the check                       |
+| `config`    | object   | Yes      | Location of the check definition                 |
+
+#### `notApplicable`
+
+Check types that the team has consciously decided do not apply to this service.
+
+| Field       | Type     | Required | Description                                      |
+|-------------|----------|----------|--------------------------------------------------|
+| `checkTypes`| string[] | Yes      | Check types that are not applicable              |
+| `details`   | string[] | Yes      | Justification for why they are not applicable    |
 
 ### Check types
 
 The schema supports the following check-type values:
 
-`accessibility`, `canary`, `code quality`, `code style and linting`, `component`, `contract`, `cross service integration`, `data compatibility`, `e2e`, `integration`, `manual`, `neighbour`, `new feature`, `product`, `regression`, `secret scanning`, `sensitive data scanning`, `smoke`, `stack`, `system`, `unit test coverage`, `unit`, `visual regression`, `vulnerability detection`
+`accessibility`, `canary`, `code quality`, `code style and linting`, `component`, `contract`, `cross service integration`, `data compatibility`, `e2e`, `integration`, `neighbour`, `new feature`, `product`, `regression`, `secret scanning`, `sensitive data scanning`, `smoke`, `stack`, `system`, `unit test coverage`, `unit`, `visual regression`, `vulnerability detection`
 
 ### Phases
 
