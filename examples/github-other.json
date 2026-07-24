@@ -7,7 +7,7 @@
       "promotionTypeDetails": ["custom deployment tool"],
       "automated": [
         {
-          "checkTypes": ["unit"],
+          "checks": [{ "name": "unit" }],
           "provider": "GitHub",
           "phase": "deploy",
           "config": {

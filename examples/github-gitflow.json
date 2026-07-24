@@ -6,7 +6,7 @@
       "promotionType": "gitFlow",
       "automated": [
         {
-          "checkTypes": ["code style and linting"],
+          "checks": [{ "name": "code style and linting" }],
           "provider": "GitHub",
           "phase": "pre-develop",
           "config": {
@@ -15,7 +15,7 @@
           }
         },
         {
-          "checkTypes": ["unit"],
+          "checks": [{ "name": "unit" }],
           "provider": "GitHub",
           "phase": "develop",
           "config": {
@@ -24,7 +24,7 @@
           }
         },
         {
-          "checkTypes": ["integration"],
+          "checks": [{ "name": "integration" }],
           "provider": "GitHub",
           "phase": "pre-release",
           "config": {
@@ -33,7 +33,7 @@
           }
         },
         {
-          "checkTypes": ["e2e"],
+          "checks": [{ "name": "e2e" }],
           "provider": "GitHub",
           "phase": "release",
           "config": {
@@ -42,7 +42,7 @@
           }
         },
         {
-          "checkTypes": ["smoke"],
+          "checks": [{ "name": "smoke" }],
           "provider": "GitHub",
           "phase": "main",
           "config": {
