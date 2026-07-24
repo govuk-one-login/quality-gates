@@ -13,7 +13,7 @@ Reference the schema directly in your manifest file:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.14.0/schemas/schema.json",
+  "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.15.0/schemas/schema.json",
   "services": [
     {
       "product": "my-service",
@@ -21,7 +21,7 @@ Reference the schema directly in your manifest file:
       "promotionType": "securePipelines",
       "automated": [
         {
-          "checkTypes": ["unit"],
+          "checks": [{ "name": "unit" }],
           "phase": "pre-merge",
           "provider": "GitHub",
           "config": {
@@ -32,14 +32,14 @@ Reference the schema directly in your manifest file:
       ],
       "manual": [
         {
-          "checkTypes": ["accessibility"],
+          "checks": [{ "name": "accessibility" }],
           "phase": "staging",
           "details": ["WCAG 2.1 AA audit performed by accessibility team"]
         }
       ],
       "outOfBand": [
         {
-          "checkTypes": ["smoke"],
+          "checks": [{ "name": "smoke" }],
           "phase": "production",
           "provider": "GitHub",
           "config": {
@@ -48,10 +48,13 @@ Reference the schema directly in your manifest file:
           }
         }
       ],
-      "notApplicable": {
-        "checkTypes": ["visual regression"],
-        "details": ["No user-facing UI in this component"]
-      }
+      "notApplicable": [
+        {
+          "checks": [
+            { "name": "visual regression", "details": ["No user-facing UI in this component"] }
+          ]
+        }
+      ]
     }
   ]
 }
@@ -101,7 +104,7 @@ See [visualiser/README.md](./visualiser/README.md).
 This schema follows [semantic versioning](https://semver.org/). The schema URL includes a version tag:
 
 ```
-https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.14.0/schemas/schema.json
+https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.15.0/schemas/schema.json
 ```
 
 - **Major** — breaking changes to the schema (removed fields, renamed enums)
