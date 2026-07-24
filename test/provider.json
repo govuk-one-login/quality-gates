@@ -13,7 +13,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -37,7 +37,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "Terraform",
                 "phase": "pre-merge",
                 "config": {
@@ -60,7 +60,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "CloudFormation",
                 "phase": "pre-merge",
                 "config": {
@@ -83,7 +83,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "Stack Orchestration Tool",
                 "phase": "pre-merge",
                 "config": {
@@ -106,7 +106,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "Jenkins",
                 "phase": "pre-merge",
                 "config": {

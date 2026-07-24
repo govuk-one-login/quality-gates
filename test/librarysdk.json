@@ -13,7 +13,7 @@
             "promotionType": "library",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -22,7 +22,7 @@
                 }
               },
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "pre-release",
                 "config": {

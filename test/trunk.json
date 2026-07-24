@@ -35,7 +35,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -59,7 +59,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["code style and linting"],
+                "checks": [{ "name": "code style and linting" }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -75,7 +75,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["code style and linting"],
+                "checks": [{ "name": "code style and linting" }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -99,7 +99,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["code style and linting"],
+                "checks": [{ "name": "code style and linting" }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -115,7 +115,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["code style and linting"],
+                "checks": [{ "name": "code style and linting" }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -139,7 +139,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["unknown"],
+                "checks": [{ "name": "unknown" }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {

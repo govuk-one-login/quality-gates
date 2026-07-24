@@ -13,7 +13,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["integration"],
+                "checks": [{ "name": "integration" }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -37,7 +37,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["component"],
+                "checks": [{ "name": "component" }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -61,7 +61,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["product"],
+                "checks": [{ "name": "product" }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -85,7 +85,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["neighbour"],
+                "checks": [{ "name": "neighbour" }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -109,7 +109,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["e2e"],
+                "checks": [{ "name": "e2e" }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
