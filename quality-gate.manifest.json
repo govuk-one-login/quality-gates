@@ -5,7 +5,7 @@
       "product": "quality-gates",
       "component": "quality-gates",
       "promotionType": "library",
-      "checks": [
+      "automated": [
         {
           "checkTypes": ["unit"],
           "phase": "pre-merge",
