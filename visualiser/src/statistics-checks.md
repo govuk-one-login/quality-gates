@@ -89,7 +89,7 @@ const stats = nodesWithManifest.flatMap((node) => {
       const jobs = workflowsByName[workflowKey];
       const jobKey = gate.config.path?.replace("jobs.", "");
       const job = jobs?.[jobKey];
-      return (gate.checkTypes ?? []).map((checkType) => ({ ...node, ...gate, ...gate.config, repo: node.name, service: service.product, job, checkType, stepsCount: job?.steps?.length }));
+      return (gate.checks ?? []).map((c) => ({ ...node, ...gate, ...gate.config, repo: node.name, service: service.product, job, checkType: c.name, stepsCount: job?.steps?.length }));
     })
   );
 })

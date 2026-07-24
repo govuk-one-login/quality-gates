@@ -45,7 +45,7 @@ export function flattenQualityGatesJobs(nodes) {
                 const job = workflow.object.text.jobs[parsed.job];
                 if (!job) return [];
                 return {
-                    checkTypes: gate.checkTypes,
+                    checkTypes: gate.checks.map(c => c.name),
                     job: {
                         ...job,
                         "__workflow-file": fileName,
