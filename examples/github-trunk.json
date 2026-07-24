@@ -4,7 +4,7 @@
       "product": "service-name",
       "component": "frontend",
       "promotionType": "securePipelines",
-      "checks": [
+      "automated": [
         {
           "checkTypes": ["unit"],
           "provider": "GitHub",

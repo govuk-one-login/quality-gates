@@ -4,7 +4,7 @@
       "product": "service-name",
       "component": "frontend",
       "promotionType": "gitFlow",
-      "checks": [
+      "automated": [
         {
           "checkTypes": ["code style and linting"],
           "provider": "GitHub",

@@ -5,7 +5,7 @@
       "component": "frontend",
       "promotionType": "other",
       "promotionTypeDetails": ["custom deployment tool"],
-      "checks": [
+      "automated": [
         {
           "checkTypes": ["unit"],
           "provider": "GitHub",
