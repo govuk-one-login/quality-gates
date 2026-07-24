@@ -34,8 +34,9 @@ describe("upgrade command", () => {
     assert.equal(result.services[0].component, "svc");
     assert.equal(result.services[0].serviceTag, undefined);
     assert.equal(result.services[0].promotionType, "securePipelines");
-    assert.deepEqual(result.services[0].checks[0].checkTypes, ["unit"]);
-    assert.match(result.$schema, /v0\.13\.0/);
+    assert.deepEqual(result.services[0].automated[0].checkTypes, ["unit"]);
+    assert.match(result.$schema, /v0\.14\.0/);
+    assert.equal(result.services[0].checks, undefined);
   });
 
   it("does not write files in dry-run mode", () => {
@@ -64,8 +65,8 @@ describe("upgrade command", () => {
 
   it("skips manifests already at latest version", () => {
     const file = createManifest(TMP, {
-      $schema: "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.13.0/schemas/schema.json",
-      services: [{ product: "x", component: "x", promotionType: "securePipelines", checks: [] }],
+      $schema: "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.14.0/schemas/schema.json",
+      services: [{ product: "x", component: "x", promotionType: "securePipelines", automated: [] }],
     });
     const before = readFileSync(file, "utf8");
 
@@ -88,8 +89,8 @@ describe("upgrade command", () => {
 
     const a = JSON.parse(readFileSync(join(TMP, "a", "quality-gate.manifest.json"), "utf8"));
     const b = JSON.parse(readFileSync(join(TMP, "b", "quality-gate.manifest.json"), "utf8"));
-    assert.match(a.$schema, /v0\.13\.0/);
-    assert.match(b.$schema, /v0\.13\.0/);
+    assert.match(a.$schema, /v0\.14\.0/);
+    assert.match(b.$schema, /v0\.14\.0/);
     assert.equal(b.services[0].product, "b");
     assert.equal(b.services[0].component, "b");
   });

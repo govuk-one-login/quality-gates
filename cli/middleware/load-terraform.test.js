@@ -11,7 +11,7 @@ describe("loadTerraform", () => {
           product: "example-product",
           component: "frontend",
           promotionType: "securePipelines",
-          checks: [{
+          automated: [{
             checkTypes: ["secret scanning"],
             phase: "pre-merge",
             provider: "GitHub",
@@ -40,7 +40,7 @@ describe("loadTerraform", () => {
           product: "example-product",
           component: "infra",
           promotionType: "securePipelines",
-          checks: [{
+          automated: [{
             checkTypes: ["product"],
             phase: "build",
             provider: "Terraform",
@@ -62,7 +62,7 @@ describe("loadTerraform", () => {
           product: "example-product",
           component: "infra",
           promotionType: "securePipelines",
-          checks: [{
+          automated: [{
             checkTypes: ["product"],
             phase: "build",
             provider: "Terraform",

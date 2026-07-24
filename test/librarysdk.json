@@ -11,7 +11,7 @@
             "product": "generic-service",
             "component": "api",
             "promotionType": "library",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",

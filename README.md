@@ -13,13 +13,13 @@ Reference the schema directly in your manifest file:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.0.0/schemas/schema.json",
+  "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.14.0/schemas/schema.json",
   "services": [
     {
       "product": "my-service",
       "component": "frontend",
       "promotionType": "securePipelines",
-      "checks": [
+      "automated": [
         {
           "checkTypes": ["unit"],
           "phase": "pre-merge",
@@ -29,7 +29,29 @@ Reference the schema directly in your manifest file:
             "path": "$.jobs.test"
           }
         }
-      ]
+      ],
+      "manual": [
+        {
+          "checkTypes": ["accessibility"],
+          "phase": "staging",
+          "details": ["WCAG 2.1 AA audit performed by accessibility team"]
+        }
+      ],
+      "outOfBand": [
+        {
+          "checkTypes": ["smoke"],
+          "phase": "production",
+          "provider": "GitHub",
+          "config": {
+            "file": ".github/workflows/smoke.yml",
+            "path": "$.jobs.smoke"
+          }
+        }
+      ],
+      "notApplicable": {
+        "checkTypes": ["visual regression"],
+        "details": ["No user-facing UI in this component"]
+      }
     }
   ]
 }
@@ -43,6 +65,7 @@ See the [examples/](./examples) directory for complete manifests covering trunk-
 |-----------------------------|------------------------------------------------------------------|
 | [schemas/](./schemas)       | JSON Schema definition for quality gate manifests                |
 | [examples/](./examples)     | Example manifest files for common branching strategies           |
+| [cli/](./cli)               | CLI tool for validation, reference checking, and upgrades        |
 | [visualiser/](./visualiser) | Observable Framework app for viewing and analysing quality gates |
 | [test/](./test)             | Schema validation tests                                          |
 
@@ -78,7 +101,7 @@ See [visualiser/README.md](./visualiser/README.md).
 This schema follows [semantic versioning](https://semver.org/). The schema URL includes a version tag:
 
 ```
-https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.0.0/schemas/schema.json
+https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.14.0/schemas/schema.json
 ```
 
 - **Major** — breaking changes to the schema (removed fields, renamed enums)

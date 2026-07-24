@@ -11,7 +11,7 @@
             "product": "service",
             "component": "api",
             "promotionType": "securePipelines",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -35,7 +35,7 @@
             "product": "service",
             "component": "api",
             "promotionType": "securePipelines",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -59,7 +59,7 @@
             "product": "service",
             "component": "api",
             "promotionType": "gitFlow",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -83,7 +83,7 @@
             "product": "service",
             "component": "api",
             "promotionType": "gitFlow",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -107,7 +107,7 @@
             "product": "service",
             "component": "api",
             "promotionType": "library",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -131,7 +131,7 @@
             "product": "service",
             "component": "api",
             "promotionType": "library",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -154,7 +154,7 @@
           {
             "product": "service",
             "component": "api",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -178,7 +178,7 @@
             "product": "service",
             "component": "api",
             "promotionType": "unknown",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -202,7 +202,7 @@
             "product": "service",
             "component": "api",
             "promotionType": "other",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",

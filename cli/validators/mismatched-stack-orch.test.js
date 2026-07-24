@@ -2,9 +2,9 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { findMismatchedStackOrch } from "./mismatched-stack-orch.js";
 
-const makeData = (checks, stackOrch) => ({
+const makeData = (automated, stackOrch) => ({
   manifest: {
-    services: [{ product: "example-product", component: "backend", checks }],
+    services: [{ product: "example-product", component: "backend", automated }],
   },
   stackOrch,
 });

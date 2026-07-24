@@ -7,7 +7,7 @@ export function findMismatchedJobs(data) {
 
   return data.manifest.services.flatMap((s) => {
     const service = s.product || s.serviceTag || s["service-tag"];
-    const checks = s.checks || s.qualityGates || s["quality-gates"] || [];
+    const checks = [...(s.automated || []), ...(s.outOfBand || [])];
     return checks.flatMap((g) => {
       if (g.provider !== "GitHub") return [];
       if (!g.config.path) return [];

@@ -3,7 +3,7 @@ import { resolveStackOrchPath } from "../utils/stack-orch-path.js";
 export function findMismatchedStackOrch(data) {
   return data.manifest.services.flatMap((s) => {
     const service = s.product;
-    return (s.checks ?? []).flatMap((check) => {
+    return [...(s.automated ?? []), ...(s.outOfBand ?? [])].flatMap((check) => {
       if (check.provider !== "Stack Orchestration Tool") return [];
       if (!check.config?.file?.endsWith(".json")) return [];
 

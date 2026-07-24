@@ -2,9 +2,9 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { findMismatchedTerraform } from "./mismatched-terraform.js";
 
-const makeData = (checks, terraform) => ({
+const makeData = (automated, terraform) => ({
   manifest: {
-    services: [{ product: "example-product", component: "infra", checks }],
+    services: [{ product: "example-product", component: "infra", automated }],
   },
   terraform,
 });

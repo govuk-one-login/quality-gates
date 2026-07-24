@@ -22,12 +22,21 @@ This repository provides a schema-driven approach to documenting quality gates a
 
 ### Quality gates
 
-A quality gate is an enforced check that must pass before code progresses to the next phase. Each gate has:
+A quality gate is an enforced check that must pass before code progresses to the next phase. Gates are grouped by **execution mode**:
+
+- **Automated** — checks that run in CI/CD automatically (e.g. unit tests, linting, security scanning)
+- **Manual** — checks performed by a human (e.g. accessibility audits, pen tests)
+- **Out-of-band** — checks that run outside the deployment pipeline (e.g. daily smoke tests, periodic scans)
+- **Not applicable** — check types consciously declared as irrelevant for a service
+
+Each automated and out-of-band gate has:
 
 - A **type** describing what it checks (unit tests, linting, security scanning, etc.)
 - A **phase** indicating when in the SDLC it runs
 - A **provider** identifying the platform that executes it
 - A **config** pointing to where the check is defined
+
+Manual gates have a type, phase, and free-text details describing the process. Not-applicable declarations list the check types with justification.
 
 #### Deployment strategy
 
