@@ -44,7 +44,7 @@ describe("manifest-and-workflows", () => {
                             services: [
                                 {
                                     "product": "service-a",
-                                    "checks": [
+                                    "automated": [
                                         {
                                             "checkTypes": ["code style and linting", "vulnerability detection"],
                                             "config": {
@@ -63,7 +63,7 @@ describe("manifest-and-workflows", () => {
                                 },
                                 {
                                     "product": "service-b",
-                                    "checks": [
+                                    "automated": [
                                         {
                                             "checkTypes": ["code style and linting", "vulnerability detection"],
                                             "config": {
@@ -189,7 +189,7 @@ describe("manifest-and-workflows", () => {
                     text: {
                         services: [{
                             "product": "service-a",
-                            "checks": [{
+                            "automated": [{
                                 "checkTypes": ["unit"],
                                 "config": {file: ".github/workflows/ci.yaml", path: "$.jobs['my-job']"}
                             }]
@@ -216,7 +216,7 @@ describe("manifest-and-workflows", () => {
                     text: {
                         services: [{
                             "product": "service-a",
-                            "checks": [{
+                            "automated": [{
                                 "checkTypes": ["unit"],
                                 "config": {file: ".github/workflows/ci.yaml", path: "$.jobs.build.steps[?@.name=='Run tests']"}
                             }]
@@ -243,7 +243,7 @@ describe("manifest-and-workflows", () => {
                     text: {
                         services: [{
                             "product": "service-a",
-                            "checks": [{
+                            "automated": [{
                                 "checkTypes": ["unit"],
                                 "config": {file: ".github/workflows/ci.yaml", path: "$.invalid[syntax"}
                             }]
@@ -267,7 +267,7 @@ describe("manifest-and-workflows", () => {
                     text: {
                         services: [{
                             "product": "service-a",
-                            "checks": [{
+                            "automated": [{
                                 "checkTypes": ["unit"],
                                 "config": {file: ".github/workflows/ci.yaml", path: "$.jobs.missing"}
                             }]
@@ -291,7 +291,7 @@ describe("manifest-and-workflows", () => {
                     text: {
                         services: [{
                             "product": "service-a",
-                            "checks": [{
+                            "automated": [{
                                 "checkTypes": ["unit"],
                                 "config": {file: ".github/workflows/ci.yaml", path: "jobs.build"}
                             }]
@@ -313,7 +313,7 @@ describe("manifest-and-workflows", () => {
         it("returns empty array for service with empty checks", () => {
             const nodes = [{
                 name: "repo-a",
-                manifest: {text: {services: [{"product": "service-a", "checks": []}]}},
+                manifest: {text: {services: [{"product": "service-a", "automated": []}]}},
                 workflows: {entries: []}
             }];
             assert.deepEqual(flattenQualityGatesJobs(nodes), []);
@@ -325,7 +325,7 @@ describe("manifest-and-workflows", () => {
                 manifest: {
                     text: {
                         services: [{
-                            "product": "service-a", "checks": [{
+                            "product": "service-a", "automated": [{
                                 "checkTypes": ["unit"],
                                 "config": {file: ".github/workflows/missing.yaml", path: "$.jobs.test"}
                             }]
@@ -344,7 +344,7 @@ describe("manifest-and-workflows", () => {
                     text: {
                         services: [{
                             "product": "service-a",
-                            "checks": [{"checkTypes": ["unit"]}]
+                            "automated": [{"checkTypes": ["unit"]}]
                         }]
                     }
                 },

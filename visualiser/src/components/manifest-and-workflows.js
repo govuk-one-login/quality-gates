@@ -35,7 +35,7 @@ export function flattenJobs (nodes) {
 export function flattenQualityGatesJobs(nodes) {
     return nodes.flatMap((node) =>
         (node.manifest?.text?.services ?? []).flatMap((service) =>
-            (service.checks ?? []).flatMap((gate) => {
+            [...(service.automated ?? []), ...(service.outOfBand ?? [])].flatMap((gate) => {
                 if (!gate.config?.file || !gate.config?.path) return [];
                 const parsed = parseCheckPath(gate.config.path);
                 if (!parsed.valid) return [];

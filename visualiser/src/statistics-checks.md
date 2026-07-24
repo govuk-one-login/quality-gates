@@ -82,7 +82,7 @@ const stats = nodesWithManifest.flatMap((node) => {
   );
 
   return (node.manifest.text.services ?? []).flatMap((service) =>
-    (service.checks ?? []).flatMap((gate) => {
+    [...(service.automated ?? []), ...(service.outOfBand ?? [])].flatMap((gate) => {
       const workflowKey = gate.config.file
         .replace(".github/workflows/", "")
         .replace(/\.ya?ml$/, "");

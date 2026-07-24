@@ -66,16 +66,12 @@ const phasesByPromotionType = {
 ```
 
 ```js
-// display(phasesByPromotionType)
-```
-
-```js
 // Flatten manifests into per-product/component/promotionType check implementations
 const productChecks = repositories
   .filter(node => node.manifest?.text?.services)
   .flatMap(node =>
     node.manifest.text.services.flatMap(service =>
-      (service.checks ?? []).flatMap(check =>
+      [...(service.automated ?? []), ...(service.manual ?? []), ...(service.outOfBand ?? [])].flatMap(check =>
         (check.checkTypes ?? []).map(ct => ({
           product: service.product,
           component: service.component,

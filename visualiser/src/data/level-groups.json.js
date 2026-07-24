@@ -11,9 +11,9 @@ const schema = JSON.parse(readFileSync(schemaUrl, "utf8"))
 const checkTypes = schema.$defs["check-type"].enum
 const phases = [
     ...new Set([
-        ...schema.$defs["secure-pipelines-phases"].properties.checks.items.properties.phase.enum,
-        ...schema.$defs["git-flow-phases"].properties.checks.items.properties.phase.enum,
-        ...schema.$defs["library-phases"].properties.checks.items.properties.phase.enum,
+        ...schema.$defs["secure-pipelines-phases"].properties.automated.items.properties.phase.enum,
+        ...schema.$defs["git-flow-phases"].properties.automated.items.properties.phase.enum,
+        ...schema.$defs["library-phases"].properties.automated.items.properties.phase.enum,
     ])
 ]
 
