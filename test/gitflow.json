@@ -11,7 +11,7 @@
             "product": "generic-service",
             "component": "api",
             "promotionType": "gitFlow",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",

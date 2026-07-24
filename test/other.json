@@ -12,7 +12,7 @@
             "component": "api",
             "promotionType": "other",
             "promotionTypeDetails": ["custom pipeline"],
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -37,7 +37,7 @@
             "component": "api",
             "promotionType": "other",
             "promotionTypeDetails": ["custom pipeline", "manual approval"],
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -62,7 +62,7 @@
             "component": "api",
             "promotionType": "other",
             "promotionTypeDetails": ["custom deployment tool"],
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -86,7 +86,7 @@
             "product": "service",
             "component": "api",
             "promotionType": "other",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -111,7 +111,7 @@
             "component": "api",
             "promotionType": "other",
             "promotionTypeDetails": [],
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -136,7 +136,7 @@
             "component": "api",
             "promotionType": "other",
             "promotionTypeDetails": [123],
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",

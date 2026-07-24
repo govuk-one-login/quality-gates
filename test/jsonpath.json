@@ -11,7 +11,7 @@
             "product": "service",
             "component": "api",
             "promotionType": "securePipelines",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -35,7 +35,7 @@
             "product": "service",
             "component": "api",
             "promotionType": "securePipelines",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -59,7 +59,7 @@
             "product": "service",
             "component": "api",
             "promotionType": "securePipelines",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -83,7 +83,7 @@
             "product": "service",
             "component": "api",
             "promotionType": "securePipelines",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["integration"],
                 "provider": "Stack Orchestration Tool",
@@ -107,7 +107,7 @@
             "product": "service",
             "component": "api",
             "promotionType": "securePipelines",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -131,7 +131,7 @@
             "product": "service",
             "component": "api",
             "promotionType": "securePipelines",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "Terraform",
@@ -154,7 +154,7 @@
             "product": "service",
             "component": "api",
             "promotionType": "securePipelines",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["integration"],
                 "provider": "Terraform",
@@ -177,7 +177,7 @@
             "product": "service",
             "component": "api",
             "promotionType": "securePipelines",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",

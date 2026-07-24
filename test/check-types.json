@@ -11,7 +11,7 @@
             "product": "generic-service",
             "component": "api",
             "promotionType": "securePipelines",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["integration"],
                 "provider": "GitHub",
@@ -35,7 +35,7 @@
             "product": "generic-service",
             "component": "api",
             "promotionType": "securePipelines",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["component"],
                 "provider": "GitHub",
@@ -59,7 +59,7 @@
             "product": "generic-service",
             "component": "api",
             "promotionType": "securePipelines",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["product"],
                 "provider": "GitHub",
@@ -83,7 +83,7 @@
             "product": "generic-service",
             "component": "api",
             "promotionType": "securePipelines",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["neighbour"],
                 "provider": "GitHub",
@@ -107,7 +107,7 @@
             "product": "generic-service",
             "component": "api",
             "promotionType": "securePipelines",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["e2e"],
                 "provider": "GitHub",

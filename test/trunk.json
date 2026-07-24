@@ -33,7 +33,7 @@
             "product": "generic-service",
             "component": "api",
             "promotionType": "securePipelines",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unit"],
                 "provider": "GitHub",
@@ -57,7 +57,7 @@
             "product": "generic-service-1",
             "component": "api",
             "promotionType": "securePipelines",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["code style and linting"],
                 "provider": "GitHub",
@@ -73,7 +73,7 @@
             "product": "generic-service-2",
             "component": "api",
             "promotionType": "securePipelines",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["code style and linting"],
                 "provider": "GitHub",
@@ -97,7 +97,7 @@
             "product": "generic-service",
             "component": "api",
             "promotionType": "securePipelines",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["code style and linting"],
                 "provider": "GitHub",
@@ -113,7 +113,7 @@
             "product": "generic-service",
             "component": "api",
             "promotionType": "securePipelines",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["code style and linting"],
                 "provider": "GitHub",
@@ -137,7 +137,7 @@
             "product": "generic-service",
             "component": "api",
             "promotionType": "securePipelines",
-            "checks": [
+            "automated": [
               {
                 "checkTypes": ["unknown"],
                 "provider": "GitHub",
