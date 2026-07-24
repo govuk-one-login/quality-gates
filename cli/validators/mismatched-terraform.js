@@ -3,7 +3,7 @@ import { resolveTerraformPath } from "../utils/terraform-path.js";
 export function findMismatchedTerraform(data) {
   return data.manifest.services.flatMap((s) => {
     const service = s.product;
-    return (s.checks ?? []).flatMap((check) => {
+    return [...(s.automated ?? []), ...(s.outOfBand ?? [])].flatMap((check) => {
       if (check.provider !== "Terraform") return [];
       if (!check.config?.file?.endsWith(".tf")) return [];
 

@@ -2,9 +2,9 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { findMismatchedJobs } from "./mismatched-jobs.js";
 
-const makeData = (checks, jobs) => ({
+const makeData = (automated, jobs) => ({
   manifest: {
-    services: [{ product: "my-service", component: "api", checks }],
+    services: [{ product: "my-service", component: "api", automated }],
   },
   workflows: [{ name: "ci.yml", jobs }],
 });
