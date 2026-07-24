@@ -364,19 +364,19 @@ const flattenedServices = Object.entries(nodesByServiceTag).flatMap(([tag, nodes
 
 ```js
 const serviceItems = Object.keys(nodesByServiceTag).reduce((acc, tag) =>
-        acc.concat(nodesByServiceTag[tag].map((n) => ({
-            service__repo: `${tag} / ${n.name}`,
-            ...n,
-            ...(n.manifest.text.services ?? []).find((s) => s.product === tag)
-        }))),
-    [])
+  acc.concat(nodesByServiceTag[tag].map((n) => ({
+    service__repo: `${tag} / ${n.name}`,
+    ...n,
+    ...(n.manifest.text.services ?? []).find((s) => s.product === tag)
+  }))),
+[])
 ```
 
 
 
 ```js
 const flattenedQualityGates = serviceItems.flatMap(({ checks: qg, ...rest }) =>
-    (qg ?? []).map((gate) => ({ ...rest, ...gate }))
+  (qg ?? []).map((gate) => ({ ...rest, ...gate }))
 )
 ```
 
