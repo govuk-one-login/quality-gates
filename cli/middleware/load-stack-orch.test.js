@@ -14,7 +14,7 @@ describe("loadStackOrch", () => {
           product: "example-product",
           component: "frontend",
           promotionType: "securePipelines",
-          checks: [{
+          automated: [{
             checkTypes: ["secret scanning"],
             phase: "pre-merge",
             provider: "GitHub",
@@ -41,7 +41,7 @@ describe("loadStackOrch", () => {
           product: "example-product",
           component: "infra",
           promotionType: "securePipelines",
-          checks: [{
+          automated: [{
             checkTypes: ["product"],
             phase: "build",
             provider: "Stack Orchestration Tool",
@@ -62,7 +62,7 @@ describe("loadStackOrch", () => {
           product: "example-product",
           component: "infra",
           promotionType: "securePipelines",
-          checks: [{
+          automated: [{
             checkTypes: ["product"],
             phase: "build",
             provider: "Stack Orchestration Tool",
@@ -94,7 +94,7 @@ describe("loadStackOrch", () => {
           product: "example-product",
           component: "backend",
           promotionType: "securePipelines",
-          checks: [{
+          automated: [{
             checkTypes: ["product"],
             phase: "build",
             provider: "Stack Orchestration Tool",

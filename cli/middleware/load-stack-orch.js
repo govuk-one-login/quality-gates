@@ -5,7 +5,7 @@ import { existsSync } from "node:fs";
 export function loadStackOrch(argv) {
   const files = new Set();
   for (const service of argv.manifest?.services ?? []) {
-    for (const check of service.checks ?? []) {
+    for (const check of [...(service.automated ?? []), ...(service.outOfBand ?? [])]) {
       if (check.provider === "Stack Orchestration Tool" && check.config?.file?.endsWith(".json")) {
         files.add(check.config.file);
       }
