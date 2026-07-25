@@ -33,7 +33,7 @@
           }
         },
         {
-          "checks": [{ "name": "e2e" }],
+          "checks": [{ "name": "integration", "scope": "e2e" }],
           "provider": "GitHub",
           "phase": "release",
           "config": {
@@ -42,7 +42,7 @@
           }
         },
         {
-          "checks": [{ "name": "smoke" }],
+          "checks": [{ "name": "integration", "purpose": ["smoke"] }],
           "provider": "GitHub",
           "phase": "main",
           "config": {
