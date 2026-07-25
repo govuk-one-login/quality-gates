@@ -32,31 +32,41 @@
   },
   "$defs": {
     "check-type": {
-      "description": "A quality check category as documented, plus emergent checks",
+      "description": "A quality check category",
       "enum": [
         "accessibility",
         "canary",
         "code quality",
         "code style and linting",
-        "component",
         "contract",
         "cross service integration",
         "data compatibility",
-        "e2e",
-        "neighbour",
-        "new feature",
-        "product",
-        "regression",
+        "integration",
         "secret scanning",
         "sensitive data scanning",
-        "smoke",
-        "stack",
         "system",
         "unit test coverage",
         "unit",
         "visual regression",
-        "vulnerability detection",
-        "integration"
+        "vulnerability detection"
+      ]
+    },
+    "scope": {
+      "description": "The scope of an integration check",
+      "enum": [
+        "component",
+        "product",
+        "neighbour",
+        "e2e"
+      ]
+    },
+    "purpose": {
+      "description": "The purpose of a check",
+      "enum": [
+        "regression",
+        "new feature",
+        "smoke",
+        "performance"
       ]
     },
     "check": {
@@ -64,9 +74,40 @@
       "properties": {
         "name": {
           "$ref": "#/$defs/check-type"
+        },
+        "scope": {
+          "$ref": "#/$defs/scope"
+        },
+        "purpose": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/purpose"
+          }
         }
       },
-      "required": ["name"]
+      "required": ["name"],
+      "allOf": [
+        {
+          "if": {
+            "not": {
+              "properties": { "name": { "const": "integration" } }
+            }
+          },
+          "then": {
+            "not": { "required": ["scope"] }
+          }
+        },
+        {
+          "if": {
+            "not": {
+              "properties": { "name": { "enum": ["integration", "unit"] } }
+            }
+          },
+          "then": {
+            "not": { "required": ["purpose"] }
+          }
+        }
+      ]
     },
     "check-with-details": {
       "type": "object",
@@ -74,13 +115,44 @@
         "name": {
           "$ref": "#/$defs/check-type"
         },
+        "scope": {
+          "$ref": "#/$defs/scope"
+        },
+        "purpose": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/purpose"
+          }
+        },
         "details": {
           "type": "array",
           "items": { "type": "string" },
           "minItems": 1
         }
       },
-      "required": ["name", "details"]
+      "required": ["name", "details"],
+      "allOf": [
+        {
+          "if": {
+            "not": {
+              "properties": { "name": { "const": "integration" } }
+            }
+          },
+          "then": {
+            "not": { "required": ["scope"] }
+          }
+        },
+        {
+          "if": {
+            "not": {
+              "properties": { "name": { "enum": ["integration", "unit"] } }
+            }
+          },
+          "then": {
+            "not": { "required": ["purpose"] }
+          }
+        }
+      ]
     },
     "checks": {
       "type": "array",

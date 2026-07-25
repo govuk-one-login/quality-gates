@@ -1,9 +1,9 @@
 {
   "target": "../schemas/schema.json",
-  "$comment": "Check type tests",
+  "$comment": "Check type, scope, and purpose tests",
   "tests": [
     {
-      "description": "Service with integration check - to be deprecated in the future",
+      "description": "integration check with scope is valid",
       "valid": true,
       "data": {
         "services": [
@@ -13,7 +13,79 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "integration" }],
+                "checks": [{ "name": "integration", "scope": "component" }],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": {
+                  "file": ".github/workflows/tests.yaml",
+                  "path": "$.jobs.integration"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "integration check with purpose is valid",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "product": "generic-service",
+            "component": "api",
+            "promotionType": "securePipelines",
+            "automated": [
+              {
+                "checks": [{ "name": "integration", "purpose": ["regression", "new feature"] }],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": {
+                  "file": ".github/workflows/tests.yaml",
+                  "path": "$.jobs.integration"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "integration check with scope and purpose is valid",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "product": "generic-service",
+            "component": "api",
+            "promotionType": "securePipelines",
+            "automated": [
+              {
+                "checks": [{ "name": "integration", "scope": "e2e", "purpose": ["smoke"] }],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": {
+                  "file": ".github/workflows/tests.yaml",
+                  "path": "$.jobs.e2e"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "unit check with purpose is valid",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "product": "generic-service",
+            "component": "api",
+            "promotionType": "securePipelines",
+            "automated": [
+              {
+                "checks": [{ "name": "unit", "purpose": ["regression"] }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -27,8 +99,56 @@
       }
     },
     {
-      "description": "Service with component check",
-      "valid": true,
+      "description": "scope on non-integration check is invalid",
+      "valid": false,
+      "data": {
+        "services": [
+          {
+            "product": "generic-service",
+            "component": "api",
+            "promotionType": "securePipelines",
+            "automated": [
+              {
+                "checks": [{ "name": "unit", "scope": "component" }],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": {
+                  "file": ".github/workflows/tests.yaml",
+                  "path": "$.jobs.unit"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "purpose on non-integration non-unit check is invalid",
+      "valid": false,
+      "data": {
+        "services": [
+          {
+            "product": "generic-service",
+            "component": "api",
+            "promotionType": "securePipelines",
+            "automated": [
+              {
+                "checks": [{ "name": "code quality", "purpose": ["regression"] }],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": {
+                  "file": ".github/workflows/tests.yaml",
+                  "path": "$.jobs.quality"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "removed check type component is invalid",
+      "valid": false,
       "data": {
         "services": [
           {
@@ -51,56 +171,8 @@
       }
     },
     {
-      "description": "Service with product check",
-      "valid": true,
-      "data": {
-        "services": [
-          {
-            "product": "generic-service",
-            "component": "api",
-            "promotionType": "securePipelines",
-            "automated": [
-              {
-                "checks": [{ "name": "product" }],
-                "provider": "GitHub",
-                "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/tests.yaml",
-                  "path": "$.jobs.unit"
-                }
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "description": "Service with neighbour check",
-      "valid": true,
-      "data": {
-        "services": [
-          {
-            "product": "generic-service",
-            "component": "api",
-            "promotionType": "securePipelines",
-            "automated": [
-              {
-                "checks": [{ "name": "neighbour" }],
-                "provider": "GitHub",
-                "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/tests.yaml",
-                  "path": "$.jobs.unit"
-                }
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "description": "Service with e2e check",
-      "valid": true,
+      "description": "removed check type e2e is invalid",
+      "valid": false,
       "data": {
         "services": [
           {
@@ -115,6 +187,54 @@
                 "config": {
                   "file": ".github/workflows/tests.yaml",
                   "path": "$.jobs.unit"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "removed check type regression is invalid",
+      "valid": false,
+      "data": {
+        "services": [
+          {
+            "product": "generic-service",
+            "component": "api",
+            "promotionType": "securePipelines",
+            "automated": [
+              {
+                "checks": [{ "name": "regression" }],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": {
+                  "file": ".github/workflows/tests.yaml",
+                  "path": "$.jobs.unit"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "integration check without scope or purpose is valid",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "product": "generic-service",
+            "component": "api",
+            "promotionType": "securePipelines",
+            "automated": [
+              {
+                "checks": [{ "name": "integration" }],
+                "provider": "GitHub",
+                "phase": "pre-merge",
+                "config": {
+                  "file": ".github/workflows/tests.yaml",
+                  "path": "$.jobs.integration"
                 }
               }
             ]
