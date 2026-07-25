@@ -34,6 +34,7 @@ export function findMismatchedJobs(data) {
             const items = [];
             if (st.id) items.push(`id:${st.id}`);
             if (st.name) items.push(`name:${st.name}`);
+            if (st.run) items.push(`run:${st.run}`);
             return items;
           });
           return [{ type: "mismatched-step", service, message: `Step not found: ${g.config.path}`, details: { path: g.config.path, job: parsed.job, step: parsed.step, workflow: filename, available } }];

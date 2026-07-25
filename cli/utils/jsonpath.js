@@ -1,7 +1,7 @@
 const JOB_DOT = /^\$\.jobs\.([a-zA-Z_][\w-]*)$/;
 const JOB_BRACKET = /^\$\.jobs\['([^']+)'\]$/;
-const STEP_DOT = /^\$\.jobs\.([a-zA-Z_][\w-]*)\.steps\[\?@\.(id|name)=='(.+)'\]$/;
-const STEP_BRACKET = /^\$\.jobs\['([^']+)'\]\.steps\[\?@\.(id|name)=='(.+)'\]$/;
+const STEP_DOT = /^\$\.jobs\.([a-zA-Z_][\w-]*)\.steps\[\?@\.(id|name|run)=='(.+)'\]$/;
+const STEP_BRACKET = /^\$\.jobs\['([^']+)'\]\.steps\[\?@\.(id|name|run)=='(.+)'\]$/;
 
 export function parseCheckPath(path) {
   if (!path) return { valid: false };

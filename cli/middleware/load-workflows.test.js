@@ -24,6 +24,16 @@ describe("loadWorkflows", () => {
     assert.ok(job.steps.some((s) => s.name));
   });
 
+  it("extracts step run property from jobs", () => {
+    const argv = { directory: ".." };
+    loadWorkflows(argv);
+    const workflow = argv.workflows.find((w) => w.name === "schema.yml");
+    assert.ok(workflow);
+    const job = workflow.jobs["run-tests"];
+    assert.ok(job);
+    assert.ok(job.steps.some((s) => s.run));
+  });
+
   it("sets argv.workflows to [] when dir does not exist", () => {
     const argv = { directory: "/nonexistent" };
     loadWorkflows(argv);

@@ -115,4 +115,24 @@ describe("findMismatchedJobs", () => {
     assert.ok(errors[0].details.available.includes("id:checkout"));
     assert.ok(errors[0].details.available.includes("id:run-tests"));
   });
+
+  it("validates step by run - found", () => {
+    const data = makeData(
+      [{ provider: "GitHub", config: { file: ".github/workflows/ci.yml", path: "$.jobs.build.steps[?@.run=='yarn lint']" } }],
+      { build: { steps: [{ run: "yarn install --frozen-lockfile" }, { run: "yarn lint" }, { run: "yarn test" }] } }
+    );
+    assert.deepEqual(findMismatchedJobs(data), []);
+  });
+
+  it("validates step by run - not found", () => {
+    const data = makeData(
+      [{ provider: "GitHub", config: { file: ".github/workflows/ci.yml", path: "$.jobs.build.steps[?@.run=='yarn lint']" } }],
+      { build: { steps: [{ run: "yarn install" }, { run: "yarn test" }] } }
+    );
+    const errors = findMismatchedJobs(data);
+    assert.equal(errors.length, 1);
+    assert.equal(errors[0].type, "mismatched-step");
+    assert.ok(errors[0].details.available.includes("run:yarn install"));
+    assert.ok(errors[0].details.available.includes("run:yarn test"));
+  });
 });
