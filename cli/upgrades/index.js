@@ -7,6 +7,7 @@ import { transform as v0120 } from "./v0.12.0.js";
 import { transform as v0130 } from "./v0.13.0.js";
 import { transform as v0140 } from "./v0.14.0.js";
 import { transform as v0150 } from "./v0.15.0.js";
+import { transform as v0160 } from "./v0.16.0.js";
 
 const SCHEMA_URL_PREFIX = "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v";
 
@@ -20,6 +21,7 @@ const transforms = [
   { version: [0, 13, 0], transform: v0130 },
   { version: [0, 14, 0], transform: v0140 },
   { version: [0, 15, 0], transform: v0150 },
+  { version: [0, 16, 0], transform: v0160 },
 ];
 
 export function parseVersion(schema) {
