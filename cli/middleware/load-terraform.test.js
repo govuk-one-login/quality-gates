@@ -41,7 +41,7 @@ describe("loadTerraform", () => {
           component: "infra",
           promotionType: "securePipelines",
           automated: [{
-            checks: [{ name: "product" }],
+            checks: [{ name: "integration" }],
             phase: "build",
             provider: "Terraform",
             config: { file: "terraform/main.tf", path: "$.module.deploy.parameters.X" },
@@ -63,7 +63,7 @@ describe("loadTerraform", () => {
           component: "infra",
           promotionType: "securePipelines",
           automated: [{
-            checks: [{ name: "product" }],
+            checks: [{ name: "integration" }],
             phase: "build",
             provider: "Terraform",
             config: { file: "some-file.json", path: "$.x" },

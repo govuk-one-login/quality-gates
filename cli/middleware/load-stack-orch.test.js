@@ -42,7 +42,7 @@ describe("loadStackOrch", () => {
           component: "infra",
           promotionType: "securePipelines",
           automated: [{
-            checks: [{ name: "product" }],
+            checks: [{ name: "integration" }],
             phase: "build",
             provider: "Stack Orchestration Tool",
             config: { file: "config/params.yaml", path: "$[?@.ParameterKey=='X']" },
@@ -63,7 +63,7 @@ describe("loadStackOrch", () => {
           component: "infra",
           promotionType: "securePipelines",
           automated: [{
-            checks: [{ name: "product" }],
+            checks: [{ name: "integration" }],
             phase: "build",
             provider: "Stack Orchestration Tool",
             config: { file: "missing/parameters.json", path: "$[?@.ParameterKey=='X']" },
@@ -95,7 +95,7 @@ describe("loadStackOrch", () => {
           component: "backend",
           promotionType: "securePipelines",
           automated: [{
-            checks: [{ name: "product" }],
+            checks: [{ name: "integration" }],
             phase: "build",
             provider: "Stack Orchestration Tool",
             config: { file: relPath, path: "$[?@.ParameterKey=='TestImageRepositoryUri']" },
