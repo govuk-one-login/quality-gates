@@ -10,7 +10,7 @@ Add a `$schema` property pointing to a tagged release:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.15.0/schemas/schema.json"
+  "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.16.0/schemas/schema.json"
 }
 ```
 
@@ -95,6 +95,7 @@ The upgrade command handles all historical schema migrations automatically, incl
 - `serviceTag` → `product`/`component` (v0.13.0)
 - `checks` → `automated` execution mode split (v0.14.0)
 - `checkTypes` string array → `checks` object array (v0.15.0)
+- Add `scope`/`purpose` to checks, remove deprecated check types (v0.16.0)
 
 ### Exit codes
 
@@ -178,9 +179,33 @@ Check types that the team has consciously decided do not apply to this service.
 
 Each item in a `checks` array is an object:
 
-| Field  | Type   | Required | Description                              |
-|--------|--------|----------|------------------------------------------|
-| `name` | string | Yes      | Check type name (from the allowed enum)  |
+| Field     | Type     | Required | Description                              |
+|-----------|----------|----------|------------------------------------------|
+| `name`    | string   | Yes      | Check type name (from the allowed enum)  |
+| `scope`   | string   | No       | Scope of an integration check (only allowed when `name` is `"integration"`) |
+| `purpose` | string[] | No       | Purpose of the check (only allowed when `name` is `"integration"` or `"unit"`) |
+
+#### Scope values
+
+Only applicable to `integration` checks:
+
+| Value | Description |
+|-------|-------------|
+| `component` | Tests a single component in isolation |
+| `product` | Tests the full product/service |
+| `neighbour` | Tests interaction with neighbouring services |
+| `e2e` | End-to-end tests across the full stack |
+
+#### Purpose values
+
+Applicable to `integration` and `unit` checks:
+
+| Value | Description |
+|-------|-------------|
+| `regression` | Verifies existing functionality hasn't broken |
+| `new feature` | Validates new functionality |
+| `smoke` | Quick sanity check that critical paths work |
+| `performance` | Validates performance characteristics |
 
 ### Checks with details
 
@@ -189,13 +214,15 @@ In `notApplicable`, each check item also requires justification:
 | Field     | Type     | Required | Description                                   |
 |-----------|----------|----------|-----------------------------------------------|
 | `name`    | string   | Yes      | Check type name (from the allowed enum)       |
+| `scope`   | string   | No       | Scope (same rules as above)                   |
+| `purpose` | string[] | No       | Purpose (same rules as above)                 |
 | `details` | string[] | Yes      | Justification for why it is not applicable    |
 
 ### Check types
 
 The schema supports the following check-type values:
 
-`accessibility`, `canary`, `code quality`, `code style and linting`, `component`, `contract`, `cross service integration`, `data compatibility`, `e2e`, `integration`, `neighbour`, `new feature`, `product`, `regression`, `secret scanning`, `sensitive data scanning`, `smoke`, `stack`, `system`, `unit test coverage`, `unit`, `visual regression`, `vulnerability detection`
+`accessibility`, `canary`, `code quality`, `code style and linting`, `contract`, `cross service integration`, `data compatibility`, `integration`, `secret scanning`, `sensitive data scanning`, `system`, `unit test coverage`, `unit`, `visual regression`, `vulnerability detection`
 
 ### Phases
 

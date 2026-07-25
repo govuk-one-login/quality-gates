@@ -52,6 +52,13 @@ The schema supports three deployment strategy models, each with different phase 
 
 Check types are drawn from prior analysis work within the GOV.UK One Login programme. They represent categories of verification, not specific tools. For example, `unit` covers any unit testing framework, and `secret scanning` covers any tool that detects secrets.
 
+The `integration` and `unit` check types support additional metadata:
+
+- **Scope** (integration only) — describes the breadth of what is being tested: `component`, `product`, `neighbour`, or `e2e`
+- **Purpose** (integration and unit) — describes why the test exists: `regression`, `new feature`, `smoke`, or `performance`
+
+These were previously standalone check types but have been consolidated as attributes of integration/unit checks to provide richer, composable descriptions.
+
 ## Design decisions
 
 ### Schema-based approach
