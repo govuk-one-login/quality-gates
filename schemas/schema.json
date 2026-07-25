@@ -11,7 +11,7 @@
           "promotionType": "securePipelines",
           "automated": [
             {
-              "checkTypes": ["code style and linting"],
+              "checks": [{ "name": "code style and linting" }],
               "provider": "GitHub",
               "phase": "pre-merge",
               "config": {
@@ -31,117 +31,6 @@
     }
   },
   "$defs": {
-    "automated-check": {
-      "type": "object",
-      "properties": {
-        "checkTypes": {
-          "$ref": "#/$defs/check-types"
-        },
-        "phase": {
-          "type": "string"
-        },
-        "provider": {
-          "enum": [
-            "CloudFormation",
-            "GitHub",
-            "Stack Orchestration Tool",
-            "Terraform"
-          ]
-        },
-        "config": {
-          "$ref": "#/$defs/check-config"
-        }
-      },
-      "required": [
-        "checkTypes",
-        "phase",
-        "provider",
-        "config"
-      ]
-    },
-    "manual-check": {
-      "type": "object",
-      "properties": {
-        "checkTypes": {
-          "$ref": "#/$defs/check-types"
-        },
-        "phase": {
-          "type": "string"
-        },
-        "details": {
-          "type": "array",
-          "items": { "type": "string" },
-          "minItems": 1
-        }
-      },
-      "required": [
-        "checkTypes",
-        "phase",
-        "details"
-      ]
-    },
-    "out-of-band-check": {
-      "type": "object",
-      "properties": {
-        "checkTypes": {
-          "$ref": "#/$defs/check-types"
-        },
-        "phase": {
-          "type": "string"
-        },
-        "provider": {
-          "enum": [
-            "CloudFormation",
-            "GitHub",
-            "Stack Orchestration Tool",
-            "Terraform"
-          ]
-        },
-        "config": {
-          "$ref": "#/$defs/check-config"
-        }
-      },
-      "required": [
-        "checkTypes",
-        "phase",
-        "provider",
-        "config"
-      ]
-    },
-    "not-applicable": {
-      "type": "object",
-      "properties": {
-        "checkTypes": {
-          "$ref": "#/$defs/check-types"
-        },
-        "details": {
-          "type": "array",
-          "items": { "type": "string" },
-          "minItems": 1
-        }
-      },
-      "required": [
-        "checkTypes",
-        "details"
-      ]
-    },
-    "check-config": {
-      "type": "object",
-      "properties": {
-        "file": {
-          "type": "string",
-          "pattern": "^[^:]*$"
-        },
-        "path": {
-          "description": "JSONPath (RFC 9535) expression identifying the relevant node in the file",
-          "type": "string",
-          "pattern": "^\\$"
-        }
-      },
-      "required": [
-        "file"
-      ]
-    },
     "check-type": {
       "description": "A quality check category as documented, plus emergent checks",
       "enum": [
@@ -170,11 +59,140 @@
         "integration"
       ]
     },
-    "check-types": {
+    "check": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/check-type"
+        }
+      },
+      "required": ["name"]
+    },
+    "check-with-details": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/check-type"
+        },
+        "details": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        }
+      },
+      "required": ["name", "details"]
+    },
+    "checks": {
       "type": "array",
       "items": {
-        "$ref": "#/$defs/check-type"
+        "$ref": "#/$defs/check"
       }
+    },
+    "automated-check": {
+      "type": "object",
+      "properties": {
+        "checks": {
+          "$ref": "#/$defs/checks"
+        },
+        "phase": {
+          "type": "string"
+        },
+        "provider": {
+          "enum": [
+            "CloudFormation",
+            "GitHub",
+            "Stack Orchestration Tool",
+            "Terraform"
+          ]
+        },
+        "config": {
+          "$ref": "#/$defs/check-config"
+        }
+      },
+      "required": [
+        "checks",
+        "phase",
+        "provider",
+        "config"
+      ]
+    },
+    "manual-check": {
+      "type": "object",
+      "properties": {
+        "checks": {
+          "$ref": "#/$defs/checks"
+        },
+        "phase": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "checks",
+        "phase",
+        "details"
+      ]
+    },
+    "out-of-band-check": {
+      "type": "object",
+      "properties": {
+        "checks": {
+          "$ref": "#/$defs/checks"
+        },
+        "phase": {
+          "type": "string"
+        },
+        "provider": {
+          "enum": [
+            "CloudFormation",
+            "GitHub",
+            "Stack Orchestration Tool",
+            "Terraform"
+          ]
+        },
+        "config": {
+          "$ref": "#/$defs/check-config"
+        }
+      },
+      "required": [
+        "checks",
+        "phase",
+        "provider",
+        "config"
+      ]
+    },
+    "not-applicable-check": {
+      "type": "object",
+      "properties": {
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/check-with-details"
+          }
+        }
+      },
+      "required": ["checks"]
+    },
+    "check-config": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "type": "string",
+          "pattern": "^[^:]*$"
+        },
+        "path": {
+          "description": "JSONPath (RFC 9535) expression identifying the relevant node in the file",
+          "type": "string",
+          "pattern": "^\\$"
+        }
+      },
+      "required": [
+        "file"
+      ]
     },
     "automated-checks": {
       "type": "array",
@@ -192,6 +210,12 @@
       "type": "array",
       "items": {
         "$ref": "#/$defs/out-of-band-check"
+      }
+    },
+    "not-applicable-checks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/not-applicable-check"
       }
     },
     "secure-pipelines-phases": {
@@ -327,7 +351,7 @@
           "$ref": "#/$defs/out-of-band-checks"
         },
         "notApplicable": {
-          "$ref": "#/$defs/not-applicable"
+          "$ref": "#/$defs/not-applicable-checks"
         }
       },
       "allOf": [

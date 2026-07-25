@@ -72,13 +72,13 @@ const productChecks = repositories
   .flatMap(node =>
     node.manifest.text.services.flatMap(service =>
       [...(service.automated ?? []), ...(service.manual ?? []), ...(service.outOfBand ?? [])].flatMap(check =>
-        (check.checkTypes ?? []).map(ct => ({
+        (check.checks ?? []).map(ct => ({
           product: service.product,
           component: service.component,
           repository: node.name,
           promotionType: service.promotionType,
           phase: check.phase,
-          check: ct
+          check: ct.name
         }))
       )
     )

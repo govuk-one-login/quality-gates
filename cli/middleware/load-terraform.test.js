@@ -12,7 +12,7 @@ describe("loadTerraform", () => {
           component: "frontend",
           promotionType: "securePipelines",
           automated: [{
-            checkTypes: ["secret scanning"],
+            checks: [{ name: "secret scanning" }],
             phase: "pre-merge",
             provider: "GitHub",
             config: { file: ".github/workflows/test.yml", path: "$.jobs.test" },
@@ -41,7 +41,7 @@ describe("loadTerraform", () => {
           component: "infra",
           promotionType: "securePipelines",
           automated: [{
-            checkTypes: ["product"],
+            checks: [{ name: "product" }],
             phase: "build",
             provider: "Terraform",
             config: { file: "terraform/main.tf", path: "$.module.deploy.parameters.X" },
@@ -63,7 +63,7 @@ describe("loadTerraform", () => {
           component: "infra",
           promotionType: "securePipelines",
           automated: [{
-            checkTypes: ["product"],
+            checks: [{ name: "product" }],
             phase: "build",
             provider: "Terraform",
             config: { file: "some-file.json", path: "$.x" },

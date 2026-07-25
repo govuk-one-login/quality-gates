@@ -13,7 +13,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "staging",
                 "config": {
@@ -37,7 +37,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "develop",
                 "config": {
@@ -61,7 +61,7 @@
             "promotionType": "gitFlow",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "develop",
                 "config": {
@@ -85,7 +85,7 @@
             "promotionType": "gitFlow",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "staging",
                 "config": {
@@ -109,7 +109,7 @@
             "promotionType": "library",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -133,7 +133,7 @@
             "promotionType": "library",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "build",
                 "config": {
@@ -156,7 +156,7 @@
             "component": "api",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -180,7 +180,7 @@
             "promotionType": "unknown",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -204,7 +204,7 @@
             "promotionType": "other",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {

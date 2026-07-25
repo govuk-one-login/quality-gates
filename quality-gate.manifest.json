@@ -7,7 +7,7 @@
       "promotionType": "library",
       "automated": [
         {
-          "checkTypes": ["unit"],
+          "checks": [{ "name": "unit" }],
           "phase": "pre-merge",
           "provider": "GitHub",
           "config": {
@@ -16,7 +16,7 @@
           }
         },
         {
-          "checkTypes": ["unit"],
+          "checks": [{ "name": "unit" }],
           "phase": "pre-merge",
           "provider": "GitHub",
           "config": {
@@ -25,7 +25,7 @@
           }
         },
         {
-          "checkTypes": ["code quality"],
+          "checks": [{ "name": "code quality" }],
           "phase": "pre-merge",
           "provider": "GitHub",
           "config": {
@@ -34,7 +34,7 @@
           }
         },
         {
-          "checkTypes": ["code style and linting"],
+          "checks": [{ "name": "code style and linting" }],
           "phase": "pre-merge",
           "provider": "GitHub",
           "config": {

@@ -112,8 +112,8 @@ function findGatesWithmismatchedCheckTypes(node) {
     const { manifest, workflows, ...rest } = node;
     return (node.manifest.text.services ?? []).flatMap((s) =>
         [...(s.automated ?? []), ...(s.outOfBand ?? [])]
-            .filter((g) => (g.checkTypes ?? []).some((t) => !known.has(t)))
-            .map((g) => ({ ...rest, ...g, mismatchedCheckTypes: (g.checkTypes ?? []).filter((t) => !known.has(t)).join(", ") }))
+            .filter((g) => (g.checks ?? []).some((c) => !known.has(c.name)))
+            .map((g) => ({ ...rest, ...g, mismatchedCheckTypes: (g.checks ?? []).filter((c) => !known.has(c.name)).map(c => c.name).join(", ") }))
     );
 }
 

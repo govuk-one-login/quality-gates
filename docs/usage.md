@@ -10,7 +10,7 @@ Add a `$schema` property pointing to a tagged release:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.14.0/schemas/schema.json"
+  "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.15.0/schemas/schema.json"
 }
 ```
 
@@ -94,6 +94,7 @@ The upgrade command handles all historical schema migrations automatically, incl
 - `qualityGates` → `checks` rename (v0.10.0)
 - `serviceTag` → `product`/`component` (v0.13.0)
 - `checks` → `automated` execution mode split (v0.14.0)
+- `checkTypes` string array → `checks` object array (v0.15.0)
 
 ### Exit codes
 
@@ -127,7 +128,7 @@ A manifest contains an array of **services**, each with:
 | `automated`     | array  | Checks that run in CI/CD automatically (optional)                     |
 | `manual`        | array  | Checks performed by a human (optional)                                |
 | `outOfBand`     | array  | Checks that run outside the deployment pipeline (optional)            |
-| `notApplicable` | object | Check types consciously declared as not relevant (optional)           |
+| `notApplicable` | array  | Check types consciously declared as not relevant (optional)           |
 
 ### Execution modes
 
@@ -139,7 +140,7 @@ Checks that run automatically in CI/CD with no human involvement.
 
 | Field       | Type     | Required | Description                                      |
 |-------------|----------|----------|--------------------------------------------------|
-| `checkTypes`| string[] | Yes      | Categories of check (see [check types](#check-types)) |
+| `checks`    | object[] | Yes      | Check types (see [checks](#checks))              |
 | `phase`     | string   | Yes      | SDLC phase where the check runs                  |
 | `provider`  | string   | Yes      | Platform running the check (`GitHub`, `Terraform`, `CloudFormation`, `Stack Orchestration Tool`) |
 | `config`    | object   | Yes      | Location of the check definition                 |
@@ -150,7 +151,7 @@ Checks performed by a human (e.g. accessibility audit, pen test, manual approval
 
 | Field       | Type     | Required | Description                                      |
 |-------------|----------|----------|--------------------------------------------------|
-| `checkTypes`| string[] | Yes      | Categories of check                              |
+| `checks`    | object[] | Yes      | Check types                                      |
 | `phase`     | string   | Yes      | SDLC phase where the check is performed          |
 | `details`   | string[] | Yes      | Description of the manual process                |
 
@@ -160,7 +161,7 @@ Checks that happen outside the deployment pipeline (e.g. daily smoke tests, peri
 
 | Field       | Type     | Required | Description                                      |
 |-------------|----------|----------|--------------------------------------------------|
-| `checkTypes`| string[] | Yes      | Categories of check                              |
+| `checks`    | object[] | Yes      | Check types                                      |
 | `phase`     | string   | Yes      | SDLC phase the check relates to                  |
 | `provider`  | string   | Yes      | Platform running the check                       |
 | `config`    | object   | Yes      | Location of the check definition                 |
@@ -171,8 +172,24 @@ Check types that the team has consciously decided do not apply to this service.
 
 | Field       | Type     | Required | Description                                      |
 |-------------|----------|----------|--------------------------------------------------|
-| `checkTypes`| string[] | Yes      | Check types that are not applicable              |
-| `details`   | string[] | Yes      | Justification for why they are not applicable    |
+| `checks`    | object[] | Yes      | Check types with details (see [checks with details](#checks-with-details)) |
+
+### Checks
+
+Each item in a `checks` array is an object:
+
+| Field  | Type   | Required | Description                              |
+|--------|--------|----------|------------------------------------------|
+| `name` | string | Yes      | Check type name (from the allowed enum)  |
+
+### Checks with details
+
+In `notApplicable`, each check item also requires justification:
+
+| Field     | Type     | Required | Description                                   |
+|-----------|----------|----------|-----------------------------------------------|
+| `name`    | string   | Yes      | Check type name (from the allowed enum)       |
+| `details` | string[] | Yes      | Justification for why it is not applicable    |
 
 ### Check types
 

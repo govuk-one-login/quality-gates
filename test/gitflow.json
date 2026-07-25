@@ -13,7 +13,7 @@
             "promotionType": "gitFlow",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "pre-develop",
                 "config": {
@@ -22,7 +22,7 @@
                 }
               },
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "develop",
                 "config": {
@@ -31,7 +31,7 @@
                 }
               },
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "pre-release",
                 "config": {
@@ -40,7 +40,7 @@
                 }
               },
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "release",
                 "config": {
@@ -49,7 +49,7 @@
                 }
               },
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "main",
                 "config": {

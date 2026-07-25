@@ -13,7 +13,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -37,7 +37,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -61,7 +61,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -85,7 +85,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["integration"],
+                "checks": [{ "name": "integration" }],
                 "provider": "Stack Orchestration Tool",
                 "phase": "build",
                 "config": {
@@ -109,7 +109,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {
@@ -133,7 +133,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "Terraform",
                 "phase": "build",
                 "config": {
@@ -156,7 +156,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["integration"],
+                "checks": [{ "name": "integration" }],
                 "provider": "Terraform",
                 "phase": "build",
                 "config": {
@@ -179,7 +179,7 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "pre-merge",
                 "config": {

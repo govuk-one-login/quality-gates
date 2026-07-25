@@ -15,7 +15,7 @@ describe("loadStackOrch", () => {
           component: "frontend",
           promotionType: "securePipelines",
           automated: [{
-            checkTypes: ["secret scanning"],
+            checks: [{ name: "secret scanning" }],
             phase: "pre-merge",
             provider: "GitHub",
             config: { file: ".github/workflows/test.yml", path: "$.jobs.test" },
@@ -42,7 +42,7 @@ describe("loadStackOrch", () => {
           component: "infra",
           promotionType: "securePipelines",
           automated: [{
-            checkTypes: ["product"],
+            checks: [{ name: "product" }],
             phase: "build",
             provider: "Stack Orchestration Tool",
             config: { file: "config/params.yaml", path: "$[?@.ParameterKey=='X']" },
@@ -63,7 +63,7 @@ describe("loadStackOrch", () => {
           component: "infra",
           promotionType: "securePipelines",
           automated: [{
-            checkTypes: ["product"],
+            checks: [{ name: "product" }],
             phase: "build",
             provider: "Stack Orchestration Tool",
             config: { file: "missing/parameters.json", path: "$[?@.ParameterKey=='X']" },
@@ -95,7 +95,7 @@ describe("loadStackOrch", () => {
           component: "backend",
           promotionType: "securePipelines",
           automated: [{
-            checkTypes: ["product"],
+            checks: [{ name: "product" }],
             phase: "build",
             provider: "Stack Orchestration Tool",
             config: { file: relPath, path: "$[?@.ParameterKey=='TestImageRepositoryUri']" },

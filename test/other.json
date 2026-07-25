@@ -14,7 +14,7 @@
             "promotionTypeDetails": ["custom pipeline"],
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "my-custom-phase",
                 "config": {
@@ -39,7 +39,7 @@
             "promotionTypeDetails": ["custom pipeline", "manual approval"],
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "deploy-canary",
                 "config": {
@@ -64,7 +64,7 @@
             "promotionTypeDetails": ["custom deployment tool"],
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "staging",
                 "config": {
@@ -88,7 +88,7 @@
             "promotionType": "other",
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "deploy",
                 "config": {
@@ -113,7 +113,7 @@
             "promotionTypeDetails": [],
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "deploy",
                 "config": {
@@ -138,7 +138,7 @@
             "promotionTypeDetails": [123],
             "automated": [
               {
-                "checkTypes": ["unit"],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "deploy",
                 "config": {

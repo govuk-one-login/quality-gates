@@ -3,7 +3,7 @@ import _ from "npm:lodash"
 export function keyByCheckType(checks, allChecks)  {
 
     const reshaped = allChecks.reduce((acc, value) => {
-        acc[value] =  checks.filter((gate) => gate.checkTypes.includes(value))
+        acc[value] =  checks.filter((gate) => (gate.checks || []).some(c => c.name === value))
 
         return acc;
 
