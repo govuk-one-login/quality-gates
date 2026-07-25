@@ -12,10 +12,11 @@ export function loadWorkflows(argv) {
         const jobs = {};
         for (const [key, job] of Object.entries(parsed.jobs ?? {})) {
           jobs[key] = {
-            steps: (job.steps ?? []).map(({ id, name }) => {
+            steps: (job.steps ?? []).map(({ id, name, run }) => {
               const step = {};
               if (id) step.id = id;
               if (name) step.name = name;
+              if (run) step.run = run;
               return step;
             }),
           };

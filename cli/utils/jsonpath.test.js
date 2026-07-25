@@ -29,6 +29,18 @@ describe("parseCheckPath", () => {
     });
   });
 
+  it("parses dot-notation job with step filter by run", () => {
+    assert.deepEqual(parseCheckPath("$.jobs.build.steps[?@.run=='yarn lint']"), {
+      valid: true, job: "build", step: { by: "run", value: "yarn lint" },
+    });
+  });
+
+  it("parses bracket-notation job with step filter by run", () => {
+    assert.deepEqual(parseCheckPath("$.jobs['run-checks'].steps[?@.run=='yarn test']"), {
+      valid: true, job: "run-checks", step: { by: "run", value: "yarn test" },
+    });
+  });
+
   it("handles special characters in step names", () => {
     assert.deepEqual(parseCheckPath("$.jobs.pre-commit.steps[?@.name=='✅ Run Pre-commit Hooks']"), {
       valid: true, job: "pre-commit", step: { by: "name", value: "✅ Run Pre-commit Hooks" },
