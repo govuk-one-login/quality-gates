@@ -79,7 +79,7 @@ describe("manifest-and-workflows", () => {
                                             }
                                         },
                                         {
-                                            "checks": [{ "name": "component" }, { "name": "regression" }],
+                                            "checks": [{ "name": "integration", "scope": "component", "purpose": ["regression"] }],
                                             "config": {
                                                 file: ".github/workflows/ci.yaml",
                                                 path: "$.jobs.integration-test"
@@ -165,7 +165,7 @@ describe("manifest-and-workflows", () => {
                     }
                 },
                 {
-                    "checkTypes": ["component", "regression"],
+                    "checkTypes": ["integration"],
                     "job": {
                         "__workflow-file": "ci.yaml",
                         "__workflow-name": "CI",
