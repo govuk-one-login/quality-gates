@@ -259,15 +259,15 @@ const serviceItems = Object.keys(nodesByServiceTag).reduce((acc, tag) =>
 
 
 ```js
-const flattenedQualityGates = serviceItems.flatMap(({ checks: qg, ...rest }) =>
-  (qg ?? []).map((gate) => ({ ...rest, ...gate }))
+const flattenedQualityGates = serviceItems.flatMap(({ automated, manual, ...rest }) =>
+  [...(automated ?? []), ...(manual ?? [])].map((gate) => ({ ...rest, ...gate }))
 )
 ```
 
 
 ```js
-const flattenedCheckTypes = flattenedQualityGates.flatMap(({ checkTypes: ct, ...rest }) =>
-    (ct ?? []).map((checkType) => ({ ...rest, "check-type": checkType }))
+const flattenedCheckTypes = flattenedQualityGates.flatMap(({ checks: ct, ...rest }) =>
+    (ct ?? []).flatMap((check) => ({ ...rest, "check-type": check.name }))
 )
 ```
 
