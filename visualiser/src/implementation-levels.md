@@ -63,14 +63,14 @@ import {renderStatusGrid, buildCheckLevelGrid, buildIntegrationScopeGrid} from "
 ```js
 // Map promotionType to its valid phases from the schema
 const phasesByPromotionType = {
-  securePipelines: currentSchema["$defs"]["secure-pipelines-phases"].properties.checks.items.properties.phase.enum,
-  gitFlow: currentSchema["$defs"]["git-flow-phases"].properties.checks.items.properties.phase.enum,
-  library: currentSchema["$defs"]["library-phases"].properties.checks.items.properties.phase.enum,
+  securePipelines: currentSchema["$defs"]["secure-pipelines-phases"].properties.automated.items.properties.phase.enum,
+  gitFlow: currentSchema["$defs"]["git-flow-phases"].properties.automated.items.properties.phase.enum,
+  library: currentSchema["$defs"]["library-phases"].properties.automated.items.properties.phase.enum,
   other: [
     ...new Set([
-      ...currentSchema["$defs"]["secure-pipelines-phases"].properties.checks.items.properties.phase.enum,
-      ...currentSchema["$defs"]["git-flow-phases"].properties.checks.items.properties.phase.enum,
-      ...currentSchema["$defs"]["library-phases"].properties.checks.items.properties.phase.enum,
+      ...currentSchema["$defs"]["secure-pipelines-phases"].properties.automated.items.properties.phase.enum,
+      ...currentSchema["$defs"]["git-flow-phases"].properties.automated.items.properties.phase.enum,
+      ...currentSchema["$defs"]["library-phases"].properties.automated.items.properties.phase.enum,
     ])
   ]
 };

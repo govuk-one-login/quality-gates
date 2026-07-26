@@ -234,7 +234,8 @@ export function buildIntegrationScopeGrid(repositories, phasesByPromotionType, s
           .map(d => d.component)
       )].sort();
 
-      const validPhases = phasesByPromotionType[promotionType] ?? [];
+      const validPhases = (phasesByPromotionType[promotionType] ?? [])
+        .filter(phase => phase !== "pre-merge" && phase !== "pre-upload");
 
       const categories = validPhases.map(phase => ({
         name: phase,

@@ -504,12 +504,12 @@ describe("buildIntegrationScopeGrid", () => {
 
     const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes);
 
-    // phases: pre-merge, build, staging, production
+    // phases (after excluding pre-merge): build, staging, production
     // scopes per phase: component, product, neighbour, e2e
-    // production is index 3, e2e is index 3 within that phase
-    // cell index = (3 * 4) + 3 = 15
+    // production is index 2, e2e is index 3 within that phase
+    // cell index = (2 * 4) + 3 = 11
     const cells = result.groups[0].rows[0].cells;
-    assert.equal(cells[15].status, "implemented");
+    assert.equal(cells[11].status, "implemented");
   });
 
   it("marks non-matching scope/phase combinations as missing", () => {
@@ -533,7 +533,7 @@ describe("buildIntegrationScopeGrid", () => {
 
     const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes);
 
-    // pre-merge / component = index 0
+    // build / component = index 0
     assert.equal(result.groups[0].rows[0].cells[0].status, "missing");
   });
 
@@ -582,8 +582,8 @@ describe("buildIntegrationScopeGrid", () => {
 
     const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes);
 
-    // production / e2e = index 15
-    const cell = result.groups[0].rows[0].cells[15];
+    // production / e2e = index 11
+    const cell = result.groups[0].rows[0].cells[11];
     assert.match(cell.title, /Purpose: /);
     assert.match(cell.title, /smoke/);
     assert.match(cell.title, /regression/);
@@ -599,11 +599,11 @@ describe("buildIntegrationScopeGrid", () => {
     const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes);
 
     const categories = result.groups[0].columns.categories;
-    assert.equal(categories.length, 4); // pre-merge, build, staging, production
-    assert.equal(categories[0].name, "pre-merge");
+    assert.equal(categories.length, 3); // build, staging, production (pre-merge excluded)
+    assert.equal(categories[0].name, "build");
     assert.deepEqual(categories[0].items, scopes);
-    assert.equal(categories[3].name, "production");
-    assert.deepEqual(categories[3].items, scopes);
+    assert.equal(categories[2].name, "production");
+    assert.deepEqual(categories[2].items, scopes);
   });
 
   it("handles integration checks without scope (null scope)", () => {
@@ -616,7 +616,7 @@ describe("buildIntegrationScopeGrid", () => {
           automated: [
             {
               checks: [{ name: "integration", purpose: ["regression"] }],
-              phase: "pre-merge",
+              phase: "build",
               provider: "GitHub",
               file: "test.yml",
             },
@@ -628,12 +628,12 @@ describe("buildIntegrationScopeGrid", () => {
     const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes);
 
     // Without a scope, it maps to null, which won't match any of the scope columns
-    // All cells for pre-merge should be missing
+    // All cells for build (first phase after filtering) should be missing
     const cells = result.groups[0].rows[0].cells;
-    assert.equal(cells[0].status, "missing"); // pre-merge / component
-    assert.equal(cells[1].status, "missing"); // pre-merge / product
-    assert.equal(cells[2].status, "missing"); // pre-merge / neighbour
-    assert.equal(cells[3].status, "missing"); // pre-merge / e2e
+    assert.equal(cells[0].status, "missing"); // build / component
+    assert.equal(cells[1].status, "missing"); // build / product
+    assert.equal(cells[2].status, "missing"); // build / neighbour
+    assert.equal(cells[3].status, "missing"); // build / e2e
   });
 
   it("implemented takes priority over notApplicable for integration", () => {
@@ -661,7 +661,7 @@ describe("buildIntegrationScopeGrid", () => {
     const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes);
 
     // production / e2e should still be implemented
-    assert.equal(result.groups[0].rows[0].cells[15].status, "implemented");
+    assert.equal(result.groups[0].rows[0].cells[11].status, "implemented");
     // But other cells should be notApplicable
     assert.equal(result.groups[0].rows[0].cells[0].status, "notApplicable");
   });
