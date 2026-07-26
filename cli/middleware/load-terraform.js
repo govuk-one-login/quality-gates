@@ -6,8 +6,8 @@ export function loadTerraform(argv) {
   const tfFiles = new Set();
   for (const service of argv.manifest?.services ?? []) {
     for (const check of [...(service.automated ?? []), ...(service.outOfBand ?? [])]) {
-      if (check.provider === "Terraform" && check.config?.file?.endsWith(".tf")) {
-        tfFiles.add(check.config.file);
+      if (check.provider === "Terraform" && check.file?.endsWith(".tf")) {
+        tfFiles.add(check.file);
       }
     }
   }
