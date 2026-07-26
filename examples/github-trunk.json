@@ -6,31 +6,37 @@
       "promotionType": "securePipelines",
       "automated": [
         {
-          "checks": [{ "name": "unit" }],
+          "checks": [
+            {
+              "name": "unit"
+            }
+          ],
           "provider": "GitHub",
           "phase": "pre-merge",
-          "config": {
-            "file": ".github/workflows/tests.yaml",
-            "path": "$.jobs.unit"
-          }
+          "file": ".github/workflows/tests.yaml",
+          "path": "$.jobs.unit"
         },
         {
-          "checks": [{ "name": "code style and linting" }],
+          "checks": [
+            {
+              "name": "code style and linting"
+            }
+          ],
           "provider": "GitHub",
           "phase": "pre-merge",
-          "config": {
-            "file": ".github/workflows/quality.yaml",
-            "path": "$.jobs.pre-commit"
-          }
+          "file": ".github/workflows/quality.yaml",
+          "path": "$.jobs.pre-commit"
         },
         {
-          "checks": [{ "name": "vulnerability detection" }],
+          "checks": [
+            {
+              "name": "vulnerability detection"
+            }
+          ],
           "provider": "GitHub",
           "phase": "pre-merge",
-          "config": {
-            "file": ".github/workflows/quality.yaml",
-            "path": "$.jobs.codeql"
-          }
+          "file": ".github/workflows/quality.yaml",
+          "path": "$.jobs.codeql"
         }
       ]
     }

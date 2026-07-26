@@ -4,16 +4,20 @@
       "product": "service-name",
       "component": "frontend",
       "promotionType": "other",
-      "promotionTypeDetails": ["custom deployment tool"],
+      "promotionTypeDetails": [
+        "custom deployment tool"
+      ],
       "automated": [
         {
-          "checks": [{ "name": "unit" }],
+          "checks": [
+            {
+              "name": "unit"
+            }
+          ],
           "provider": "GitHub",
           "phase": "deploy",
-          "config": {
-            "file": ".github/workflows/tests.yaml",
-            "path": "$.jobs.unit"
-          }
+          "file": ".github/workflows/tests.yaml",
+          "path": "$.jobs.unit"
         }
       ]
     }
