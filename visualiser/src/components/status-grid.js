@@ -13,7 +13,7 @@ export function renderStatusGrid(gridData, iconsMapping) {
   return html`${gridData.groups.map(group => {
     const totalColumns = group.columns.categories.reduce((sum, cat) => sum + cat.items.length, 0);
 
-    return html`<h3>${group.title}</h3>${group.subtitle ? html`<table style="border-collapse: collapse; font-size: 0.85rem; width: 100%;">
+    return html`${group.title ? html`<h3>${group.title}</h3>` : ""}${group.subtitle ? html`<table style="border-collapse: collapse; font-size: 0.85rem; width: 100%;">
       <thead>
         <tr>
           <th rowspan="3" style="border: 1px solid #ddd; padding: 6px 10px; text-align: left; vertical-align: bottom;">Component</th>

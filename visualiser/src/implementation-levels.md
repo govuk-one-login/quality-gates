@@ -79,17 +79,32 @@ const phasesByPromotionType = {
 ```
 
 ```js
-const checkLevelGrid = buildCheckLevelGrid(repositories, levelGroups, phasesByPromotionType);
-display(renderStatusGrid(checkLevelGrid, iconsMapping));
-```
-
-## Integration Checks
-
-```js
 const scopes = currentSchema["$defs"]["scope"].enum;
 const purposes = currentSchema["$defs"]["purpose"].enum;
-const integrationGrid = buildIntegrationScopeGrid(repositories, phasesByPromotionType, scopes, purposes);
-display(renderStatusGrid(integrationGrid, iconsMapping));
+```
+
+```js
+// Group services by product, attaching repository name
+const servicesByProduct = Object.groupBy(
+  repositories
+    .filter(node => node.manifest?.text?.services)
+    .flatMap(node =>
+      node.manifest.text.services.map(service => ({ ...service, repository: node.name }))
+    ),
+  service => service.product
+);
+```
+
+```js
+display(html`${Object.keys(servicesByProduct).sort().map(product => {
+  const services = servicesByProduct[product];
+  const checkGrid = buildCheckLevelGrid(product, services, levelGroups, phasesByPromotionType);
+  const integrationGrid = buildIntegrationScopeGrid(null, services, phasesByPromotionType, scopes, purposes);
+  return html`
+    ${renderStatusGrid(checkGrid, iconsMapping)}
+    ${renderStatusGrid(integrationGrid, iconsMapping)}
+  `;
+})}`)
 ```
 
 ----
