@@ -12,7 +12,7 @@ const makeData = (automated, jobs) => ({
 describe("findMismatchedJobs", () => {
   it("returns empty array when all jobs exist", () => {
     const data = makeData(
-      [{ provider: "GitHub", config: { file: ".github/workflows/ci.yml", path: "$.jobs.build" } }],
+      [{ provider: "GitHub", file: ".github/workflows/ci.yml", path: "$.jobs.build" }],
       { build: { steps: [] } }
     );
     assert.deepEqual(findMismatchedJobs(data), []);
@@ -20,7 +20,7 @@ describe("findMismatchedJobs", () => {
 
   it("returns error for invalid job path", () => {
     const data = makeData(
-      [{ provider: "GitHub", config: { file: ".github/workflows/ci.yml", path: "$.jobs.deploy" } }],
+      [{ provider: "GitHub", file: ".github/workflows/ci.yml", path: "$.jobs.deploy" }],
       { build: { steps: [] }, test: { steps: [] } }
     );
     const errors = findMismatchedJobs(data);
@@ -33,8 +33,8 @@ describe("findMismatchedJobs", () => {
   it("returns multiple errors for multiple invalid paths", () => {
     const data = makeData(
       [
-        { provider: "GitHub", config: { file: ".github/workflows/ci.yml", path: "$.jobs.foo" } },
-        { provider: "GitHub", config: { file: ".github/workflows/ci.yml", path: "$.jobs.bar" } },
+        { provider: "GitHub", file: ".github/workflows/ci.yml", path: "$.jobs.foo" },
+        { provider: "GitHub", file: ".github/workflows/ci.yml", path: "$.jobs.bar" },
       ],
       { build: { steps: [] } }
     );
@@ -43,7 +43,7 @@ describe("findMismatchedJobs", () => {
 
   it("skips checks whose workflow file does not exist", () => {
     const data = makeData(
-      [{ provider: "GitHub", config: { file: ".github/workflows/missing.yml", path: "$.jobs.x" } }],
+      [{ provider: "GitHub", file: ".github/workflows/missing.yml", path: "$.jobs.x" }],
       { build: { steps: [] } }
     );
     assert.deepEqual(findMismatchedJobs(data), []);
@@ -51,7 +51,7 @@ describe("findMismatchedJobs", () => {
 
   it("skips checks with no path property", () => {
     const data = makeData(
-      [{ provider: "GitHub", config: { file: ".github/workflows/ci.yml" } }],
+      [{ provider: "GitHub", file: ".github/workflows/ci.yml" }],
       { build: { steps: [] } }
     );
     assert.deepEqual(findMismatchedJobs(data), []);
@@ -59,7 +59,7 @@ describe("findMismatchedJobs", () => {
 
   it("skips non-GitHub provider checks", () => {
     const data = makeData(
-      [{ provider: "Terraform", config: { file: "terraform/main.tf", path: "$.module.x" } }],
+      [{ provider: "Terraform", file: "terraform/main.tf", path: "$.module.x" }],
       { build: { steps: [] } }
     );
     assert.deepEqual(findMismatchedJobs(data), []);
@@ -67,7 +67,7 @@ describe("findMismatchedJobs", () => {
 
   it("returns error for invalid JSONPath syntax", () => {
     const data = makeData(
-      [{ provider: "GitHub", config: { file: ".github/workflows/ci.yml", path: "$.invalid[syntax" } }],
+      [{ provider: "GitHub", file: ".github/workflows/ci.yml", path: "$.invalid[syntax" }],
       { build: { steps: [] } }
     );
     const errors = findMismatchedJobs(data);
@@ -77,7 +77,7 @@ describe("findMismatchedJobs", () => {
 
   it("validates step by name - found", () => {
     const data = makeData(
-      [{ provider: "GitHub", config: { file: ".github/workflows/ci.yml", path: "$.jobs.build.steps[?@.name=='Run tests']" } }],
+      [{ provider: "GitHub", file: ".github/workflows/ci.yml", path: "$.jobs.build.steps[?@.name=='Run tests']" }],
       { build: { steps: [{ name: "Checkout" }, { name: "Run tests" }] } }
     );
     assert.deepEqual(findMismatchedJobs(data), []);
@@ -85,7 +85,7 @@ describe("findMismatchedJobs", () => {
 
   it("validates step by name - not found", () => {
     const data = makeData(
-      [{ provider: "GitHub", config: { file: ".github/workflows/ci.yml", path: "$.jobs.build.steps[?@.name=='Run tests']" } }],
+      [{ provider: "GitHub", file: ".github/workflows/ci.yml", path: "$.jobs.build.steps[?@.name=='Run tests']" }],
       { build: { steps: [{ name: "Checkout" }, { name: "Lint" }] } }
     );
     const errors = findMismatchedJobs(data);
@@ -98,7 +98,7 @@ describe("findMismatchedJobs", () => {
 
   it("validates step by id - found", () => {
     const data = makeData(
-      [{ provider: "GitHub", config: { file: ".github/workflows/ci.yml", path: "$.jobs.build.steps[?@.id=='run-tests']" } }],
+      [{ provider: "GitHub", file: ".github/workflows/ci.yml", path: "$.jobs.build.steps[?@.id=='run-tests']" }],
       { build: { steps: [{ id: "checkout" }, { id: "run-tests", name: "Run tests" }] } }
     );
     assert.deepEqual(findMismatchedJobs(data), []);
@@ -106,7 +106,7 @@ describe("findMismatchedJobs", () => {
 
   it("validates step by id - not found", () => {
     const data = makeData(
-      [{ provider: "GitHub", config: { file: ".github/workflows/ci.yml", path: "$.jobs.build.steps[?@.id=='missing']" } }],
+      [{ provider: "GitHub", file: ".github/workflows/ci.yml", path: "$.jobs.build.steps[?@.id=='missing']" }],
       { build: { steps: [{ id: "checkout" }, { id: "run-tests" }] } }
     );
     const errors = findMismatchedJobs(data);
@@ -118,7 +118,7 @@ describe("findMismatchedJobs", () => {
 
   it("validates step by run - found", () => {
     const data = makeData(
-      [{ provider: "GitHub", config: { file: ".github/workflows/ci.yml", path: "$.jobs.build.steps[?@.run=='yarn lint']" } }],
+      [{ provider: "GitHub", file: ".github/workflows/ci.yml", path: "$.jobs.build.steps[?@.run=='yarn lint']" }],
       { build: { steps: [{ run: "yarn install --frozen-lockfile" }, { run: "yarn lint" }, { run: "yarn test" }] } }
     );
     assert.deepEqual(findMismatchedJobs(data), []);
@@ -126,7 +126,7 @@ describe("findMismatchedJobs", () => {
 
   it("validates step by run - not found", () => {
     const data = makeData(
-      [{ provider: "GitHub", config: { file: ".github/workflows/ci.yml", path: "$.jobs.build.steps[?@.run=='yarn lint']" } }],
+      [{ provider: "GitHub", file: ".github/workflows/ci.yml", path: "$.jobs.build.steps[?@.run=='yarn lint']" }],
       { build: { steps: [{ run: "yarn install" }, { run: "yarn test" }] } }
     );
     const errors = findMismatchedJobs(data);

@@ -5,20 +5,20 @@ export function findMismatchedTerraform(data) {
     const service = s.product;
     return [...(s.automated ?? []), ...(s.outOfBand ?? [])].flatMap((check) => {
       if (check.provider !== "Terraform") return [];
-      if (!check.config?.file?.endsWith(".tf")) return [];
+      if (!check.file?.endsWith(".tf")) return [];
 
       // Binary not found — emit a warning per Terraform check
       if (data.terraform === null) {
         return [{
           type: "terraform-binary-missing",
           service,
-          message: `Cannot verify Terraform reference: hcl2json not installed (${check.config.file} → ${check.config.path || "no path"})`,
-          details: { file: check.config.file, path: check.config.path },
+          message: `Cannot verify Terraform reference: hcl2json not installed (${check.file} → ${check.path || "no path"})`,
+          details: { file: check.file, path: check.path },
           severity: "warning",
         }];
       }
 
-      const file = check.config.file;
+      const file = check.file;
       const parsed = data.terraform[file];
 
       if (parsed === undefined) {
@@ -39,15 +39,15 @@ export function findMismatchedTerraform(data) {
         }];
       }
 
-      if (!check.config.path) return [];
+      if (!check.path) return [];
 
-      const resolved = resolveTerraformPath(parsed, check.config.path);
+      const resolved = resolveTerraformPath(parsed, check.path);
       if (!resolved.found) {
         return [{
           type: "mismatched-terraform-path",
           service,
-          message: `Path not found: ${check.config.path}`,
-          details: { file, path: check.config.path, ...resolved.context },
+          message: `Path not found: ${check.path}`,
+          details: { file, path: check.path, ...resolved.context },
         }];
       }
 

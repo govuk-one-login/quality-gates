@@ -6,14 +6,14 @@ export function findMissingWorkflows(data) {
     const service = s.product || s.serviceTag || s["service-tag"];
     const checks = [...(s.automated || []), ...(s.outOfBand || [])];
     return checks
-      .filter((g) => g.config.file.startsWith(".github/workflows/"))
-      .filter((g) => !workflowNames.has(g.config.file.replace(".github/workflows/", "")))
+      .filter((g) => g.file.startsWith(".github/workflows/"))
+      .filter((g) => !workflowNames.has(g.file.replace(".github/workflows/", "")))
       .map((g) => ({
         type: "missing-workflow",
         service,
-        message: `Workflow file not found: ${g.config.file}`,
+        message: `Workflow file not found: ${g.file}`,
         details: {
-          file: g.config.file.replace(".github/workflows/", ""),
+          file: g.file.replace(".github/workflows/", ""),
           available,
         },
       }));

@@ -18,7 +18,7 @@ const parameters = [
 describe("findMismatchedStackOrch", () => {
   it("returns empty array when parameter key resolves successfully", () => {
     const data = makeData(
-      [{ provider: "Stack Orchestration Tool", config: { file: "config/params.json", path: "$[?@.ParameterKey=='TestImageRepositoryUri']" } }],
+      [{ provider: "Stack Orchestration Tool", file: "config/params.json", path: "$[?@.ParameterKey=='TestImageRepositoryUri']" }],
       { "config/params.json": parameters }
     );
     assert.deepEqual(findMismatchedStackOrch(data), []);
@@ -26,7 +26,7 @@ describe("findMismatchedStackOrch", () => {
 
   it("returns error when parameter key does not exist", () => {
     const data = makeData(
-      [{ provider: "Stack Orchestration Tool", config: { file: "config/params.json", path: "$[?@.ParameterKey=='NonExistent']" } }],
+      [{ provider: "Stack Orchestration Tool", file: "config/params.json", path: "$[?@.ParameterKey=='NonExistent']" }],
       { "config/params.json": parameters }
     );
     const errors = findMismatchedStackOrch(data);
@@ -38,7 +38,7 @@ describe("findMismatchedStackOrch", () => {
 
   it("returns error when file is not found on disk", () => {
     const data = makeData(
-      [{ provider: "Stack Orchestration Tool", config: { file: "config/missing.json", path: "$[?@.ParameterKey=='X']" } }],
+      [{ provider: "Stack Orchestration Tool", file: "config/missing.json", path: "$[?@.ParameterKey=='X']" }],
       {}
     );
     const errors = findMismatchedStackOrch(data);
@@ -49,7 +49,7 @@ describe("findMismatchedStackOrch", () => {
 
   it("returns error when file failed to parse", () => {
     const data = makeData(
-      [{ provider: "Stack Orchestration Tool", config: { file: "config/bad.json", path: "$[?@.ParameterKey=='X']" } }],
+      [{ provider: "Stack Orchestration Tool", file: "config/bad.json", path: "$[?@.ParameterKey=='X']" }],
       { "config/bad.json": null }
     );
     const errors = findMismatchedStackOrch(data);
@@ -59,7 +59,7 @@ describe("findMismatchedStackOrch", () => {
 
   it("skips non-Stack Orchestration Tool providers", () => {
     const data = makeData(
-      [{ provider: "GitHub", config: { file: ".github/workflows/ci.yml", path: "$.jobs.build" } }],
+      [{ provider: "GitHub", file: ".github/workflows/ci.yml", path: "$.jobs.build" }],
       {}
     );
     assert.deepEqual(findMismatchedStackOrch(data), []);
@@ -67,7 +67,7 @@ describe("findMismatchedStackOrch", () => {
 
   it("skips non-.json files", () => {
     const data = makeData(
-      [{ provider: "Stack Orchestration Tool", config: { file: "config/params.yaml", path: "$[?@.ParameterKey=='X']" } }],
+      [{ provider: "Stack Orchestration Tool", file: "config/params.yaml", path: "$[?@.ParameterKey=='X']" }],
       {}
     );
     assert.deepEqual(findMismatchedStackOrch(data), []);
@@ -75,7 +75,7 @@ describe("findMismatchedStackOrch", () => {
 
   it("skips checks with no path", () => {
     const data = makeData(
-      [{ provider: "Stack Orchestration Tool", config: { file: "config/params.json" } }],
+      [{ provider: "Stack Orchestration Tool", file: "config/params.json" }],
       { "config/params.json": parameters }
     );
     assert.deepEqual(findMismatchedStackOrch(data), []);
@@ -83,7 +83,7 @@ describe("findMismatchedStackOrch", () => {
 
   it("includes service name in results", () => {
     const data = makeData(
-      [{ provider: "Stack Orchestration Tool", config: { file: "config/params.json", path: "$[?@.ParameterKey=='Missing']" } }],
+      [{ provider: "Stack Orchestration Tool", file: "config/params.json", path: "$[?@.ParameterKey=='Missing']" }],
       { "config/params.json": parameters }
     );
     const errors = findMismatchedStackOrch(data);
@@ -92,7 +92,7 @@ describe("findMismatchedStackOrch", () => {
 
   it("returns error for invalid path syntax", () => {
     const data = makeData(
-      [{ provider: "Stack Orchestration Tool", config: { file: "config/params.json", path: "$.invalid.path" } }],
+      [{ provider: "Stack Orchestration Tool", file: "config/params.json", path: "$.invalid.path" }],
       { "config/params.json": parameters }
     );
     const errors = findMismatchedStackOrch(data);

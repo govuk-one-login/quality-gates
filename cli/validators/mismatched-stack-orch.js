@@ -5,9 +5,9 @@ export function findMismatchedStackOrch(data) {
     const service = s.product;
     return [...(s.automated ?? []), ...(s.outOfBand ?? [])].flatMap((check) => {
       if (check.provider !== "Stack Orchestration Tool") return [];
-      if (!check.config?.file?.endsWith(".json")) return [];
+      if (!check.file?.endsWith(".json")) return [];
 
-      const file = check.config.file;
+      const file = check.file;
       const parsed = data.stackOrch[file];
 
       if (parsed === undefined) {
@@ -28,15 +28,15 @@ export function findMismatchedStackOrch(data) {
         }];
       }
 
-      if (!check.config.path) return [];
+      if (!check.path) return [];
 
-      const resolved = resolveStackOrchPath(parsed, check.config.path);
+      const resolved = resolveStackOrchPath(parsed, check.path);
       if (!resolved.found) {
         return [{
           type: "mismatched-stack-orch-path",
           service,
-          message: `Parameter not found: ${check.config.path}`,
-          details: { file, path: check.config.path, ...resolved.context },
+          message: `Parameter not found: ${check.path}`,
+          details: { file, path: check.path, ...resolved.context },
         }];
       }
 
