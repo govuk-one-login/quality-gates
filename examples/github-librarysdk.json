@@ -6,31 +6,37 @@
       "promotionType": "library",
       "automated": [
         {
-          "checks": [{ "name": "unit" }],
+          "checks": [
+            {
+              "name": "unit"
+            }
+          ],
           "provider": "GitHub",
           "phase": "pre-merge",
-          "config": {
-            "file": ".github/workflows/tests.yaml",
-            "path": "$.jobs.unit"
-          }
+          "file": ".github/workflows/tests.yaml",
+          "path": "$.jobs.unit"
         },
         {
-          "checks": [{ "name": "code style and linting" }],
+          "checks": [
+            {
+              "name": "code style and linting"
+            }
+          ],
           "provider": "GitHub",
           "phase": "pre-merge",
-          "config": {
-            "file": ".github/workflows/quality.yaml",
-            "path": "$.jobs.lint.steps[?@.name=='Run linter']"
-          }
+          "file": ".github/workflows/quality.yaml",
+          "path": "$.jobs.lint.steps[?@.name=='Run linter']"
         },
         {
-          "checks": [{ "name": "unit" }],
+          "checks": [
+            {
+              "name": "unit"
+            }
+          ],
           "provider": "GitHub",
           "phase": "pre-release",
-          "config": {
-            "file": ".github/workflows/release.yaml",
-            "path": "$.jobs.test"
-          }
+          "file": ".github/workflows/release.yaml",
+          "path": "$.jobs.test"
         }
       ]
     }

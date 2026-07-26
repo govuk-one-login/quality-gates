@@ -10,20 +10,20 @@ export function findMismatchedJobs(data) {
     const checks = [...(s.automated || []), ...(s.outOfBand || [])];
     return checks.flatMap((g) => {
       if (g.provider !== "GitHub") return [];
-      if (!g.config.path) return [];
+      if (!g.path) return [];
 
-      const filename = g.config.file.replace(".github/workflows/", "");
+      const filename = g.file.replace(".github/workflows/", "");
       if (!workflowJobs.has(filename)) return [];
 
-      const parsed = parseCheckPath(g.config.path);
+      const parsed = parseCheckPath(g.path);
       if (!parsed.valid) {
-        return [{ type: "invalid-path-syntax", service, message: `Invalid JSONPath syntax: ${g.config.path}`, details: { path: g.config.path } }];
+        return [{ type: "invalid-path-syntax", service, message: `Invalid JSONPath syntax: ${g.path}`, details: { path: g.path } }];
       }
 
       const jobs = workflowJobs.get(filename);
       const jobKeys = Object.keys(jobs);
       if (!jobKeys.includes(parsed.job)) {
-        return [{ type: "mismatched-job", service, message: `Job not found: ${g.config.path}`, details: { path: g.config.path, workflow: filename, available: jobKeys } }];
+        return [{ type: "mismatched-job", service, message: `Job not found: ${g.path}`, details: { path: g.path, workflow: filename, available: jobKeys } }];
       }
 
       if (parsed.step) {
@@ -37,7 +37,7 @@ export function findMismatchedJobs(data) {
             if (st.run) items.push(`run:${st.run}`);
             return items;
           });
-          return [{ type: "mismatched-step", service, message: `Step not found: ${g.config.path}`, details: { path: g.config.path, job: parsed.job, step: parsed.step, workflow: filename, available } }];
+          return [{ type: "mismatched-step", service, message: `Step not found: ${g.path}`, details: { path: g.path, job: parsed.job, step: parsed.step, workflow: filename, available } }];
         }
       }
 

@@ -10,7 +10,7 @@ Add a `$schema` property pointing to a tagged release:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.16.0/schemas/schema.json"
+  "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.17.0/schemas/schema.json"
 }
 ```
 
@@ -96,6 +96,7 @@ The upgrade command handles all historical schema migrations automatically, incl
 - `checks` → `automated` execution mode split (v0.14.0)
 - `checkTypes` string array → `checks` object array (v0.15.0)
 - Add `scope`/`purpose` to checks, remove deprecated check types (v0.16.0)
+- Flatten `config.file`/`config.path` into parent object (v0.17.0)
 
 ### Exit codes
 
@@ -144,7 +145,8 @@ Checks that run automatically in CI/CD with no human involvement.
 | `checks`    | object[] | Yes      | Check types (see [checks](#checks))              |
 | `phase`     | string   | Yes      | SDLC phase where the check runs                  |
 | `provider`  | string   | Yes      | Platform running the check (`GitHub`, `Terraform`, `CloudFormation`, `Stack Orchestration Tool`) |
-| `config`    | object   | Yes      | Location of the check definition                 |
+| `file`      | string   | Yes      | Path to the workflow/config file                 |
+| `path`      | string   | No       | JSONPath (RFC 9535) expression identifying the relevant node |
 
 #### `manual`
 
@@ -165,7 +167,8 @@ Checks that happen outside the deployment pipeline (e.g. daily smoke tests, peri
 | `checks`    | object[] | Yes      | Check types                                      |
 | `phase`     | string   | Yes      | SDLC phase the check relates to                  |
 | `provider`  | string   | Yes      | Platform running the check                       |
-| `config`    | object   | Yes      | Location of the check definition                 |
+| `file`      | string   | Yes      | Path to the workflow/config file                 |
+| `path`      | string   | No       | JSONPath (RFC 9535) expression identifying the relevant node |
 
 #### `notApplicable`
 
@@ -234,14 +237,7 @@ Valid phases depend on the service's `promotionType`:
 | `gitFlow`          | `pre-develop`, `develop`, `pre-release`, `release`, `main`                 |
 | `library`          | `pre-merge`, `pre-release`                                                 |
 
-### Config object
-
-| Field  | Required | Description                                       |
-|--------|----------|---------------------------------------------------|
-| `file` | Yes      | Path to the workflow/config file                  |
-| `path` | No       | JSONPath (RFC 9535) expression identifying the relevant node |
-
-#### Provider path examples
+### Provider path examples
 
 | Provider | File format | Example `path` |
 |----------|-------------|-----------------|

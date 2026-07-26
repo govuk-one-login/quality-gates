@@ -6,49 +6,63 @@
       "promotionType": "gitFlow",
       "automated": [
         {
-          "checks": [{ "name": "code style and linting" }],
+          "checks": [
+            {
+              "name": "code style and linting"
+            }
+          ],
           "provider": "GitHub",
           "phase": "pre-develop",
-          "config": {
-            "file": ".github/workflows/lint.yaml",
-            "path": "$.jobs.lint"
-          }
+          "file": ".github/workflows/lint.yaml",
+          "path": "$.jobs.lint"
         },
         {
-          "checks": [{ "name": "unit" }],
+          "checks": [
+            {
+              "name": "unit"
+            }
+          ],
           "provider": "GitHub",
           "phase": "develop",
-          "config": {
-            "file": ".github/workflows/tests.yaml",
-            "path": "$.jobs.unit"
-          }
+          "file": ".github/workflows/tests.yaml",
+          "path": "$.jobs.unit"
         },
         {
-          "checks": [{ "name": "integration" }],
+          "checks": [
+            {
+              "name": "integration"
+            }
+          ],
           "provider": "GitHub",
           "phase": "pre-release",
-          "config": {
-            "file": ".github/workflows/integration.yaml",
-            "path": "$.jobs.integration.steps[?@.name=='Run integration tests']"
-          }
+          "file": ".github/workflows/integration.yaml",
+          "path": "$.jobs.integration.steps[?@.name=='Run integration tests']"
         },
         {
-          "checks": [{ "name": "integration", "scope": "e2e" }],
+          "checks": [
+            {
+              "name": "integration",
+              "scope": "e2e"
+            }
+          ],
           "provider": "GitHub",
           "phase": "release",
-          "config": {
-            "file": ".github/workflows/e2e.yaml",
-            "path": "$.jobs.e2e"
-          }
+          "file": ".github/workflows/e2e.yaml",
+          "path": "$.jobs.e2e"
         },
         {
-          "checks": [{ "name": "integration", "purpose": ["smoke"] }],
+          "checks": [
+            {
+              "name": "integration",
+              "purpose": [
+                "smoke"
+              ]
+            }
+          ],
           "provider": "GitHub",
           "phase": "main",
-          "config": {
-            "file": ".github/workflows/smoke.yaml",
-            "path": "$.jobs.smoke"
-          }
+          "file": ".github/workflows/smoke.yaml",
+          "path": "$.jobs.smoke"
         }
       ]
     }

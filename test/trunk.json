@@ -5,8 +5,7 @@
     {
       "description": "Empty manifest",
       "valid": true,
-      "data": {
-      }
+      "data": {}
     },
     {
       "description": "Empty services",
@@ -35,13 +34,15 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "unit" }],
+                "checks": [
+                  {
+                    "name": "unit"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/tests.yaml",
-                  "path": "$.jobs.unit"
-                }
+                "file": ".github/workflows/tests.yaml",
+                "path": "$.jobs.unit"
               }
             ]
           }
@@ -59,13 +60,15 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "code style and linting" }],
+                "checks": [
+                  {
+                    "name": "code style and linting"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/check-code-quality.yaml",
-                  "path": "$.jobs.pre-commit"
-                }
+                "file": ".github/workflows/check-code-quality.yaml",
+                "path": "$.jobs.pre-commit"
               }
             ]
           },
@@ -75,13 +78,15 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "code style and linting" }],
+                "checks": [
+                  {
+                    "name": "code style and linting"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/check-code-quality.yaml",
-                  "path": "$.jobs.pre-commit"
-                }
+                "file": ".github/workflows/check-code-quality.yaml",
+                "path": "$.jobs.pre-commit"
               }
             ]
           }
@@ -99,13 +104,15 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "code style and linting" }],
+                "checks": [
+                  {
+                    "name": "code style and linting"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/check-code-quality.yaml",
-                  "path": "$.jobs.pre-commit"
-                }
+                "file": ".github/workflows/check-code-quality.yaml",
+                "path": "$.jobs.pre-commit"
               }
             ]
           },
@@ -115,13 +122,15 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "code style and linting" }],
+                "checks": [
+                  {
+                    "name": "code style and linting"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/check-code-quality.yaml",
-                  "path": "$.jobs.pre-commit"
-                }
+                "file": ".github/workflows/check-code-quality.yaml",
+                "path": "$.jobs.pre-commit"
               }
             ]
           }
@@ -139,13 +148,15 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "unknown" }],
+                "checks": [
+                  {
+                    "name": "unknown"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/check-code-quality.yaml",
-                  "path": "$.jobs.pre-commit"
-                }
+                "file": ".github/workflows/check-code-quality.yaml",
+                "path": "$.jobs.pre-commit"
               }
             ]
           }

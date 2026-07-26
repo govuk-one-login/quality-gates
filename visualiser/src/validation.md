@@ -50,8 +50,8 @@ function findMissingWorkflows(node) {
     const { manifest, workflows, ...rest } = node;
     return (node.manifest.text.services ?? []).flatMap((s) =>
         [...(s.automated ?? []), ...(s.outOfBand ?? [])]
-            .filter((g) => !workflowNames.has(g.config.file.replace(".github/workflows/", "")))
-            .map((g) => ({ ...rest, ...g, file: g.config.file.replace(".github/workflows/", "") }))
+            .filter((g) => !workflowNames.has(g.file.replace(".github/workflows/", "")))
+            .map((g) => ({ ...rest, ...g, file: g.file.replace(".github/workflows/", "") }))
     );
 }
 
@@ -157,7 +157,7 @@ const checkTypeRepoView = view(Inputs.table(gatesWithmismatchedCheckTypes, {
 function getQualityGatesForRepo(name) {
     const node = nodesWithManifest.find((n) => n.name === name);
     return (node?.manifest.text.services ?? []).flatMap((s) =>
-        [...(s.automated ?? []), ...(s.outOfBand ?? [])].map((g) => ({ "product": s.product, ...g, "config.file": g.config.file, "config.name": g.config.name, "config.path": g.config.path, name: node.name, "pod.value": node.pod?.value, "teamResponsible.value": node.teamResponsible?.value }))
+        [...(s.automated ?? []), ...(s.outOfBand ?? [])].map((g) => ({ "product": s.product, ...g, name: node.name, "pod.value": node.pod?.value, "teamResponsible.value": node.teamResponsible?.value }))
     );
 }
 ```
@@ -165,7 +165,7 @@ function getQualityGatesForRepo(name) {
 ```js
 Inputs.table(
     getQualityGatesForRepo(checkTypeRepoView?.name),
-    { columns: ["name", "pod.value", "teamResponsible.value", "product", "phase", "provider", "checkTypes", "config.file", "config.name", "config.path"] })
+    { columns: ["name", "pod.value", "teamResponsible.value", "product", "phase", "provider", "checkTypes", "file", "path"] })
 ```
 
 ---
@@ -180,11 +180,11 @@ function findGatesWithmismatchedJobs(node) {
     const { manifest, workflows, ...rest } = node;
     return (node.manifest.text.services ?? []).flatMap((s) =>
         [...(s.automated ?? []), ...(s.outOfBand ?? [])]
-            .filter((g) => g.provider === "GitHub" && g.config.path)
+            .filter((g) => g.provider === "GitHub" && g.path)
             .flatMap((g) => {
-                const parsed = parseCheckPath(g.config.path);
+                const parsed = parseCheckPath(g.path);
                 if (!parsed.valid) return [];
-                const filename = g.config.file.replace(".github/workflows/", "");
+                const filename = g.file.replace(".github/workflows/", "");
                 const jobs = workflowJobs.get(filename);
                 if (!jobs) return [];
                 if (!(parsed.job in jobs)) {
@@ -263,8 +263,8 @@ function findGatesWithInvalidPaths(node) {
     const { manifest, workflows, ...rest } = node;
     return (node.manifest.text.services ?? []).flatMap((s) =>
         [...(s.automated ?? []), ...(s.outOfBand ?? [])]
-            .filter((g) => g.provider === "GitHub" && g.config.path && !parseCheckPath(g.config.path).valid)
-            .map((g) => ({ ...rest, ...g, invalidPath: g.config.path }))
+            .filter((g) => g.provider === "GitHub" && g.path && !parseCheckPath(g.path).valid)
+            .map((g) => ({ ...rest, ...g, invalidPath: g.path }))
     );
 }
 

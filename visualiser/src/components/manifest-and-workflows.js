@@ -36,10 +36,10 @@ export function flattenQualityGatesJobs(nodes) {
     return nodes.flatMap((node) =>
         (node.manifest?.text?.services ?? []).flatMap((service) =>
             [...(service.automated ?? []), ...(service.outOfBand ?? [])].flatMap((gate) => {
-                if (!gate.config?.file || !gate.config?.path) return [];
-                const parsed = parseCheckPath(gate.config.path);
+                if (!gate.file || !gate.path) return [];
+                const parsed = parseCheckPath(gate.path);
                 if (!parsed.valid) return [];
-                const fileName = gate.config.file.split("/").at(-1);
+                const fileName = gate.file.split("/").at(-1);
                 const workflow = (node.workflows?.entries ?? []).find((e) => e.name === fileName);
                 if (!workflow) return [];
                 const job = workflow.object.text.jobs[parsed.job];
@@ -50,7 +50,7 @@ export function flattenQualityGatesJobs(nodes) {
                         ...job,
                         "__workflow-file": fileName,
                         "__workflow-name": workflow.object.text.name,
-                        "__path": gate.config.path,
+                        "__path": gate.path,
                         "__repoName": node.name,
                         "__serviceTag": service.product
                     }

@@ -9,7 +9,7 @@ describe("findMissingWorkflows", () => {
         services: [{
           product: "my-service",
           component: "api",
-          automated: [{ config: { file: ".github/workflows/test.yml" } }],
+          automated: [{ file: ".github/workflows/test.yml" }],
         }],
       },
       workflows: [{ name: "test.yml", jobs: {} }],
@@ -23,7 +23,7 @@ describe("findMissingWorkflows", () => {
         services: [{
           product: "my-service",
           component: "api",
-          automated: [{ config: { file: ".github/workflows/missing.yml" } }],
+          automated: [{ file: ".github/workflows/missing.yml" }],
         }],
       },
       workflows: [{ name: "other.yml", jobs: {} }],
@@ -43,8 +43,8 @@ describe("findMissingWorkflows", () => {
           product: "svc",
           component: "api",
           automated: [
-            { config: { file: ".github/workflows/a.yml" } },
-            { config: { file: ".github/workflows/b.yml" } },
+            { file: ".github/workflows/a.yml" },
+            { file: ".github/workflows/b.yml" },
           ],
         }],
       },
@@ -60,8 +60,8 @@ describe("findMissingWorkflows", () => {
           product: "svc",
           component: "api",
           automated: [
-            { config: { file: "terraform/main.tf" } },
-            { config: { file: "ci/stack-orchestration/parameters.json" } },
+            { file: "terraform/main.tf" },
+            { file: "ci/stack-orchestration/parameters.json" },
           ],
         }],
       },

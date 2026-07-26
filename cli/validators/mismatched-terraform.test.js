@@ -24,7 +24,7 @@ const hclJson = {
 describe("findMismatchedTerraform", () => {
   it("returns empty array when path resolves successfully", () => {
     const data = makeData(
-      [{ provider: "Terraform", config: { file: "terraform/main.tf", path: "$.module.example-product-deploy.parameters.TestImageRepositoryUri" } }],
+      [{ provider: "Terraform", file: "terraform/main.tf", path: "$.module.example-product-deploy.parameters.TestImageRepositoryUri" }],
       { "terraform/main.tf": hclJson }
     );
     assert.deepEqual(findMismatchedTerraform(data), []);
@@ -32,7 +32,7 @@ describe("findMismatchedTerraform", () => {
 
   it("returns error when module does not exist", () => {
     const data = makeData(
-      [{ provider: "Terraform", config: { file: "terraform/main.tf", path: "$.module.non-existent.parameters.X" } }],
+      [{ provider: "Terraform", file: "terraform/main.tf", path: "$.module.non-existent.parameters.X" }],
       { "terraform/main.tf": hclJson }
     );
     const errors = findMismatchedTerraform(data);
@@ -43,7 +43,7 @@ describe("findMismatchedTerraform", () => {
 
   it("returns error when parameter does not exist", () => {
     const data = makeData(
-      [{ provider: "Terraform", config: { file: "terraform/main.tf", path: "$.module.example-product-deploy.parameters.NonExistent" } }],
+      [{ provider: "Terraform", file: "terraform/main.tf", path: "$.module.example-product-deploy.parameters.NonExistent" }],
       { "terraform/main.tf": hclJson }
     );
     const errors = findMismatchedTerraform(data);
@@ -54,7 +54,7 @@ describe("findMismatchedTerraform", () => {
 
   it("returns error when terraform file is not found on disk", () => {
     const data = makeData(
-      [{ provider: "Terraform", config: { file: "terraform/missing.tf", path: "$.module.x" } }],
+      [{ provider: "Terraform", file: "terraform/missing.tf", path: "$.module.x" }],
       {}
     );
     const errors = findMismatchedTerraform(data);
@@ -65,7 +65,7 @@ describe("findMismatchedTerraform", () => {
 
   it("returns error when terraform file failed to parse", () => {
     const data = makeData(
-      [{ provider: "Terraform", config: { file: "terraform/bad.tf", path: "$.module.x" } }],
+      [{ provider: "Terraform", file: "terraform/bad.tf", path: "$.module.x" }],
       { "terraform/bad.tf": null }
     );
     const errors = findMismatchedTerraform(data);
@@ -76,8 +76,8 @@ describe("findMismatchedTerraform", () => {
   it("returns warning per check when hcl2json binary is missing", () => {
     const data = makeData(
       [
-        { provider: "Terraform", config: { file: "terraform/main.tf", path: "$.module.x.parameters.Y" } },
-        { provider: "Terraform", config: { file: "terraform/other.tf", path: "$.module.z" } },
+        { provider: "Terraform", file: "terraform/main.tf", path: "$.module.x.parameters.Y" },
+        { provider: "Terraform", file: "terraform/other.tf", path: "$.module.z" },
       ],
       null
     );
@@ -91,7 +91,7 @@ describe("findMismatchedTerraform", () => {
 
   it("skips non-Terraform providers", () => {
     const data = makeData(
-      [{ provider: "GitHub", config: { file: ".github/workflows/ci.yml", path: "$.jobs.build" } }],
+      [{ provider: "GitHub", file: ".github/workflows/ci.yml", path: "$.jobs.build" }],
       {}
     );
     assert.deepEqual(findMismatchedTerraform(data), []);
@@ -99,7 +99,7 @@ describe("findMismatchedTerraform", () => {
 
   it("skips non-.tf files", () => {
     const data = makeData(
-      [{ provider: "Terraform", config: { file: "some-file.json", path: "$.x" } }],
+      [{ provider: "Terraform", file: "some-file.json", path: "$.x" }],
       {}
     );
     assert.deepEqual(findMismatchedTerraform(data), []);
@@ -107,7 +107,7 @@ describe("findMismatchedTerraform", () => {
 
   it("skips checks with no path", () => {
     const data = makeData(
-      [{ provider: "Terraform", config: { file: "terraform/main.tf" } }],
+      [{ provider: "Terraform", file: "terraform/main.tf" }],
       { "terraform/main.tf": hclJson }
     );
     assert.deepEqual(findMismatchedTerraform(data), []);
@@ -115,7 +115,7 @@ describe("findMismatchedTerraform", () => {
 
   it("includes service name in results", () => {
     const data = makeData(
-      [{ provider: "Terraform", config: { file: "terraform/main.tf", path: "$.module.missing" } }],
+      [{ provider: "Terraform", file: "terraform/main.tf", path: "$.module.missing" }],
       { "terraform/main.tf": hclJson }
     );
     const errors = findMismatchedTerraform(data);

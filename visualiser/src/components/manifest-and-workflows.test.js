@@ -47,17 +47,11 @@ describe("manifest-and-workflows", () => {
                                     "automated": [
                                         {
                                             "checks": [{ "name": "code style and linting" }, { "name": "vulnerability detection" }],
-                                            "config": {
-                                                file: ".github/workflows/ci.yaml",
-                                                path: "$.jobs.build"
-                                            }
+                                            file: ".github/workflows/ci.yaml", path: "$.jobs.build"
                                         },
                                         {
                                             "checks": [{ "name": "unit" }],
-                                            "config": {
-                                                file: ".github/workflows/ci.yaml",
-                                                path: "$.jobs.test"
-                                            }
+                                            file: ".github/workflows/ci.yaml", path: "$.jobs.test"
                                         }
                                     ]
                                 },
@@ -66,24 +60,15 @@ describe("manifest-and-workflows", () => {
                                     "automated": [
                                         {
                                             "checks": [{ "name": "code style and linting" }, { "name": "vulnerability detection" }],
-                                            "config": {
-                                                file: ".github/workflows/ci.yaml",
-                                                path: "$.jobs.build"
-                                            }
+                                            file: ".github/workflows/ci.yaml", path: "$.jobs.build"
                                         },
                                         {
                                             "checks": [{ "name": "unit" }],
-                                            "config": {
-                                                file: ".github/workflows/ci.yaml",
-                                                path: "$.jobs.test"
-                                            }
+                                            file: ".github/workflows/ci.yaml", path: "$.jobs.test"
                                         },
                                         {
                                             "checks": [{ "name": "integration", "scope": "component", "purpose": ["regression"] }],
-                                            "config": {
-                                                file: ".github/workflows/ci.yaml",
-                                                path: "$.jobs.integration-test"
-                                            }
+                                            file: ".github/workflows/ci.yaml", path: "$.jobs.integration-test"
                                         }
                                     ]
                                 }
@@ -191,7 +176,7 @@ describe("manifest-and-workflows", () => {
                             "product": "service-a",
                             "automated": [{
                                 "checks": [{ "name": "unit" }],
-                                "config": {file: ".github/workflows/ci.yaml", path: "$.jobs['my-job']"}
+                                file: ".github/workflows/ci.yaml", path: "$.jobs['my-job']"
                             }]
                         }]
                     }
@@ -218,7 +203,7 @@ describe("manifest-and-workflows", () => {
                             "product": "service-a",
                             "automated": [{
                                 "checks": [{ "name": "unit" }],
-                                "config": {file: ".github/workflows/ci.yaml", path: "$.jobs.build.steps[?@.name=='Run tests']"}
+                                file: ".github/workflows/ci.yaml", path: "$.jobs.build.steps[?@.name=='Run tests']"
                             }]
                         }]
                     }
@@ -245,7 +230,7 @@ describe("manifest-and-workflows", () => {
                             "product": "service-a",
                             "automated": [{
                                 "checks": [{ "name": "unit" }],
-                                "config": {file: ".github/workflows/ci.yaml", path: "$.invalid[syntax"}
+                                file: ".github/workflows/ci.yaml", path: "$.invalid[syntax"
                             }]
                         }]
                     }
@@ -269,7 +254,7 @@ describe("manifest-and-workflows", () => {
                             "product": "service-a",
                             "automated": [{
                                 "checks": [{ "name": "unit" }],
-                                "config": {file: ".github/workflows/ci.yaml", path: "$.jobs.missing"}
+                                file: ".github/workflows/ci.yaml", path: "$.jobs.missing"
                             }]
                         }]
                     }
@@ -293,7 +278,7 @@ describe("manifest-and-workflows", () => {
                             "product": "service-a",
                             "automated": [{
                                 "checks": [{ "name": "unit" }],
-                                "config": {file: ".github/workflows/ci.yaml", path: "jobs.build"}
+                                file: ".github/workflows/ci.yaml", path: "jobs.build"
                             }]
                         }]
                     }
@@ -327,7 +312,7 @@ describe("manifest-and-workflows", () => {
                         services: [{
                             "product": "service-a", "automated": [{
                                 "checks": [{ "name": "unit" }],
-                                "config": {file: ".github/workflows/missing.yaml", path: "$.jobs.test"}
+                                file: ".github/workflows/missing.yaml", path: "$.jobs.test"
                             }]
                         }]
                     }

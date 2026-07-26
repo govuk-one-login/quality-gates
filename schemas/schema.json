@@ -14,10 +14,8 @@
               "checks": [{ "name": "code style and linting" }],
               "provider": "GitHub",
               "phase": "pre-merge",
-              "config": {
-                "file": ".github/workflows/check-code-quality.yaml",
-                "path": "$.jobs.pre-commit"
-              }
+              "file": ".github/workflows/check-code-quality.yaml",
+              "path": "$.jobs.pre-commit"
             }
           ]
         }
@@ -177,15 +175,21 @@
             "Terraform"
           ]
         },
-        "config": {
-          "$ref": "#/$defs/check-config"
+        "file": {
+          "type": "string",
+          "pattern": "^[^:]*$"
+        },
+        "path": {
+          "description": "JSONPath (RFC 9535) expression identifying the relevant node in the file",
+          "type": "string",
+          "pattern": "^\\$"
         }
       },
       "required": [
         "checks",
         "phase",
         "provider",
-        "config"
+        "file"
       ]
     },
     "manual-check": {
@@ -226,15 +230,21 @@
             "Terraform"
           ]
         },
-        "config": {
-          "$ref": "#/$defs/check-config"
+        "file": {
+          "type": "string",
+          "pattern": "^[^:]*$"
+        },
+        "path": {
+          "description": "JSONPath (RFC 9535) expression identifying the relevant node in the file",
+          "type": "string",
+          "pattern": "^\\$"
         }
       },
       "required": [
         "checks",
         "phase",
         "provider",
-        "config"
+        "file"
       ]
     },
     "not-applicable-check": {
@@ -248,23 +258,6 @@
         }
       },
       "required": ["checks"]
-    },
-    "check-config": {
-      "type": "object",
-      "properties": {
-        "file": {
-          "type": "string",
-          "pattern": "^[^:]*$"
-        },
-        "path": {
-          "description": "JSONPath (RFC 9535) expression identifying the relevant node in the file",
-          "type": "string",
-          "pattern": "^\\$"
-        }
-      },
-      "required": [
-        "file"
-      ]
     },
     "automated-checks": {
       "type": "array",

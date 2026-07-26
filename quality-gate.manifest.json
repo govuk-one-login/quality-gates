@@ -7,40 +7,48 @@
       "promotionType": "library",
       "automated": [
         {
-          "checks": [{ "name": "unit" }],
+          "checks": [
+            {
+              "name": "unit"
+            }
+          ],
           "phase": "pre-merge",
           "provider": "GitHub",
-          "config": {
-            "file": ".github/workflows/schema.yml",
-            "path": "$.jobs.run-tests"
-          }
+          "file": ".github/workflows/schema.yml",
+          "path": "$.jobs.run-tests"
         },
         {
-          "checks": [{ "name": "unit" }],
+          "checks": [
+            {
+              "name": "unit"
+            }
+          ],
           "phase": "pre-merge",
           "provider": "GitHub",
-          "config": {
-            "file": ".github/workflows/visualiser.yml",
-            "path": "$.jobs.run-tests"
-          }
+          "file": ".github/workflows/visualiser.yml",
+          "path": "$.jobs.run-tests"
         },
         {
-          "checks": [{ "name": "code quality" }],
+          "checks": [
+            {
+              "name": "code quality"
+            }
+          ],
           "phase": "pre-merge",
           "provider": "GitHub",
-          "config": {
-            "file": ".github/workflows/quality.yml",
-            "path": "$.jobs.codeql"
-          }
+          "file": ".github/workflows/quality.yml",
+          "path": "$.jobs.codeql"
         },
         {
-          "checks": [{ "name": "code style and linting" }],
+          "checks": [
+            {
+              "name": "code style and linting"
+            }
+          ],
           "phase": "pre-merge",
           "provider": "GitHub",
-          "config": {
-            "file": ".github/workflows/quality.yml",
-            "path": "$.jobs.pre-commit"
-          }
+          "file": ".github/workflows/quality.yml",
+          "path": "$.jobs.pre-commit"
         }
       ]
     }
