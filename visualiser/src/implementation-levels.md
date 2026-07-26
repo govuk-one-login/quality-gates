@@ -85,7 +85,8 @@ display(renderStatusGrid(checkLevelGrid, iconsMapping));
 
 ```js
 const scopes = currentSchema["$defs"]["scope"].enum;
-const integrationGrid = buildIntegrationScopeGrid(repositories, phasesByPromotionType, scopes);
+const purposes = currentSchema["$defs"]["purpose"].enum;
+const integrationGrid = buildIntegrationScopeGrid(repositories, phasesByPromotionType, scopes, purposes);
 display(renderStatusGrid(integrationGrid, iconsMapping));
 ```
 

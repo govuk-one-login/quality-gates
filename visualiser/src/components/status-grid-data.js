@@ -135,15 +135,21 @@ export function buildCheckLevelGrid(repositories, levelGroups, phasesByPromotion
 
 /**
  * Builds grid data for the integration scope/purpose table.
- * Columns: phases → scopes. Cells show whether that scope of integration test exists at that phase.
- * Purpose is shown in the tooltip.
+ * Columns: phases → scopes. Rows: purposes.
+ * Cells show whether any component in the product has an integration check
+ * with that purpose at that phase/scope combination.
  *
  * @param {Array} repositories - Raw repository nodes from GraphQL
  * @param {Object} phasesByPromotionType - Map of promotionType → valid phases
  * @param {Array} scopes - Scope enum values from schema
+ * @param {Array} purposes - Purpose enum values from schema
  * @returns {Object} gridData for renderStatusGrid
  */
-export function buildIntegrationScopeGrid(repositories, phasesByPromotionType, scopes) {
+export function buildIntegrationScopeGrid(repositories, phasesByPromotionType, scopes, purposes) {
+  const NOT_SPECIFIED = "not specified";
+  const allScopes = [...scopes, NOT_SPECIFIED];
+  const allPurposes = [...purposes, NOT_SPECIFIED];
+
   // Extract integration checks with their scope and purpose
   const integrationChecks = repositories
     .filter(node => node.manifest?.text?.services)
@@ -158,26 +164,22 @@ export function buildIntegrationScopeGrid(repositories, phasesByPromotionType, s
               repository: node.name,
               promotionType: service.promotionType,
               phase: check.phase,
-              scope: ct.scope ?? null,
-              purpose: ct.purpose ?? []
+              scope: ct.scope ?? NOT_SPECIFIED,
+              purpose: ct.purpose && ct.purpose.length > 0 ? ct.purpose : [NOT_SPECIFIED]
             }))
         )
       )
     );
 
-  // Build lookup: product|component|phase|scope → purpose[]
-  const implementedIntegration = new Map();
+  // Build lookup: product|promotionType|phase|scope|purpose → true
+  const implementedIntegration = new Set();
   for (const ic of integrationChecks) {
-    const key = `${ic.product}|${ic.component}|${ic.phase}|${ic.scope}`;
-    if (!implementedIntegration.has(key)) {
-      implementedIntegration.set(key, new Set());
-    }
     for (const p of ic.purpose) {
-      implementedIntegration.get(key).add(p);
+      implementedIntegration.add(`${ic.product}|${ic.promotionType}|${ic.phase}|${ic.scope}|${p}`);
     }
   }
 
-  // NotApplicable integration checks
+  // NotApplicable integration checks (aggregated per product|promotionType)
   const notApplicableIntegration = new Set(
     repositories
       .filter(node => node.manifest?.text?.services)
@@ -186,13 +188,13 @@ export function buildIntegrationScopeGrid(repositories, phasesByPromotionType, s
           (service.notApplicable ?? []).flatMap(entry =>
             (entry.checks ?? [])
               .filter(ct => ct.name === "integration")
-              .map(() => `${service.product}|${service.component}`)
+              .map(() => `${service.product}|${service.promotionType}`)
           )
         )
       )
   );
 
-  // Get all service components
+  // Get all service components to determine product/promotionType combinations
   const allServiceComponents = repositories
     .filter(node => node.manifest?.text?.services)
     .flatMap(node =>
@@ -204,74 +206,46 @@ export function buildIntegrationScopeGrid(repositories, phasesByPromotionType, s
       }))
     );
 
-  const productComponentTypes = Object.values(
-    allServiceComponents.reduce((acc, d) => {
-      const key = `${d.product}|${d.component}|${d.promotionType}`;
-      if (!acc[key]) {
-        acc[key] = { product: d.product, component: d.component, repositories: new Set(), promotionType: d.promotionType };
-      }
-      acc[key].repositories.add(d.repository);
-      return acc;
-    }, {})
-  ).map(d => ({ ...d, repositories: [...d.repositories].sort() }))
-    .sort((a, b) =>
-      a.product.localeCompare(b.product) ||
-      a.promotionType.localeCompare(b.promotionType) ||
-      a.component.localeCompare(b.component)
-    );
-
   const products = [...new Set(allServiceComponents.map(d => d.product))].sort();
+  const promotionTypesByProduct = products.reduce((acc, product) => {
+    acc[product] = [...new Set(
+      allServiceComponents.filter(d => d.product === product).map(d => d.promotionType)
+    )].sort();
+    return acc;
+  }, {});
 
   const groups = products.flatMap(product => {
-    const promotionTypes = [...new Set(
-      productComponentTypes.filter(d => d.product === product).map(d => d.promotionType)
-    )].sort();
-
-    return promotionTypes.map(promotionType => {
-      const components = [...new Set(
-        productComponentTypes
-          .filter(d => d.product === product && d.promotionType === promotionType)
-          .map(d => d.component)
-      )].sort();
-
+    return promotionTypesByProduct[product].map(promotionType => {
       const validPhases = (phasesByPromotionType[promotionType] ?? [])
         .filter(phase => phase !== "pre-merge" && phase !== "pre-upload");
 
       const categories = validPhases.map(phase => ({
         name: phase,
-        items: scopes
+        items: allScopes
       }));
 
-      const rows = components.map(component => {
-        const repos = productComponentTypes.find(
-          d => d.product === product && d.component === component && d.promotionType === promotionType
-        )?.repositories ?? [];
-
+      const rows = allPurposes.map(purpose => {
         const cells = validPhases.flatMap(phase =>
-          scopes.map(scope => {
-            const key = `${product}|${component}|${phase}|${scope}`;
-            const purposes = implementedIntegration.get(key);
+          allScopes.map(scope => {
+            const key = `${product}|${promotionType}|${phase}|${scope}|${purpose}`;
 
             let status;
-            if (purposes && purposes.size > 0) {
+            if (implementedIntegration.has(key)) {
               status = "implemented";
-            } else if (implementedIntegration.has(key)) {
-              status = "implemented";
-            } else if (notApplicableIntegration.has(`${product}|${component}`)) {
+            } else if (notApplicableIntegration.has(`${product}|${promotionType}`)) {
               status = "notApplicable";
             } else {
               status = "missing";
             }
 
-            const purposeText = purposes ? [...purposes].join(", ") : "";
             return {
               status,
-              title: `${product} / ${component}\n${phase} → integration (${scope})${purposeText ? `\nPurpose: ${purposeText}` : ""}\n${status}`
+              title: `${product}\n${phase} → integration (${scope})\nPurpose: ${purpose}\n${status}`
             };
           })
         );
 
-        return { label: component, meta: repos.join(", "), cells };
+        return { label: purpose, cells };
       });
 
       return { title: product, subtitle: promotionType, columns: { categories }, rows };

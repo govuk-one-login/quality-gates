@@ -464,9 +464,10 @@ describe("buildIntegrationScopeGrid", () => {
     library: ["pre-merge", "pre-release"],
   };
   const scopes = ["component", "product", "neighbour", "e2e"];
+  const purposes = ["regression", "new feature", "smoke", "performance"];
 
   it("returns empty groups when no repositories have manifests", () => {
-    const result = buildIntegrationScopeGrid([], phasesByPromotionType, scopes);
+    const result = buildIntegrationScopeGrid([], phasesByPromotionType, scopes, purposes);
     assert.deepEqual(result, { groups: [] });
   });
 
@@ -477,42 +478,43 @@ describe("buildIntegrationScopeGrid", () => {
       ]),
     ];
 
-    const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes);
+    const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes, purposes);
 
     assert.equal(result.groups.length, 1);
     assert.equal(result.groups[0].title, "svc-a");
   });
 
-  it("marks integration check as implemented when scope matches", () => {
+  it("rows are purposes including 'not specified'", () => {
     const repos = [
       makeRepository("repo-a", [
-        {
-          product: "svc-a",
-          component: "frontend",
-          promotionType: "securePipelines",
-          automated: [
-            {
-              checks: [{ name: "integration", scope: "e2e", purpose: ["smoke"] }],
-              phase: "production",
-              provider: "GitHub",
-              file: "smoke.yml",
-            },
-          ],
-        },
+        { product: "svc-a", component: "frontend", promotionType: "securePipelines", automated: [] },
       ]),
     ];
 
-    const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes);
+    const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes, purposes);
 
-    // phases (after excluding pre-merge): build, staging, production
-    // scopes per phase: component, product, neighbour, e2e
-    // production is index 2, e2e is index 3 within that phase
-    // cell index = (2 * 4) + 3 = 11
-    const cells = result.groups[0].rows[0].cells;
-    assert.equal(cells[11].status, "implemented");
+    const rowLabels = result.groups[0].rows.map(r => r.label);
+    assert.deepEqual(rowLabels, [...purposes, "not specified"]);
   });
 
-  it("marks non-matching scope/phase combinations as missing", () => {
+  it("columns are phases (excluding pre-merge/pre-upload) with scopes including 'not specified'", () => {
+    const repos = [
+      makeRepository("repo-a", [
+        { product: "svc-a", component: "frontend", promotionType: "securePipelines", automated: [] },
+      ]),
+    ];
+
+    const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes, purposes);
+
+    const categories = result.groups[0].columns.categories;
+    assert.equal(categories.length, 3); // build, staging, production (pre-merge excluded)
+    assert.equal(categories[0].name, "build");
+    assert.deepEqual(categories[0].items, [...scopes, "not specified"]);
+    assert.equal(categories[2].name, "production");
+    assert.deepEqual(categories[2].items, [...scopes, "not specified"]);
+  });
+
+  it("marks cell as implemented when any component has that purpose at that phase/scope", () => {
     const repos = [
       makeRepository("repo-a", [
         {
@@ -531,9 +533,71 @@ describe("buildIntegrationScopeGrid", () => {
       ]),
     ];
 
-    const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes);
+    const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes, purposes);
 
-    // build / component = index 0
+    // "smoke" is purpose index 2
+    // phases (after filtering): build, staging, production
+    // scopes per phase: component, product, neighbour, e2e, not specified (5)
+    // production is phase index 2, e2e is scope index 3
+    // cell index = (2 * 5) + 3 = 13
+    const smokeRow = result.groups[0].rows[2]; // "smoke"
+    assert.equal(smokeRow.cells[13].status, "implemented");
+  });
+
+  it("aggregates across components — any component implementing counts", () => {
+    const repos = [
+      makeRepository("repo-a", [
+        {
+          product: "svc-a",
+          component: "frontend",
+          promotionType: "securePipelines",
+          automated: [
+            {
+              checks: [{ name: "integration", scope: "e2e", purpose: ["smoke"] }],
+              phase: "production",
+              provider: "GitHub",
+              file: "smoke.yml",
+            },
+          ],
+        },
+        {
+          product: "svc-a",
+          component: "api",
+          promotionType: "securePipelines",
+          automated: [],
+        },
+      ]),
+    ];
+
+    const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes, purposes);
+
+    // Even though "api" doesn't have it, "frontend" does — so "smoke" at production/e2e is implemented
+    const smokeRow = result.groups[0].rows[2];
+    assert.equal(smokeRow.cells[13].status, "implemented");
+  });
+
+  it("marks non-matching purpose/phase/scope combinations as missing", () => {
+    const repos = [
+      makeRepository("repo-a", [
+        {
+          product: "svc-a",
+          component: "frontend",
+          promotionType: "securePipelines",
+          automated: [
+            {
+              checks: [{ name: "integration", scope: "e2e", purpose: ["smoke"] }],
+              phase: "production",
+              provider: "GitHub",
+              file: "smoke.yml",
+            },
+          ],
+        },
+      ]),
+    ];
+
+    const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes, purposes);
+
+    // "regression" row (index 0), build/component (index 0) = missing
     assert.equal(result.groups[0].rows[0].cells[0].status, "missing");
   });
 
@@ -552,91 +616,17 @@ describe("buildIntegrationScopeGrid", () => {
       ]),
     ];
 
-    const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes);
+    const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes, purposes);
 
-    // All cells should be notApplicable
-    const cells = result.groups[0].rows[0].cells;
-    for (const cell of cells) {
-      assert.equal(cell.status, "notApplicable");
+    // All cells for all purposes should be notApplicable
+    for (const row of result.groups[0].rows) {
+      for (const cell of row.cells) {
+        assert.equal(cell.status, "notApplicable");
+      }
     }
   });
 
-  it("includes purpose in tooltip when present", () => {
-    const repos = [
-      makeRepository("repo-a", [
-        {
-          product: "svc-a",
-          component: "frontend",
-          promotionType: "securePipelines",
-          automated: [
-            {
-              checks: [{ name: "integration", scope: "e2e", purpose: ["smoke", "regression"] }],
-              phase: "production",
-              provider: "GitHub",
-              file: "smoke.yml",
-            },
-          ],
-        },
-      ]),
-    ];
-
-    const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes);
-
-    // production / e2e = index 11
-    const cell = result.groups[0].rows[0].cells[11];
-    assert.match(cell.title, /Purpose: /);
-    assert.match(cell.title, /smoke/);
-    assert.match(cell.title, /regression/);
-  });
-
-  it("columns are phases with scopes as items", () => {
-    const repos = [
-      makeRepository("repo-a", [
-        { product: "svc-a", component: "frontend", promotionType: "securePipelines", automated: [] },
-      ]),
-    ];
-
-    const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes);
-
-    const categories = result.groups[0].columns.categories;
-    assert.equal(categories.length, 3); // build, staging, production (pre-merge excluded)
-    assert.equal(categories[0].name, "build");
-    assert.deepEqual(categories[0].items, scopes);
-    assert.equal(categories[2].name, "production");
-    assert.deepEqual(categories[2].items, scopes);
-  });
-
-  it("handles integration checks without scope (null scope)", () => {
-    const repos = [
-      makeRepository("repo-a", [
-        {
-          product: "svc-a",
-          component: "frontend",
-          promotionType: "securePipelines",
-          automated: [
-            {
-              checks: [{ name: "integration", purpose: ["regression"] }],
-              phase: "build",
-              provider: "GitHub",
-              file: "test.yml",
-            },
-          ],
-        },
-      ]),
-    ];
-
-    const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes);
-
-    // Without a scope, it maps to null, which won't match any of the scope columns
-    // All cells for build (first phase after filtering) should be missing
-    const cells = result.groups[0].rows[0].cells;
-    assert.equal(cells[0].status, "missing"); // build / component
-    assert.equal(cells[1].status, "missing"); // build / product
-    assert.equal(cells[2].status, "missing"); // build / neighbour
-    assert.equal(cells[3].status, "missing"); // build / e2e
-  });
-
-  it("implemented takes priority over notApplicable for integration", () => {
+  it("implemented takes priority over notApplicable", () => {
     const repos = [
       makeRepository("repo-a", [
         {
@@ -658,11 +648,90 @@ describe("buildIntegrationScopeGrid", () => {
       ]),
     ];
 
-    const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes);
+    const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes, purposes);
 
-    // production / e2e should still be implemented
-    assert.equal(result.groups[0].rows[0].cells[11].status, "implemented");
-    // But other cells should be notApplicable
+    // smoke at production/e2e should be implemented
+    const smokeRow = result.groups[0].rows[2];
+    assert.equal(smokeRow.cells[13].status, "implemented");
+    // regression at build/component should be notApplicable
     assert.equal(result.groups[0].rows[0].cells[0].status, "notApplicable");
+  });
+
+  it("rows have no meta property", () => {
+    const repos = [
+      makeRepository("repo-a", [
+        { product: "svc-a", component: "frontend", promotionType: "securePipelines", automated: [] },
+      ]),
+    ];
+
+    const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes, purposes);
+
+    for (const row of result.groups[0].rows) {
+      assert.equal(row.meta, undefined);
+    }
+  });
+
+  it("handles integration checks without scope (null scope)", () => {
+    const repos = [
+      makeRepository("repo-a", [
+        {
+          product: "svc-a",
+          component: "frontend",
+          promotionType: "securePipelines",
+          automated: [
+            {
+              checks: [{ name: "integration", purpose: ["regression"] }],
+              phase: "build",
+              provider: "GitHub",
+              file: "test.yml",
+            },
+          ],
+        },
+      ]),
+    ];
+
+    const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes, purposes);
+
+    // Without a scope, maps to "not specified" scope column (index 4)
+    // Named scope columns should be missing, "not specified" should be implemented
+    const regressionRow = result.groups[0].rows[0];
+    assert.equal(regressionRow.cells[0].status, "missing"); // build / component
+    assert.equal(regressionRow.cells[1].status, "missing"); // build / product
+    assert.equal(regressionRow.cells[2].status, "missing"); // build / neighbour
+    assert.equal(regressionRow.cells[3].status, "missing"); // build / e2e
+    assert.equal(regressionRow.cells[4].status, "implemented"); // build / not specified
+  });
+
+  it("integration checks with no purpose show in 'not specified' row", () => {
+    const repos = [
+      makeRepository("repo-a", [
+        {
+          product: "svc-a",
+          component: "frontend",
+          promotionType: "securePipelines",
+          automated: [
+            {
+              checks: [{ name: "integration", scope: "component" }],
+              phase: "build",
+              provider: "GitHub",
+              file: "test.yml",
+            },
+          ],
+        },
+      ]),
+    ];
+
+    const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes, purposes);
+
+    // "not specified" purpose is the last row (index 4)
+    // build is phase index 0, component is scope index 0
+    // cell index = (0 * 5) + 0 = 0
+    const notSpecifiedRow = result.groups[0].rows[4];
+    assert.equal(notSpecifiedRow.label, "not specified");
+    assert.equal(notSpecifiedRow.cells[0].status, "implemented");
+
+    // Named purpose rows should be missing for this cell
+    assert.equal(result.groups[0].rows[0].cells[0].status, "missing"); // regression
+    assert.equal(result.groups[0].rows[2].cells[0].status, "missing"); // smoke
   });
 });
