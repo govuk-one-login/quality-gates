@@ -576,7 +576,7 @@ describe("buildIntegrationScopeGrid", () => {
     assert.equal(smokeRow.cells[13].status, "implemented");
   });
 
-  it("marks non-matching purpose/phase/scope combinations as missing", () => {
+  it("marks non-matching purpose/phase/scope combinations as empty", () => {
     const repos = [
       makeRepository("repo-a", [
         {
@@ -597,8 +597,8 @@ describe("buildIntegrationScopeGrid", () => {
 
     const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes, purposes);
 
-    // "regression" row (index 0), build/component (index 0) = missing
-    assert.equal(result.groups[0].rows[0].cells[0].status, "missing");
+    // "regression" row (index 0), build/component (index 0) = empty
+    assert.equal(result.groups[0].rows[0].cells[0].status, "empty");
   });
 
   it("marks integration as notApplicable when in notApplicable array", () => {
@@ -693,12 +693,12 @@ describe("buildIntegrationScopeGrid", () => {
     const result = buildIntegrationScopeGrid(repos, phasesByPromotionType, scopes, purposes);
 
     // Without a scope, maps to "not specified" scope column (index 4)
-    // Named scope columns should be missing, "not specified" should be implemented
+    // Named scope columns should be empty, "not specified" should be implemented
     const regressionRow = result.groups[0].rows[0];
-    assert.equal(regressionRow.cells[0].status, "missing"); // build / component
-    assert.equal(regressionRow.cells[1].status, "missing"); // build / product
-    assert.equal(regressionRow.cells[2].status, "missing"); // build / neighbour
-    assert.equal(regressionRow.cells[3].status, "missing"); // build / e2e
+    assert.equal(regressionRow.cells[0].status, "empty"); // build / component
+    assert.equal(regressionRow.cells[1].status, "empty"); // build / product
+    assert.equal(regressionRow.cells[2].status, "empty"); // build / neighbour
+    assert.equal(regressionRow.cells[3].status, "empty"); // build / e2e
     assert.equal(regressionRow.cells[4].status, "implemented"); // build / not specified
   });
 
@@ -730,8 +730,8 @@ describe("buildIntegrationScopeGrid", () => {
     assert.equal(notSpecifiedRow.label, "not specified");
     assert.equal(notSpecifiedRow.cells[0].status, "implemented");
 
-    // Named purpose rows should be missing for this cell
-    assert.equal(result.groups[0].rows[0].cells[0].status, "missing"); // regression
-    assert.equal(result.groups[0].rows[2].cells[0].status, "missing"); // smoke
+    // Named purpose rows should be empty for this cell
+    assert.equal(result.groups[0].rows[0].cells[0].status, "empty"); // regression
+    assert.equal(result.groups[0].rows[2].cells[0].status, "empty"); // smoke
   });
 });

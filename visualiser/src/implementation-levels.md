@@ -24,7 +24,9 @@ const repositories = githubManifestAndWorkflows
 const iconsMapping =  {
     "implemented": {color: "#28a745", symbol: "✓"},
     "missing": {color:"#dc3545", symbol: "✗"},
-    "notApplicable": {color:"#cccccc", symbol: "-"}
+    "notApplicable": {color:"#cccccc", symbol: "-"},
+    "empty": {color:"#f9f9f9", symbol: " "}
+
 }
 ```
 

@@ -235,7 +235,7 @@ export function buildIntegrationScopeGrid(repositories, phasesByPromotionType, s
             } else if (notApplicableIntegration.has(`${product}|${promotionType}`)) {
               status = "notApplicable";
             } else {
-              status = "missing";
+              status = "empty";
             }
 
             return {
