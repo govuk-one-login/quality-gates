@@ -83,11 +83,11 @@ const stats = nodesWithManifest.flatMap((node) => {
 
   return (node.manifest.text.services ?? []).flatMap((service) =>
     [...(service.automated ?? []), ...(service.outOfBand ?? [])].flatMap((gate) => {
-      const workflowKey = gate.config.file
+      const workflowKey = gate.file
         .replace(".github/workflows/", "")
         .replace(/\.ya?ml$/, "");
       const jobs = workflowsByName[workflowKey];
-      const jobKey = gate.config.path?.replace("jobs.", "");
+      const jobKey = gate.path?.replace("jobs.", "");
       const job = jobs?.[jobKey];
       return (gate.checks ?? []).map((c) => ({ ...node, ...gate, ...gate.config, repo: node.name, service: service.product, job, checkType: c.name, stepsCount: job?.steps?.length }));
     })

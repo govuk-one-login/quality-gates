@@ -3,7 +3,7 @@ import _ from "npm:lodash"
 
 export function renderCellForPhase(checks, phase) {
     const cellsToRender = _.filter(checks, ["phase", phase])
-    return html`<ul style="list-style-type:none; margin-left:0px; padding-left:0px">${cellsToRender.map((c) => html`<li>${c.enforced ? `✅` : `➖`} ${c.config.name ?? c.config.path.replace("jobs.", "")} (${c.config.file.replace(".github/workflows/", "")})</li>`)}</ul>`
+    return html`<ul style="list-style-type:none; margin-left:0px; padding-left:0px">${cellsToRender.map((c) => html`<li>${c.enforced ? `✅` : `➖`} ${c.name ?? c.path.replace("jobs.", "")} (${c.file.replace(".github/workflows/", "")})</li>`)}</ul>`
 }
 export function renderDataTable(dataTable) {
     const columnHeaders = ["check","pre-merge","build","staging","production","integration"]
