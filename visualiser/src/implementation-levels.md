@@ -57,6 +57,10 @@ display(Inputs.table(productsAndComponents, {
 ## By Product
 
 ```js
+import {renderStatusGrid, buildCheckLevelGrid, buildIntegrationScopeGrid} from "./components/status-grid.js";
+```
+
+```js
 // Map promotionType to its valid phases from the schema
 const phasesByPromotionType = {
   securePipelines: currentSchema["$defs"]["secure-pipelines-phases"].properties.checks.items.properties.phase.enum,
@@ -73,181 +77,16 @@ const phasesByPromotionType = {
 ```
 
 ```js
-// Flatten manifests into per-product/component/promotionType check implementations
-const productChecks = repositories
-  .filter(node => node.manifest?.text?.services)
-  .flatMap(node =>
-    node.manifest.text.services.flatMap(service =>
-      [...(service.automated ?? []), ...(service.manual ?? []), ...(service.outOfBand ?? [])].flatMap(check =>
-        (check.checks ?? []).map(ct => ({
-          product: service.product,
-          component: service.component,
-          repository: node.name,
-          promotionType: service.promotionType,
-          phase: check.phase,
-          check: ct.name
-        }))
-      )
-    )
-  );
+const checkLevelGrid = buildCheckLevelGrid(repositories, levelGroups, phasesByPromotionType);
+display(renderStatusGrid(checkLevelGrid, iconsMapping));
 ```
 
-```js
-// Get all product/component/promotionType combinations (including those with no checks)
-const allServiceComponents = repositories
-  .filter(node => node.manifest?.text?.services)
-  .flatMap(node =>
-    node.manifest.text.services.map(service => ({
-      product: service.product,
-      component: service.component,
-      repository: node.name,
-      promotionType: service.promotionType
-    }))
-  );
-```
+## Integration Checks
 
 ```js
-// Build a Set for fast lookup of implemented checks per product/component
-const implementedByProduct = new Set(
-  productChecks.map(d => `${d.product}|${d.component}|${d.check}|${d.phase}`)
-);
-```
-
-```js
-// Build a Set for fast lookup of notApplicable checks per product/component (no phase)
-const notApplicableByProduct = new Set(
-  repositories
-    .filter(node => node.manifest?.text?.services)
-    .flatMap(node =>
-      node.manifest.text.services.flatMap(service =>
-        (service.notApplicable ?? []).flatMap(entry =>
-          (entry.checks ?? []).map(ct => `${service.product}|${service.component}|${ct.name}`)
-        )
-      )
-    )
-);
-```
-
-```js
-// Get unique product/component/promotionType combinations, collecting all repositories
-// Includes components without any checks
-const products = [...new Set(allServiceComponents.map(d => d.product))].sort();
-const productComponentTypes = Object.values(
-  allServiceComponents.reduce((acc, d) => {
-    const key = `${d.product}|${d.component}|${d.promotionType}`;
-    if (!acc[key]) {
-      acc[key] = { product: d.product, component: d.component, repositories: new Set(), promotionType: d.promotionType };
-    }
-    acc[key].repositories.add(d.repository);
-    return acc;
-  }, {})
-).map(d => ({ ...d, repositories: [...d.repositories].sort() }))
-  .sort((a, b) =>
-    a.product.localeCompare(b.product) ||
-    a.promotionType.localeCompare(b.promotionType) ||
-    a.component.localeCompare(b.component)
-  );
-```
-
-```js
-// Get required checks from level groups, keyed by phase
-const requiredChecksByPhase = levelGroups.reduce((acc, level) => {
-  if (!acc[level.phase]) acc[level.phase] = [];
-  acc[level.phase] = [...new Set([...acc[level.phase], ...level.checks])].sort();
-  return acc;
-}, {});
-```
-
-```js
-// Build cell data per product/promotionType grouping
-const cellData = productComponentTypes.flatMap(({ product, component, promotionType }) => {
-  const validPhases = phasesByPromotionType[promotionType] ?? [];
-  // Only include phases that both: belong to this promotionType AND have required checks in levelGroups
-  const applicablePhases = validPhases.filter(phase => requiredChecksByPhase[phase]);
-
-  return applicablePhases.flatMap(phase =>
-    requiredChecksByPhase[phase].map(check => ({
-      product,
-      component,
-      promotionType,
-      phase,
-      check,
-      phaseCheck: `${phase} · ${check}`,
-      status: implementedByProduct.has(`${product}|${component}|${check}|${phase}`)
-        ? "implemented"
-        : notApplicableByProduct.has(`${product}|${component}|${check}`)
-          ? "notApplicable"
-          : "missing"
-    }))
-  );
-});
-```
-
-```js
-// Render a separate HTML table per product per promotionType
-display(html`${products.map(product => {
-  const promotionTypes = [...new Set(
-    productComponentTypes.filter(d => d.product === product).map(d => d.promotionType)
-  )].sort();
-
-  return html`<h3>${product}</h3>${promotionTypes.map(promotionType => {
-    const components = [...new Set(
-      productComponentTypes
-        .filter(d => d.product === product && d.promotionType === promotionType)
-        .map(d => d.component)
-    )].sort();
-
-    const data = cellData.filter(d => d.product === product && d.promotionType === promotionType);
-    const phases = [...new Set(data.map(d => d.phase))];
-    const checksByPhase = phases.map(phase => ({
-      phase,
-      checks: [...new Set(data.filter(d => d.phase === phase).map(d => d.check))].sort()
-    }));
-    const totalColumns = checksByPhase.reduce((sum, p) => sum + p.checks.length, 0);
-
-    return html`<table style="border-collapse: collapse; font-size: 0.85rem; width: 100%;">
-      <thead>
-        <tr>
-          <th rowspan="3" style="border: 1px solid #ddd; padding: 6px 10px; text-align: left; vertical-align: bottom;">Component</th>
-          <th colspan="${totalColumns}" style="border: 1px solid #ddd; padding: 6px 10px; text-align: center; background: #e8e8e8; font-weight: bold;">${promotionType}</th>
-          <th rowspan="3" style="border: 1px solid #ddd; padding: 6px 10px; text-align: left; vertical-align: bottom;">Repositories</th>
-        </tr>
-        <tr>
-          ${checksByPhase.map(({ phase, checks }) =>
-            html`<th colspan="${checks.length}" style="border: 1px solid #ddd; padding: 6px 10px; text-align: center; background: #f5f5f5;">${phase}</th>`
-          )}
-        </tr>
-        <tr>
-          ${checksByPhase.flatMap(({ phase, checks }) =>
-            checks.map(check =>
-              html`<th style="border: 1px solid #ddd; padding: 4px 6px; text-align: center; font-weight: normal; writing-mode: vertical-rl; transform: rotate(180deg); height: 120px; font-size: 0.75rem;">${check}</th>`
-            )
-          )}
-        </tr>
-      </thead>
-      <tbody>
-        ${components.map(component => {
-          const repos = productComponentTypes.find(d => d.product === product && d.component === component && d.promotionType === promotionType)?.repositories ?? [];
-          return html`<tr>
-            <td style="border: 1px solid #ddd; padding: 6px 10px; white-space: nowrap;">${component}</td>
-            ${checksByPhase.flatMap(({ phase, checks }) =>
-              checks.map(check => {
-                const status = implementedByProduct.has(`${product}|${component}|${check}|${phase}`)
-                  ? "implemented"
-                  : notApplicableByProduct.has(`${product}|${component}|${check}`)
-                    ? "notApplicable"
-                    : "missing";
-                const icon = iconsMapping[status];
-                return html`<td style="border: 1px solid #ddd; padding: 4px 8px; text-align: center; background: ${icon.color}; color: white;" title="${product} / ${component}\n${promotionType}: ${phase} → ${check}\n${status}">${icon.symbol}</td>`;
-              })
-            )}
-            <td style="border: 1px solid #ddd; padding: 6px 10px; white-space: nowrap;">${repos.join(", ")}</td>
-          </tr>`;
-        })}
-      </tbody>
-    </table>`;
-  })}`;
-})}`)
+const scopes = currentSchema["$defs"]["scope"].enum;
+const integrationGrid = buildIntegrationScopeGrid(repositories, phasesByPromotionType, scopes);
+display(renderStatusGrid(integrationGrid, iconsMapping));
 ```
 
 ----
