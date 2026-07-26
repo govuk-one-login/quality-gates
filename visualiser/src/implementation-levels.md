@@ -114,6 +114,21 @@ const implementedByProduct = new Set(
 ```
 
 ```js
+// Build a Set for fast lookup of notApplicable checks per product/component (no phase)
+const notApplicableByProduct = new Set(
+  repositories
+    .filter(node => node.manifest?.text?.services)
+    .flatMap(node =>
+      node.manifest.text.services.flatMap(service =>
+        (service.notApplicable ?? []).flatMap(entry =>
+          (entry.checks ?? []).map(ct => `${service.product}|${service.component}|${ct.name}`)
+        )
+      )
+    )
+);
+```
+
+```js
 // Get unique product/component/promotionType combinations, collecting all repositories
 // Includes components without any checks
 const products = [...new Set(allServiceComponents.map(d => d.product))].sort();
@@ -158,7 +173,11 @@ const cellData = productComponentTypes.flatMap(({ product, component, promotionT
       phase,
       check,
       phaseCheck: `${phase} · ${check}`,
-      status: implementedByProduct.has(`${product}|${component}|${check}|${phase}`) ? "implemented" : "missing"
+      status: implementedByProduct.has(`${product}|${component}|${check}|${phase}`)
+        ? "implemented"
+        : notApplicableByProduct.has(`${product}|${component}|${check}`)
+          ? "notApplicable"
+          : "missing"
     }))
   );
 });
@@ -213,7 +232,11 @@ display(html`${products.map(product => {
             <td style="border: 1px solid #ddd; padding: 6px 10px; white-space: nowrap;">${component}</td>
             ${checksByPhase.flatMap(({ phase, checks }) =>
               checks.map(check => {
-                const status = implementedByProduct.has(`${product}|${component}|${check}|${phase}`) ? "implemented" : "missing";
+                const status = implementedByProduct.has(`${product}|${component}|${check}|${phase}`)
+                  ? "implemented"
+                  : notApplicableByProduct.has(`${product}|${component}|${check}`)
+                    ? "notApplicable"
+                    : "missing";
                 const icon = iconsMapping[status];
                 return html`<td style="border: 1px solid #ddd; padding: 4px 8px; text-align: center; background: ${icon.color}; color: white;" title="${product} / ${component}\n${promotionType}: ${phase} → ${check}\n${status}">${icon.symbol}</td>`;
               })
