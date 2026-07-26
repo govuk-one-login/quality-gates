@@ -20,6 +20,13 @@ const repositories = githubManifestAndWorkflows
     .organization.repositories.nodes
 ```
 
+```js
+const iconsMapping =  {
+    "implemented": {color: "#28a745", symbol: "✓"},
+    "missing": {color:"#dc3545", symbol: "✗"},
+    "notApplicable": {color:"#cccccc", symbol: "-"}
+}
+```
 
 ## Products and Components
 
@@ -206,8 +213,9 @@ display(html`${products.map(product => {
             <td style="border: 1px solid #ddd; padding: 6px 10px; white-space: nowrap;">${component}</td>
             ${checksByPhase.flatMap(({ phase, checks }) =>
               checks.map(check => {
-                const status = implementedByProduct.has(`${product}|${component}|${check}|${phase}`);
-                return html`<td style="border: 1px solid #ddd; padding: 4px 8px; text-align: center; background: ${status ? '#28a745' : '#dc3545'}; color: white;" title="${product} / ${component}\n${promotionType}: ${phase} → ${check}\n${status ? 'implemented' : 'missing'}">${status ? '✓' : '✗'}</td>`;
+                const status = implementedByProduct.has(`${product}|${component}|${check}|${phase}`) ? "implemented" : "missing";
+                const icon = iconsMapping[status];
+                return html`<td style="border: 1px solid #ddd; padding: 4px 8px; text-align: center; background: ${icon.color}; color: white;" title="${product} / ${component}\n${promotionType}: ${phase} → ${check}\n${status}">${icon.symbol}</td>`;
               })
             )}
             <td style="border: 1px solid #ddd; padding: 6px 10px; white-space: nowrap;">${repos.join(", ")}</td>
