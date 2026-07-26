@@ -9,28 +9,22 @@
           "checks": [{ "name": "code style and linting" }],
           "provider": "GitHub",
           "phase": "pre-merge",
-          "config": {
-            "file": ".github/workflows/check-code-quality.yaml",
-            "path": "$.jobs.pre-commit"
-          }
+          "file": ".github/workflows/check-code-quality.yaml",
+          "path": "$.jobs.pre-commit"
         },
         {
           "checks": [{ "name": "code style and linting" }],
           "provider": "GitHub",
           "phase": "pre-merge",
-          "config": {
-            "file": ".github/workflows/check-code-quality.yaml",
-            "path": "$.jobs.gitlint"
-          }
+          "file": ".github/workflows/check-code-quality.yaml",
+          "path": "$.jobs.gitlint"
         },
         {
           "checks": [{ "name": "code style and linting" }],
           "provider": "GitHub",
           "phase": "pre-merge",
-          "config": {
-            "file": ".github/workflows/check-code-quality.yaml",
-            "path": "$.jobs.checkov"
-          }
+          "file": ".github/workflows/check-code-quality.yaml",
+          "path": "$.jobs.checkov"
         }
       ]
     }

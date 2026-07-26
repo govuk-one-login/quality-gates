@@ -13,13 +13,15 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "unit" }],
+                "checks": [
+                  {
+                    "name": "unit"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/test.yml",
-                  "path": "$.jobs.test"
-                }
+                "file": ".github/workflows/test.yml",
+                "path": "$.jobs.test"
               }
             ]
           }
@@ -37,13 +39,15 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "unit" }],
+                "checks": [
+                  {
+                    "name": "unit"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/test.yml",
-                  "path": "$.jobs['my-job']"
-                }
+                "file": ".github/workflows/test.yml",
+                "path": "$.jobs['my-job']"
               }
             ]
           }
@@ -61,13 +65,15 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "unit" }],
+                "checks": [
+                  {
+                    "name": "unit"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/test.yml",
-                  "path": "$.jobs.build.steps[?@.name=='Run tests']"
-                }
+                "file": ".github/workflows/test.yml",
+                "path": "$.jobs.build.steps[?@.name=='Run tests']"
               }
             ]
           }
@@ -85,13 +91,15 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "integration" }],
+                "checks": [
+                  {
+                    "name": "integration"
+                  }
+                ],
                 "provider": "Stack Orchestration Tool",
                 "phase": "build",
-                "config": {
-                  "file": "ci/stack-orchestration/parameters.json",
-                  "path": "$[?@.ParameterKey=='X']"
-                }
+                "file": "ci/stack-orchestration/parameters.json",
+                "path": "$[?@.ParameterKey=='X']"
               }
             ]
           }
@@ -109,13 +117,15 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "unit" }],
+                "checks": [
+                  {
+                    "name": "unit"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/test.yml",
-                  "path": "jobs.test"
-                }
+                "file": ".github/workflows/test.yml",
+                "path": "jobs.test"
               }
             ]
           }
@@ -133,12 +143,14 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "unit" }],
+                "checks": [
+                  {
+                    "name": "unit"
+                  }
+                ],
                 "provider": "Terraform",
                 "phase": "build",
-                "config": {
-                  "file": "other-repo:terraform/main.tf"
-                }
+                "file": "other-repo:terraform/main.tf"
               }
             ]
           }
@@ -156,12 +168,14 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "integration" }],
+                "checks": [
+                  {
+                    "name": "integration"
+                  }
+                ],
                 "provider": "Terraform",
                 "phase": "build",
-                "config": {
-                  "file": "terraform/main.tf"
-                }
+                "file": "terraform/main.tf"
               }
             ]
           }
@@ -179,12 +193,14 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "unit" }],
+                "checks": [
+                  {
+                    "name": "unit"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/test.yml"
-                }
+                "file": ".github/workflows/test.yml"
               }
             ]
           }

@@ -13,13 +13,15 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "unit" }],
+                "checks": [
+                  {
+                    "name": "unit"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/test.yaml",
-                  "path": "$.jobs.test"
-                }
+                "file": ".github/workflows/test.yaml",
+                "path": "$.jobs.test"
               }
             ]
           }
@@ -37,12 +39,14 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "unit" }],
+                "checks": [
+                  {
+                    "name": "unit"
+                  }
+                ],
                 "provider": "Terraform",
                 "phase": "pre-merge",
-                "config": {
-                  "file": "terraform/main.tf"
-                }
+                "file": "terraform/main.tf"
               }
             ]
           }
@@ -60,12 +64,14 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "unit" }],
+                "checks": [
+                  {
+                    "name": "unit"
+                  }
+                ],
                 "provider": "CloudFormation",
                 "phase": "pre-merge",
-                "config": {
-                  "file": "template.yaml"
-                }
+                "file": "template.yaml"
               }
             ]
           }
@@ -83,12 +89,14 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "unit" }],
+                "checks": [
+                  {
+                    "name": "unit"
+                  }
+                ],
                 "provider": "Stack Orchestration Tool",
                 "phase": "pre-merge",
-                "config": {
-                  "file": "ci/parameters.json"
-                }
+                "file": "ci/parameters.json"
               }
             ]
           }
@@ -106,13 +114,15 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "unit" }],
+                "checks": [
+                  {
+                    "name": "unit"
+                  }
+                ],
                 "provider": "Jenkins",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/test.yaml",
-                  "path": "$.jobs.test"
-                }
+                "file": ".github/workflows/test.yaml",
+                "path": "$.jobs.test"
               }
             ]
           }

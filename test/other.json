@@ -11,16 +11,20 @@
             "product": "service",
             "component": "api",
             "promotionType": "other",
-            "promotionTypeDetails": ["custom pipeline"],
+            "promotionTypeDetails": [
+              "custom pipeline"
+            ],
             "automated": [
               {
-                "checks": [{ "name": "unit" }],
+                "checks": [
+                  {
+                    "name": "unit"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "my-custom-phase",
-                "config": {
-                  "file": ".github/workflows/test.yaml",
-                  "path": "$.jobs.test"
-                }
+                "file": ".github/workflows/test.yaml",
+                "path": "$.jobs.test"
               }
             ]
           }
@@ -36,16 +40,21 @@
             "product": "service",
             "component": "api",
             "promotionType": "other",
-            "promotionTypeDetails": ["custom pipeline", "manual approval"],
+            "promotionTypeDetails": [
+              "custom pipeline",
+              "manual approval"
+            ],
             "automated": [
               {
-                "checks": [{ "name": "unit" }],
+                "checks": [
+                  {
+                    "name": "unit"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "deploy-canary",
-                "config": {
-                  "file": ".github/workflows/test.yaml",
-                  "path": "$.jobs.test"
-                }
+                "file": ".github/workflows/test.yaml",
+                "path": "$.jobs.test"
               }
             ]
           }
@@ -61,16 +70,20 @@
             "product": "service",
             "component": "api",
             "promotionType": "other",
-            "promotionTypeDetails": ["custom deployment tool"],
+            "promotionTypeDetails": [
+              "custom deployment tool"
+            ],
             "automated": [
               {
-                "checks": [{ "name": "unit" }],
+                "checks": [
+                  {
+                    "name": "unit"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "staging",
-                "config": {
-                  "file": ".github/workflows/test.yaml",
-                  "path": "$.jobs.test"
-                }
+                "file": ".github/workflows/test.yaml",
+                "path": "$.jobs.test"
               }
             ]
           }
@@ -88,13 +101,15 @@
             "promotionType": "other",
             "automated": [
               {
-                "checks": [{ "name": "unit" }],
+                "checks": [
+                  {
+                    "name": "unit"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "deploy",
-                "config": {
-                  "file": ".github/workflows/test.yaml",
-                  "path": "$.jobs.test"
-                }
+                "file": ".github/workflows/test.yaml",
+                "path": "$.jobs.test"
               }
             ]
           }
@@ -113,13 +128,15 @@
             "promotionTypeDetails": [],
             "automated": [
               {
-                "checks": [{ "name": "unit" }],
+                "checks": [
+                  {
+                    "name": "unit"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "deploy",
-                "config": {
-                  "file": ".github/workflows/test.yaml",
-                  "path": "$.jobs.test"
-                }
+                "file": ".github/workflows/test.yaml",
+                "path": "$.jobs.test"
               }
             ]
           }
@@ -135,16 +152,20 @@
             "product": "service",
             "component": "api",
             "promotionType": "other",
-            "promotionTypeDetails": [123],
+            "promotionTypeDetails": [
+              123
+            ],
             "automated": [
               {
-                "checks": [{ "name": "unit" }],
+                "checks": [
+                  {
+                    "name": "unit"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "deploy",
-                "config": {
-                  "file": ".github/workflows/test.yaml",
-                  "path": "$.jobs.test"
-                }
+                "file": ".github/workflows/test.yaml",
+                "path": "$.jobs.test"
               }
             ]
           }

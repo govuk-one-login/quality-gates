@@ -13,13 +13,16 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "integration", "scope": "component" }],
+                "checks": [
+                  {
+                    "name": "integration",
+                    "scope": "component"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/tests.yaml",
-                  "path": "$.jobs.integration"
-                }
+                "file": ".github/workflows/tests.yaml",
+                "path": "$.jobs.integration"
               }
             ]
           }
@@ -37,13 +40,19 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "integration", "purpose": ["regression", "new feature"] }],
+                "checks": [
+                  {
+                    "name": "integration",
+                    "purpose": [
+                      "regression",
+                      "new feature"
+                    ]
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/tests.yaml",
-                  "path": "$.jobs.integration"
-                }
+                "file": ".github/workflows/tests.yaml",
+                "path": "$.jobs.integration"
               }
             ]
           }
@@ -61,13 +70,19 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "integration", "scope": "e2e", "purpose": ["smoke"] }],
+                "checks": [
+                  {
+                    "name": "integration",
+                    "scope": "e2e",
+                    "purpose": [
+                      "smoke"
+                    ]
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/tests.yaml",
-                  "path": "$.jobs.e2e"
-                }
+                "file": ".github/workflows/tests.yaml",
+                "path": "$.jobs.e2e"
               }
             ]
           }
@@ -85,13 +100,18 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "unit", "purpose": ["regression"] }],
+                "checks": [
+                  {
+                    "name": "unit",
+                    "purpose": [
+                      "regression"
+                    ]
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/tests.yaml",
-                  "path": "$.jobs.unit"
-                }
+                "file": ".github/workflows/tests.yaml",
+                "path": "$.jobs.unit"
               }
             ]
           }
@@ -109,13 +129,16 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "unit", "scope": "component" }],
+                "checks": [
+                  {
+                    "name": "unit",
+                    "scope": "component"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/tests.yaml",
-                  "path": "$.jobs.unit"
-                }
+                "file": ".github/workflows/tests.yaml",
+                "path": "$.jobs.unit"
               }
             ]
           }
@@ -133,13 +156,18 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "code quality", "purpose": ["regression"] }],
+                "checks": [
+                  {
+                    "name": "code quality",
+                    "purpose": [
+                      "regression"
+                    ]
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/tests.yaml",
-                  "path": "$.jobs.quality"
-                }
+                "file": ".github/workflows/tests.yaml",
+                "path": "$.jobs.quality"
               }
             ]
           }
@@ -157,13 +185,15 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "component" }],
+                "checks": [
+                  {
+                    "name": "component"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/tests.yaml",
-                  "path": "$.jobs.unit"
-                }
+                "file": ".github/workflows/tests.yaml",
+                "path": "$.jobs.unit"
               }
             ]
           }
@@ -181,13 +211,15 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "e2e" }],
+                "checks": [
+                  {
+                    "name": "e2e"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/tests.yaml",
-                  "path": "$.jobs.unit"
-                }
+                "file": ".github/workflows/tests.yaml",
+                "path": "$.jobs.unit"
               }
             ]
           }
@@ -205,13 +237,15 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "regression" }],
+                "checks": [
+                  {
+                    "name": "regression"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/tests.yaml",
-                  "path": "$.jobs.unit"
-                }
+                "file": ".github/workflows/tests.yaml",
+                "path": "$.jobs.unit"
               }
             ]
           }
@@ -229,13 +263,15 @@
             "promotionType": "securePipelines",
             "automated": [
               {
-                "checks": [{ "name": "integration" }],
+                "checks": [
+                  {
+                    "name": "integration"
+                  }
+                ],
                 "provider": "GitHub",
                 "phase": "pre-merge",
-                "config": {
-                  "file": ".github/workflows/tests.yaml",
-                  "path": "$.jobs.integration"
-                }
+                "file": ".github/workflows/tests.yaml",
+                "path": "$.jobs.integration"
               }
             ]
           }
