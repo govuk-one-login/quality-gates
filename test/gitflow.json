@@ -3,7 +3,7 @@
   "$comment": "GitHub GitFlow tests",
   "tests": [
     {
-      "description": "Service with gitflow",
+      "description": "Service with gitflow using all phases",
       "valid": true,
       "data": {
         "services": [
@@ -13,59 +13,68 @@
             "promotionType": "gitFlow",
             "automated": [
               {
-                "checks": [
-                  {
-                    "name": "unit"
-                  }
-                ],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "pre-develop",
                 "file": ".github/workflows/tests.yaml",
                 "path": "$.jobs.unit"
               },
               {
-                "checks": [
-                  {
-                    "name": "unit"
-                  }
-                ],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "develop",
                 "file": ".github/workflows/tests.yaml",
                 "path": "$.jobs.unit"
               },
               {
-                "checks": [
-                  {
-                    "name": "unit"
-                  }
-                ],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "pre-release",
                 "file": ".github/workflows/tests.yaml",
                 "path": "$.jobs.unit"
               },
               {
-                "checks": [
-                  {
-                    "name": "unit"
-                  }
-                ],
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "release",
                 "file": ".github/workflows/tests.yaml",
                 "path": "$.jobs.unit"
               },
               {
-                "checks": [
-                  {
-                    "name": "unit"
-                  }
-                ],
+                "checks": [{ "name": "unit" }],
+                "provider": "GitHub",
+                "phase": "pre-main",
+                "file": ".github/workflows/tests.yaml",
+                "path": "$.jobs.unit"
+              },
+              {
+                "checks": [{ "name": "unit" }],
                 "provider": "GitHub",
                 "phase": "main",
                 "file": ".github/workflows/tests.yaml",
                 "path": "$.jobs.unit"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "gitFlow with pre-main phase is valid",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "product": "generic-service",
+            "component": "api",
+            "promotionType": "gitFlow",
+            "automated": [
+              {
+                "checks": [{ "name": "integration", "scope": "e2e" }],
+                "provider": "GitHub",
+                "phase": "pre-main",
+                "file": ".github/workflows/e2e.yaml",
+                "path": "$.jobs.e2e"
               }
             ]
           }

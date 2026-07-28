@@ -10,7 +10,7 @@ Add a `$schema` property pointing to a tagged release:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.17.0/schemas/schema.json"
+  "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.18.0/schemas/schema.json"
 }
 ```
 
@@ -97,6 +97,7 @@ The upgrade command handles all historical schema migrations automatically, incl
 - `checkTypes` string array → `checks` object array (v0.15.0)
 - Add `scope`/`purpose` to checks, remove deprecated check types (v0.16.0)
 - Flatten `config.file`/`config.path` into parent object (v0.17.0)
+- Add `pre-main` phase to gitFlow (v0.18.0)
 
 ### Exit codes
 
@@ -234,7 +235,7 @@ Valid phases depend on the service's `promotionType`:
 | `promotionType`    | Valid phases                                                               |
 |--------------------|----------------------------------------------------------------------------|
 | `securePipelines`  | `pre-merge`, `pre-upload`, `build`, `staging`, `production`, `integration` |
-| `gitFlow`          | `pre-develop`, `develop`, `pre-release`, `release`, `main`                 |
+| `gitFlow`          | `pre-develop`, `develop`, `pre-release`, `release`, `pre-main`, `main`     |
 | `library`          | `pre-merge`, `pre-release`                                                 |
 
 ### Provider path examples

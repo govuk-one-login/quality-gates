@@ -322,7 +322,7 @@
           "items": {
             "properties": {
               "phase": {
-                "enum": ["pre-develop", "develop", "pre-release", "release", "main"]
+                "enum": ["pre-develop", "develop", "pre-release", "release", "pre-main", "main"]
               }
             }
           }
@@ -331,7 +331,7 @@
           "items": {
             "properties": {
               "phase": {
-                "enum": ["pre-develop", "develop", "pre-release", "release", "main"]
+                "enum": ["pre-develop", "develop", "pre-release", "release", "pre-main", "main"]
               }
             }
           }
@@ -340,7 +340,7 @@
           "items": {
             "properties": {
               "phase": {
-                "enum": ["pre-develop", "develop", "pre-release", "release", "main"]
+                "enum": ["pre-develop", "develop", "pre-release", "release", "pre-main", "main"]
               }
             }
           }

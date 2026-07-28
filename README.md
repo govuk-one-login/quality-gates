@@ -13,7 +13,7 @@ Reference the schema directly in your manifest file:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.17.0/schemas/schema.json",
+  "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.18.0/schemas/schema.json",
   "services": [
     {
       "product": "my-service",
@@ -100,7 +100,7 @@ See [visualiser/README.md](./visualiser/README.md).
 This schema follows [semantic versioning](https://semver.org/). The schema URL includes a version tag:
 
 ```
-https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.17.0/schemas/schema.json
+https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.18.0/schemas/schema.json
 ```
 
 - **Major** — breaking changes to the schema (removed fields, renamed enums)

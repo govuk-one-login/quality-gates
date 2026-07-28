@@ -45,7 +45,7 @@ The schema supports three deployment strategy models, each with different phase 
 | `promotionType`    | Use case                               | Phases                                                              |
 |--------------------|----------------------------------------|---------------------------------------------------------------------|
 | `securePipelines`  | Teams deploying continuously from main | pre-merge → pre-upload → build → staging → production → integration |
-| `gitFlow`          | Teams using develop/release branches   | pre-develop → develop → pre-release → release → main                |
+| `gitFlow`          | Teams using develop/release branches   | pre-develop → develop → pre-release → release → pre-main → main     |
 | `library`          | Teams publishing packages              | pre-merge → pre-release                                             |
 
 ### Check type taxonomy
