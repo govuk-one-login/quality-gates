@@ -42,7 +42,7 @@ export function renderStatusGrid(gridData, iconsMapping) {
             const icon = iconsMapping[cell.status];
             return html`<td style="border: 1px solid #ddd; padding: 4px 8px; text-align: center; background: ${icon.color}; color: white;" title="${cell.title ?? ""}">${icon.symbol}</td>`;
           })}
-          <td style="border: 1px solid #ddd; padding: 6px 10px; white-space: nowrap;">${row.meta ?? ""}</td>
+          <td style="border: 1px solid #ddd; padding: 6px 10px; white-space: nowrap;">${Array.isArray(row.meta) ? row.meta.map((r, i) => html`${i > 0 ? ", " : ""}${r.url ? html`<a href="${r.url}">${r.name}</a>` : r.name}`) : (row.meta ?? "")}</td>
         </tr>`)}
       </tbody>
     </table>` : html`<table style="border-collapse: collapse; font-size: 0.85rem; width: 100%;">
@@ -71,7 +71,7 @@ export function renderStatusGrid(gridData, iconsMapping) {
             const icon = iconsMapping[cell.status];
             return html`<td style="border: 1px solid #ddd; padding: 4px 8px; text-align: center; background: ${icon.color}; color: white;" title="${cell.title ?? ""}">${icon.symbol}</td>`;
           })}
-          <td style="border: 1px solid #ddd; padding: 6px 10px; white-space: nowrap;">${row.meta ?? ""}</td>
+          <td style="border: 1px solid #ddd; padding: 6px 10px; white-space: nowrap;">${Array.isArray(row.meta) ? row.meta.map((r, i) => html`${i > 0 ? ", " : ""}${r.url ? html`<a href="${r.url}">${r.name}</a>` : r.name}`) : (row.meta ?? "")}</td>
         </tr>`)}
       </tbody>
     </table>`}`;

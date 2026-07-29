@@ -39,12 +39,19 @@ export function buildCheckLevelGrid(product, services, levelGroups, phasesByProm
     services.reduce((acc, service) => {
       const key = `${service.component}|${service.promotionType}`;
       if (!acc[key]) {
-        acc[key] = { component: service.component, repositories: new Set(), promotionType: service.promotionType };
+        acc[key] = { component: service.component, repositories: new Map(), promotionType: service.promotionType };
       }
-      if (service.repository) acc[key].repositories.add(service.repository);
+      if (service.repository) {
+        acc[key].repositories.set(service.repository, service.repositoryUrl ?? null);
+      }
       return acc;
     }, {})
-  ).map(d => ({ ...d, repositories: [...d.repositories].sort() }))
+  ).map(d => ({
+    ...d,
+    repositories: [...d.repositories.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([name, url]) => ({ name, url }))
+  }))
     .sort((a, b) =>
       a.promotionType.localeCompare(b.promotionType) ||
       a.component.localeCompare(b.component)
@@ -99,7 +106,7 @@ export function buildCheckLevelGrid(product, services, levelGroups, phasesByProm
         });
       });
 
-      return { label: component, meta: repos.join(", "), cells };
+      return { label: component, meta: repos, cells };
     });
 
     return { title: product, subtitle: promotionType, columns: { categories }, rows };

@@ -159,14 +159,17 @@ describe("buildCheckLevelGrid", () => {
 
   it("includes repositories in the row meta", () => {
     const services = [
-      makeService({ repository: "repo-a" }),
-      makeService({ repository: "repo-b" }),
+      makeService({ repository: "repo-a", repositoryUrl: "https://github.com/org/repo-a" }),
+      makeService({ repository: "repo-b", repositoryUrl: "https://github.com/org/repo-b" }),
     ];
     const levelGroups = [{ name: "S", promotionType: "securePipelines", phase: "pre-merge", checks: ["unit"] }];
 
     const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
 
-    assert.equal(result.groups[0].rows[0].meta, "repo-a, repo-b");
+    assert.deepEqual(result.groups[0].rows[0].meta, [
+      { name: "repo-a", url: "https://github.com/org/repo-a" },
+      { name: "repo-b", url: "https://github.com/org/repo-b" },
+    ]);
   });
 
   it("sorts components alphabetically within a group", () => {
