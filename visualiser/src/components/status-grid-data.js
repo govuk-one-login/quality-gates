@@ -50,13 +50,6 @@ export function buildCheckLevelGrid(product, services, levelGroups, phasesByProm
       a.component.localeCompare(b.component)
     );
 
-  // Required checks keyed by phase
-  const requiredChecksByPhase = levelGroups.reduce((acc, level) => {
-    if (!acc[level.phase]) acc[level.phase] = [];
-    acc[level.phase] = [...new Set([...acc[level.phase], ...level.checks])].sort();
-    return acc;
-  }, {});
-
   // Build groups (one per promotionType)
   const promotionTypes = [...new Set(componentTypes.map(d => d.promotionType))].sort();
 
@@ -67,12 +60,20 @@ export function buildCheckLevelGrid(product, services, levelGroups, phasesByProm
         .map(d => d.component)
     )].sort();
 
-    const validPhases = phasesByPromotionType[promotionType] ?? [];
-    const applicablePhases = validPhases.filter(phase => requiredChecksByPhase[phase]);
+    // Required checks keyed by phase, filtered to this promotionType
+    const requiredChecksByPhase = levelGroups
+      .filter(level => level.promotionType.toLowerCase() === promotionType.toLowerCase())
+      .reduce((acc, level) => {
+        if (!acc[level.phase]) acc[level.phase] = [];
+        acc[level.phase] = [...new Set([...acc[level.phase], ...level.checks])].sort();
+        return acc;
+      }, {});
 
-    const categories = applicablePhases.map(phase => ({
+    const validPhases = phasesByPromotionType[promotionType] ?? [];
+
+    const categories = validPhases.map(phase => ({
       name: phase,
-      items: requiredChecksByPhase[phase]
+      items: requiredChecksByPhase[phase] ?? []
     }));
 
     const rows = components.map(component => {
@@ -80,8 +81,12 @@ export function buildCheckLevelGrid(product, services, levelGroups, phasesByProm
         d => d.component === component && d.promotionType === promotionType
       )?.repositories ?? [];
 
-      const cells = applicablePhases.flatMap(phase =>
-        requiredChecksByPhase[phase].map(check => {
+      const cells = validPhases.flatMap(phase => {
+        const checks = requiredChecksByPhase[phase] ?? [];
+        if (checks.length === 0) {
+          return [{ status: "empty", title: "" }];
+        }
+        return checks.map(check => {
           const status = implementedByProduct.has(`${component}|${check}|${phase}`)
             ? "implemented"
             : notApplicableByProduct.has(`${component}|${check}`)
@@ -91,8 +96,8 @@ export function buildCheckLevelGrid(product, services, levelGroups, phasesByProm
             status,
             title: `${product} / ${component}\n${promotionType}: ${phase} → ${check}\n${status}`
           };
-        })
-      );
+        });
+      });
 
       return { label: component, meta: repos.join(", "), cells };
     });

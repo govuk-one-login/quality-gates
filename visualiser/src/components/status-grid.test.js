@@ -29,7 +29,10 @@ describe("buildCheckLevelGrid", () => {
       makeService({ component: "frontend", promotionType: "securePipelines" }),
       makeService({ component: "sdk", promotionType: "library" }),
     ];
-    const levelGroups = [{ name: "S", phase: "pre-merge", checks: ["unit"] }];
+    const levelGroups = [
+      { name: "S", promotionType: "securePipelines", phase: "pre-merge", checks: ["unit"] },
+      { name: "S", promotionType: "library", phase: "pre-merge", checks: ["unit"] },
+    ];
 
     const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
 
@@ -48,10 +51,11 @@ describe("buildCheckLevelGrid", () => {
         ],
       }),
     ];
-    const levelGroups = [{ name: "S", phase: "pre-merge", checks: ["unit"] }];
+    const levelGroups = [{ name: "S", promotionType: "securePipelines", phase: "pre-merge", checks: ["unit"] }];
 
     const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
 
+    // pre-merge is the first phase in securePipelines, unit is the only check there
     assert.equal(result.groups[0].rows[0].cells[0].status, "implemented");
   });
 
@@ -63,11 +67,15 @@ describe("buildCheckLevelGrid", () => {
         ],
       }),
     ];
-    const levelGroups = [{ name: "A", phase: "staging", checks: ["accessibility"] }];
+    const levelGroups = [{ name: "A", promotionType: "securePipelines", phase: "staging", checks: ["accessibility"] }];
 
     const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
 
-    assert.equal(result.groups[0].rows[0].cells[0].status, "implemented");
+    // Find the staging category and its cell
+    const categories = result.groups[0].columns.categories;
+    const stagingIdx = categories.findIndex(c => c.name === "staging");
+    const cellOffset = categories.slice(0, stagingIdx).reduce((sum, c) => sum + Math.max(c.items.length, 1), 0);
+    assert.equal(result.groups[0].rows[0].cells[cellOffset].status, "implemented");
   });
 
   it("marks a check as implemented when present in outOfBand", () => {
@@ -78,16 +86,19 @@ describe("buildCheckLevelGrid", () => {
         ],
       }),
     ];
-    const levelGroups = [{ name: "A", phase: "production", checks: ["integration"] }];
+    const levelGroups = [{ name: "A", promotionType: "securePipelines", phase: "production", checks: ["integration"] }];
 
     const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
 
-    assert.equal(result.groups[0].rows[0].cells[0].status, "implemented");
+    const categories = result.groups[0].columns.categories;
+    const prodIdx = categories.findIndex(c => c.name === "production");
+    const cellOffset = categories.slice(0, prodIdx).reduce((sum, c) => sum + Math.max(c.items.length, 1), 0);
+    assert.equal(result.groups[0].rows[0].cells[cellOffset].status, "implemented");
   });
 
   it("marks a check as missing when not present", () => {
     const services = [makeService({ automated: [] })];
-    const levelGroups = [{ name: "S", phase: "pre-merge", checks: ["unit"] }];
+    const levelGroups = [{ name: "S", promotionType: "securePipelines", phase: "pre-merge", checks: ["unit"] }];
 
     const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
 
@@ -103,7 +114,7 @@ describe("buildCheckLevelGrid", () => {
         ],
       }),
     ];
-    const levelGroups = [{ name: "B", phase: "pre-merge", checks: ["visual regression"] }];
+    const levelGroups = [{ name: "B", promotionType: "securePipelines", phase: "pre-merge", checks: ["visual regression"] }];
 
     const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
 
@@ -121,25 +132,29 @@ describe("buildCheckLevelGrid", () => {
         ],
       }),
     ];
-    const levelGroups = [{ name: "S", phase: "pre-merge", checks: ["unit"] }];
+    const levelGroups = [{ name: "S", promotionType: "securePipelines", phase: "pre-merge", checks: ["unit"] }];
 
     const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
 
     assert.equal(result.groups[0].rows[0].cells[0].status, "implemented");
   });
 
-  it("only includes phases that exist in both promotionType and levelGroups", () => {
+  it("only shows check columns for phases that have levelGroup entries", () => {
     const services = [makeService({ promotionType: "library", automated: [] })];
     const levelGroups = [
-      { name: "S", phase: "pre-merge", checks: ["unit"] },
-      { name: "A", phase: "build", checks: ["code quality"] },
+      { name: "S", promotionType: "library", phase: "pre-merge", checks: ["unit"] },
     ];
 
     const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
 
+    // All library phases should appear as categories
     const categories = result.groups[0].columns.categories;
-    assert.equal(categories.length, 1);
+    assert.equal(categories.length, 2); // pre-merge, pre-release
     assert.equal(categories[0].name, "pre-merge");
+    assert.deepEqual(categories[0].items, ["unit"]);
+    // pre-release has no level group entry, so empty items
+    assert.equal(categories[1].name, "pre-release");
+    assert.deepEqual(categories[1].items, []);
   });
 
   it("includes repositories in the row meta", () => {
@@ -147,7 +162,7 @@ describe("buildCheckLevelGrid", () => {
       makeService({ repository: "repo-a" }),
       makeService({ repository: "repo-b" }),
     ];
-    const levelGroups = [{ name: "S", phase: "pre-merge", checks: ["unit"] }];
+    const levelGroups = [{ name: "S", promotionType: "securePipelines", phase: "pre-merge", checks: ["unit"] }];
 
     const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
 
@@ -159,7 +174,7 @@ describe("buildCheckLevelGrid", () => {
       makeService({ component: "zebra" }),
       makeService({ component: "alpha" }),
     ];
-    const levelGroups = [{ name: "S", phase: "pre-merge", checks: ["unit"] }];
+    const levelGroups = [{ name: "S", promotionType: "securePipelines", phase: "pre-merge", checks: ["unit"] }];
 
     const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
 
@@ -177,14 +192,20 @@ describe("buildCheckLevelGrid", () => {
       }),
     ];
     const levelGroups = [
-      { name: "S", phase: "pre-merge", checks: ["unit"] },
-      { name: "A", phase: "build", checks: ["unit"] },
+      { name: "S", promotionType: "securePipelines", phase: "pre-merge", checks: ["unit"] },
+      { name: "A", promotionType: "securePipelines", phase: "build", checks: ["unit"] },
     ];
 
     const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
 
-    assert.equal(result.groups[0].rows[0].cells[0].status, "notApplicable");
-    assert.equal(result.groups[0].rows[0].cells[1].status, "notApplicable");
+    // Find pre-merge and build cells
+    const categories = result.groups[0].columns.categories;
+    const preMergeIdx = categories.findIndex(c => c.name === "pre-merge");
+    const buildIdx = categories.findIndex(c => c.name === "build");
+    const preMergeOffset = categories.slice(0, preMergeIdx).reduce((sum, c) => sum + Math.max(c.items.length, 1), 0);
+    const buildOffset = categories.slice(0, buildIdx).reduce((sum, c) => sum + Math.max(c.items.length, 1), 0);
+    assert.equal(result.groups[0].rows[0].cells[preMergeOffset].status, "notApplicable");
+    assert.equal(result.groups[0].rows[0].cells[buildOffset].status, "notApplicable");
   });
 
   it("produces multiple column items when a level group has multiple checks", () => {
@@ -195,31 +216,37 @@ describe("buildCheckLevelGrid", () => {
         ],
       }),
     ];
-    const levelGroups = [{ name: "S", phase: "pre-merge", checks: ["code quality", "unit", "vulnerability detection"] }];
+    const levelGroups = [{ name: "S", promotionType: "securePipelines", phase: "pre-merge", checks: ["code quality", "unit", "vulnerability detection"] }];
 
     const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
 
-    const category = result.groups[0].columns.categories[0];
-    assert.equal(category.name, "pre-merge");
-    assert.deepEqual(category.items, ["code quality", "unit", "vulnerability detection"]);
+    const categories = result.groups[0].columns.categories;
+    const preMerge = categories.find(c => c.name === "pre-merge");
+    assert.deepEqual(preMerge.items, ["code quality", "unit", "vulnerability detection"]);
 
-    assert.equal(result.groups[0].rows[0].cells[0].status, "missing");
-    assert.equal(result.groups[0].rows[0].cells[1].status, "implemented");
-    assert.equal(result.groups[0].rows[0].cells[2].status, "missing");
+    // Find cell offset for pre-merge
+    const preMergeIdx = categories.findIndex(c => c.name === "pre-merge");
+    const offset = categories.slice(0, preMergeIdx).reduce((sum, c) => sum + c.items.length, 0);
+    assert.equal(result.groups[0].rows[0].cells[offset + 0].status, "missing");     // code quality
+    assert.equal(result.groups[0].rows[0].cells[offset + 1].status, "implemented"); // unit
+    assert.equal(result.groups[0].rows[0].cells[offset + 2].status, "missing");     // vulnerability detection
   });
 
   it("deduplicates checks when multiple level groups reference the same phase", () => {
     const services = [makeService({ automated: [] })];
     const levelGroups = [
-      { name: "S", phase: "pre-merge", checks: ["unit", "code quality"] },
-      { name: "A", phase: "pre-merge", checks: ["unit", "vulnerability detection"] },
+      { name: "S", promotionType: "securePipelines", phase: "pre-merge", checks: ["unit", "code quality"] },
+      { name: "A", promotionType: "securePipelines", phase: "pre-merge", checks: ["unit", "vulnerability detection"] },
     ];
 
     const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
 
-    const category = result.groups[0].columns.categories[0];
-    assert.deepEqual(category.items, ["code quality", "unit", "vulnerability detection"]);
-    assert.equal(result.groups[0].rows[0].cells.length, 3);
+    const categories = result.groups[0].columns.categories;
+    const preMerge = categories.find(c => c.name === "pre-merge");
+    assert.deepEqual(preMerge.items, ["code quality", "unit", "vulnerability detection"]);
+    // Total cells = 3 checks + 3 empty phases (build, staging, production)
+    const totalCells = categories.reduce((sum, c) => sum + Math.max(c.items.length, 1), 0);
+    assert.equal(result.groups[0].rows[0].cells.length, totalCells);
   });
 
   it("handles the 'other' promotionType with its union of all phases", () => {
@@ -233,22 +260,26 @@ describe("buildCheckLevelGrid", () => {
       }),
     ];
     const levelGroups = [
-      { name: "S", phase: "pre-merge", checks: ["unit"] },
-      { name: "A", phase: "develop", checks: ["unit"] },
+      { name: "S", promotionType: "other", phase: "pre-merge", checks: ["unit"] },
+      { name: "A", promotionType: "other", phase: "develop", checks: ["unit"] },
     ];
 
     const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
 
-    const categoryNames = result.groups[0].columns.categories.map(c => c.name);
+    const categories = result.groups[0].columns.categories;
+    const categoryNames = categories.map(c => c.name);
     assert.ok(categoryNames.includes("pre-merge"));
     assert.ok(categoryNames.includes("develop"));
-    const cells = result.groups[0].rows[0].cells;
-    assert.ok(cells.every(c => c.status === "implemented"));
+    // All phases with items should have implemented cells
+    const preMerge = categories.find(c => c.name === "pre-merge");
+    const develop = categories.find(c => c.name === "develop");
+    assert.deepEqual(preMerge.items, ["unit"]);
+    assert.deepEqual(develop.items, ["unit"]);
   });
 
   it("handles a service with no check bucket properties at all", () => {
     const services = [makeService({})];
-    const levelGroups = [{ name: "S", phase: "pre-merge", checks: ["unit"] }];
+    const levelGroups = [{ name: "S", promotionType: "securePipelines", phase: "pre-merge", checks: ["unit"] }];
 
     const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
 
@@ -257,17 +288,21 @@ describe("buildCheckLevelGrid", () => {
     assert.equal(result.groups[0].rows[0].cells[0].status, "missing");
   });
 
-  it("cell array length equals total checks across all applicable phases", () => {
+  it("cell array length equals total check items plus one per empty phase", () => {
     const services = [makeService({ automated: [] })];
     const levelGroups = [
-      { name: "S", phase: "pre-merge", checks: ["unit", "code quality"] },
-      { name: "A", phase: "build", checks: ["vulnerability detection"] },
-      { name: "B", phase: "staging", checks: ["integration", "system"] },
+      { name: "S", promotionType: "securePipelines", phase: "pre-merge", checks: ["unit", "code quality"] },
+      { name: "A", promotionType: "securePipelines", phase: "build", checks: ["vulnerability detection"] },
+      { name: "B", promotionType: "securePipelines", phase: "staging", checks: ["integration", "system"] },
     ];
 
     const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
 
-    assert.equal(result.groups[0].rows[0].cells.length, 5);
+    // pre-merge: 2, build: 1, staging: 2, production: 0 (1 empty cell) = 6
+    const categories = result.groups[0].columns.categories;
+    const expectedCells = categories.reduce((sum, c) => sum + Math.max(c.items.length, 1), 0);
+    assert.equal(expectedCells, 6);
+    assert.equal(result.groups[0].rows[0].cells.length, 6);
   });
 
   it("cell title contains product, component, promotionType, phase, check, and status", () => {
@@ -278,7 +313,7 @@ describe("buildCheckLevelGrid", () => {
         ],
       }),
     ];
-    const levelGroups = [{ name: "S", phase: "pre-merge", checks: ["unit"] }];
+    const levelGroups = [{ name: "S", promotionType: "securePipelines", phase: "pre-merge", checks: ["unit"] }];
 
     const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
 
@@ -293,7 +328,7 @@ describe("buildCheckLevelGrid", () => {
 
   it("cell title shows 'missing' status for missing checks", () => {
     const services = [makeService({ automated: [] })];
-    const levelGroups = [{ name: "S", phase: "pre-merge", checks: ["unit"] }];
+    const levelGroups = [{ name: "S", promotionType: "securePipelines", phase: "pre-merge", checks: ["unit"] }];
 
     const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
 
@@ -301,15 +336,35 @@ describe("buildCheckLevelGrid", () => {
     assert.match(title, /missing/);
   });
 
-  it("produces groups with empty categories and cells when levelGroups is empty", () => {
+  it("all phases appear as categories even with no levelGroup entries", () => {
     const services = [makeService({ automated: [] })];
     const levelGroups = [];
 
     const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
 
-    assert.equal(result.groups.length, 1);
-    assert.equal(result.groups[0].columns.categories.length, 0);
-    assert.equal(result.groups[0].rows[0].cells.length, 0);
+    // All securePipelines phases should appear
+    const categories = result.groups[0].columns.categories;
+    assert.equal(categories.length, 4); // pre-merge, build, staging, production
+    // But all have empty items
+    assert.ok(categories.every(c => c.items.length === 0));
+    // One empty cell per phase with no items
+    assert.equal(result.groups[0].rows[0].cells.length, 4);
+    assert.ok(result.groups[0].rows[0].cells.every(c => c.status === "empty"));
+  });
+
+  it("level groups for other promotionTypes are ignored", () => {
+    const services = [makeService({ promotionType: "library", automated: [] })];
+    const levelGroups = [
+      { name: "S", promotionType: "securePipelines", phase: "pre-merge", checks: ["unit"] },
+      { name: "A", promotionType: "library", phase: "pre-merge", checks: ["code quality"] },
+    ];
+
+    const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
+
+    const categories = result.groups[0].columns.categories;
+    const preMerge = categories.find(c => c.name === "pre-merge");
+    // Only the library level group's checks should appear
+    assert.deepEqual(preMerge.items, ["code quality"]);
   });
 });
 
