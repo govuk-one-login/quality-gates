@@ -210,31 +210,30 @@ export function buildIntegrationScopeGrid(product, services, phasesByPromotionTy
 
 /**
  * Builds grid data showing all checks per component.
- * Columns: phases → check types (flattened from all checks present in the data).
+ * Columns: all check types (flat, no phase grouping).
  * Rows: components.
- * Cells show whether that component has that check at that phase.
+ * Cells show whether that component has that check in any phase.
  *
  * @param {string} product - The product name
  * @param {Array} services - Array of service objects for this product
- * @param {Object} phasesByPromotionType - Map of promotionType → valid phases
+ * @param {Array} allCheckTypes - All check type enum values from schema
  * @returns {Object} gridData with groups (one per promotionType) for renderStatusGrid
  */
-export function buildAllChecksGrid(product, services, phasesByPromotionType) {
+export function buildAllChecksGrid(product, services, allCheckTypes) {
   // Flatten all checks from automated, manual, outOfBand
   const allChecks = services.flatMap(service =>
     [...(service.automated ?? []), ...(service.manual ?? []), ...(service.outOfBand ?? [])].flatMap(check =>
       (check.checks ?? []).map(ct => ({
         component: service.component,
         promotionType: service.promotionType,
-        phase: check.phase,
         check: ct.name
       }))
     )
   );
 
-  // Build a Set for fast lookup
+  // Build a Set for fast lookup: component|check
   const implemented = new Set(
-    allChecks.map(d => `${d.component}|${d.phase}|${d.check}`)
+    allChecks.map(d => `${d.component}|${d.check}`)
   );
 
   // Build a Set for notApplicable checks
@@ -279,43 +278,23 @@ export function buildAllChecksGrid(product, services, phasesByPromotionType) {
         .map(d => d.component)
     )].sort();
 
-    const validPhases = phasesByPromotionType[promotionType] ?? [];
-
-    // Collect all unique check types that appear in any component for this promotionType, per phase
-    const checksByPhase = {};
-    for (const check of allChecks) {
-      if (check.promotionType === promotionType) {
-        if (!checksByPhase[check.phase]) checksByPhase[check.phase] = new Set();
-        checksByPhase[check.phase].add(check.check);
-      }
-    }
-
-    const categories = validPhases.map(phase => ({
-      name: phase,
-      items: checksByPhase[phase] ? [...checksByPhase[phase]].sort() : []
-    }));
+    const categories = [{ name: "", items: allCheckTypes }];
 
     const rows = components.map(component => {
       const repos = componentTypes.find(
         d => d.component === component && d.promotionType === promotionType
       )?.repositories ?? [];
 
-      const cells = validPhases.flatMap(phase => {
-        const checks = checksByPhase[phase] ? [...checksByPhase[phase]].sort() : [];
-        if (checks.length === 0) {
-          return [{ status: "empty", title: "" }];
-        }
-        return checks.map(check => {
-          const status = implemented.has(`${component}|${phase}|${check}`)
-            ? "implemented"
-            : notApplicable.has(`${component}|${check}`)
-              ? "notApplicable"
-              : "missing";
-          return {
-            status,
-            title: `${product} / ${component}\n${promotionType}: ${phase} → ${check}\n${status}`
-          };
-        });
+      const cells = allCheckTypes.map(check => {
+        const status = implemented.has(`${component}|${check}`)
+          ? "implemented"
+          : notApplicable.has(`${component}|${check}`)
+            ? "notApplicable"
+            : "missing";
+        return {
+          status,
+          title: `${product} / ${component}\n${check}\n${status}`
+        };
       });
 
       return { label: component, meta: repos, cells };
