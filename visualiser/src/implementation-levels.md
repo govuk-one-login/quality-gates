@@ -100,10 +100,17 @@ display(html`${Object.keys(servicesByProduct).sort().map(product => {
   const services = servicesByProduct[product];
   const checkGrid = buildCheckLevelGrid(product, services, levelGroups, phasesByPromotionType);
   const integrationGrid = buildIntegrationScopeGrid(null, services, phasesByPromotionType, scopes, purposes);
-  return html`
-    ${renderStatusGrid(checkGrid, iconsMapping)}
-    ${renderStatusGrid(integrationGrid, iconsMapping)}
-  `;
+
+  // Interleave grids by promotionType: check grid then integration grid for each
+  const promotionTypes = checkGrid.groups.map(g => g.subtitle);
+  return html`${promotionTypes.map(pt => {
+    const checkGroup = checkGrid.groups.find(g => g.subtitle === pt);
+    const intGroup = integrationGrid.groups.find(g => g.subtitle === pt);
+    return html`
+      ${renderStatusGrid({ groups: [checkGroup] }, iconsMapping)}
+      ${intGroup ? renderStatusGrid({ groups: [intGroup] }, iconsMapping) : ""}
+    `;
+  })}`;
 })}`)
 ```
 
