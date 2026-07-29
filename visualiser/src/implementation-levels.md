@@ -84,12 +84,16 @@ const purposes = currentSchema["$defs"]["purpose"].enum;
 ```
 
 ```js
-// Group services by product, attaching repository name
+// Group services by product, attaching repository name and URL
 const servicesByProduct = Object.groupBy(
   repositories
     .filter(node => node.manifest?.text?.services)
     .flatMap(node =>
-      node.manifest.text.services.map(service => ({ ...service, repository: node.name }))
+      node.manifest.text.services.map(service => ({
+        ...service,
+        repository: node.name,
+        repositoryUrl: `https://github.com/${node.owner.login}/${node.name}`
+      }))
     ),
   service => service.product
 );
