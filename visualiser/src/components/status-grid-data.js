@@ -207,3 +207,122 @@ export function buildIntegrationScopeGrid(product, services, phasesByPromotionTy
 
   return { groups };
 }
+
+/**
+ * Builds grid data showing all checks per component.
+ * Columns: phases → check types (flattened from all checks present in the data).
+ * Rows: components.
+ * Cells show whether that component has that check at that phase.
+ *
+ * @param {string} product - The product name
+ * @param {Array} services - Array of service objects for this product
+ * @param {Object} phasesByPromotionType - Map of promotionType → valid phases
+ * @returns {Object} gridData with groups (one per promotionType) for renderStatusGrid
+ */
+export function buildAllChecksGrid(product, services, phasesByPromotionType) {
+  // Flatten all checks from automated, manual, outOfBand
+  const allChecks = services.flatMap(service =>
+    [...(service.automated ?? []), ...(service.manual ?? []), ...(service.outOfBand ?? [])].flatMap(check =>
+      (check.checks ?? []).map(ct => ({
+        component: service.component,
+        promotionType: service.promotionType,
+        phase: check.phase,
+        check: ct.name
+      }))
+    )
+  );
+
+  // Build a Set for fast lookup
+  const implemented = new Set(
+    allChecks.map(d => `${d.component}|${d.phase}|${d.check}`)
+  );
+
+  // Build a Set for notApplicable checks
+  const notApplicable = new Set(
+    services.flatMap(service =>
+      (service.notApplicable ?? []).flatMap(entry =>
+        (entry.checks ?? []).map(ct => `${service.component}|${ct.name}`)
+      )
+    )
+  );
+
+  // Build unique component/promotionType combinations with repositories
+  const componentTypes = Object.values(
+    services.reduce((acc, service) => {
+      const key = `${service.component}|${service.promotionType}`;
+      if (!acc[key]) {
+        acc[key] = { component: service.component, repositories: new Map(), promotionType: service.promotionType };
+      }
+      if (service.repository) {
+        acc[key].repositories.set(service.repository, service.repositoryUrl ?? null);
+      }
+      return acc;
+    }, {})
+  ).map(d => ({
+    ...d,
+    repositories: [...d.repositories.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([name, url]) => ({ name, url }))
+  }))
+    .sort((a, b) =>
+      a.promotionType.localeCompare(b.promotionType) ||
+      a.component.localeCompare(b.component)
+    );
+
+  // Build groups (one per promotionType)
+  const promotionTypes = [...new Set(componentTypes.map(d => d.promotionType))].sort();
+
+  const groups = promotionTypes.map(promotionType => {
+    const components = [...new Set(
+      componentTypes
+        .filter(d => d.promotionType === promotionType)
+        .map(d => d.component)
+    )].sort();
+
+    const validPhases = phasesByPromotionType[promotionType] ?? [];
+
+    // Collect all unique check types that appear in any component for this promotionType, per phase
+    const checksByPhase = {};
+    for (const check of allChecks) {
+      if (check.promotionType === promotionType) {
+        if (!checksByPhase[check.phase]) checksByPhase[check.phase] = new Set();
+        checksByPhase[check.phase].add(check.check);
+      }
+    }
+
+    const categories = validPhases.map(phase => ({
+      name: phase,
+      items: checksByPhase[phase] ? [...checksByPhase[phase]].sort() : []
+    }));
+
+    const rows = components.map(component => {
+      const repos = componentTypes.find(
+        d => d.component === component && d.promotionType === promotionType
+      )?.repositories ?? [];
+
+      const cells = validPhases.flatMap(phase => {
+        const checks = checksByPhase[phase] ? [...checksByPhase[phase]].sort() : [];
+        if (checks.length === 0) {
+          return [{ status: "empty", title: "" }];
+        }
+        return checks.map(check => {
+          const status = implemented.has(`${component}|${phase}|${check}`)
+            ? "implemented"
+            : notApplicable.has(`${component}|${check}`)
+              ? "notApplicable"
+              : "missing";
+          return {
+            status,
+            title: `${product} / ${component}\n${promotionType}: ${phase} → ${check}\n${status}`
+          };
+        });
+      });
+
+      return { label: component, meta: repos, cells };
+    });
+
+    return { title: product, subtitle: promotionType, columns: { categories }, rows };
+  });
+
+  return { groups };
+}

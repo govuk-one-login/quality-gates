@@ -59,7 +59,7 @@ display(Inputs.table(productsAndComponents, {
 ## By Product
 
 ```js
-import {renderStatusGrid, buildCheckLevelGrid, buildIntegrationScopeGrid} from "./components/status-grid.js";
+import {renderStatusGrid, buildCheckLevelGrid, buildIntegrationScopeGrid, buildAllChecksGrid} from "./components/status-grid.js";
 ```
 
 ```js
@@ -104,15 +104,21 @@ display(html`${Object.keys(servicesByProduct).sort().map(product => {
   const services = servicesByProduct[product];
   const checkGrid = buildCheckLevelGrid(product, services, levelGroups, phasesByPromotionType);
   const integrationGrid = buildIntegrationScopeGrid(null, services, phasesByPromotionType, scopes, purposes);
+  const allChecksGrid = buildAllChecksGrid(product, services, phasesByPromotionType);
 
   // Interleave grids by promotionType: check grid then integration grid for each
   const promotionTypes = checkGrid.groups.map(g => g.subtitle);
-  return html`${promotionTypes.map(pt => {
-    const checkGroup = checkGrid.groups.find(g => g.subtitle === pt);
+  return html`<h3>${product}</h3>${promotionTypes.map(pt => {
+    const checkGroup = { ...checkGrid.groups.find(g => g.subtitle === pt), title: null };
     const intGroup = integrationGrid.groups.find(g => g.subtitle === pt);
+    const allChecksGroup = allChecksGrid.groups.find(g => g.subtitle === pt);
     return html`
+      <h4>Level Requirements</h4>
       ${renderStatusGrid({ groups: [checkGroup] }, iconsMapping)}
+      <h4>Integration Checks</h4>
       ${intGroup ? renderStatusGrid({ groups: [intGroup] }, iconsMapping) : ""}
+      <h4>All Checks</h4>
+      ${allChecksGroup ? renderStatusGrid({ groups: [{ ...allChecksGroup, title: null }] }, iconsMapping) : ""}
     `;
   })}`;
 })}`)

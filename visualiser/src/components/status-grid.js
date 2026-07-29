@@ -1,5 +1,5 @@
 import {html} from "npm:htl";
-export {buildCheckLevelGrid, buildIntegrationScopeGrid} from "./status-grid-data.js";
+export {buildCheckLevelGrid, buildIntegrationScopeGrid, buildAllChecksGrid} from "./status-grid-data.js";
 
 /**
  * Renders a status grid as HTML tables with grouped headings.
@@ -12,13 +12,14 @@ export {buildCheckLevelGrid, buildIntegrationScopeGrid} from "./status-grid-data
 export function renderStatusGrid(gridData, iconsMapping) {
   return html`${gridData.groups.map(group => {
     const totalColumns = group.columns.categories.reduce((sum, cat) => sum + Math.max(cat.items.length, 1), 0);
+    const showMeta = group.rows[0]?.meta !== undefined;
 
-    return html`${group.title ? html`<h3>${group.title}</h3>` : ""}${group.subtitle ? html`<table style="border-collapse: collapse; font-size: 0.85rem; width: 100%;">
+    return html`${group.title ? html`<h4>${group.title}</h4>` : ""}${group.subtitle ? html`<table style="border-collapse: collapse; font-size: 0.85rem; width: 100%;">
       <thead>
         <tr>
           <th rowspan="3" style="border: 1px solid #ddd; padding: 6px 10px; text-align: left; vertical-align: bottom;">Component</th>
           <th colspan="${totalColumns}" style="border: 1px solid #ddd; padding: 6px 10px; text-align: center; background: #e8e8e8; font-weight: bold;">${group.subtitle}</th>
-          <th rowspan="3" style="border: 1px solid #ddd; padding: 6px 10px; text-align: left; vertical-align: bottom;">Repositories</th>
+          ${showMeta ? html`<th rowspan="3" style="border: 1px solid #ddd; padding: 6px 10px; text-align: left; vertical-align: bottom;">Repositories</th>` : ""}
         </tr>
         <tr>
           ${group.columns.categories.map(cat =>
@@ -42,7 +43,7 @@ export function renderStatusGrid(gridData, iconsMapping) {
             const icon = iconsMapping[cell.status];
             return html`<td style="border: 1px solid #ddd; padding: 4px 8px; text-align: center; background: ${icon.color}; color: white;" title="${cell.title ?? ""}">${icon.symbol}</td>`;
           })}
-          <td style="border: 1px solid #ddd; padding: 6px 10px; white-space: nowrap;">${Array.isArray(row.meta) ? row.meta.map((r, i) => html`${i > 0 ? ", " : ""}${r.url ? html`<a href="${r.url}">${r.name}</a>` : r.name}`) : (row.meta ?? "")}</td>
+          ${showMeta ? html`<td style="border: 1px solid #ddd; padding: 6px 10px; white-space: nowrap;">${Array.isArray(row.meta) ? row.meta.map((r, i) => html`${i > 0 ? ", " : ""}${r.url ? html`<a href="${r.url}">${r.name}</a>` : r.name}`) : (row.meta ?? "")}</td>` : ""}
         </tr>`)}
       </tbody>
     </table>` : html`<table style="border-collapse: collapse; font-size: 0.85rem; width: 100%;">
@@ -52,7 +53,7 @@ export function renderStatusGrid(gridData, iconsMapping) {
           ${group.columns.categories.map(cat =>
             html`<th colspan="${Math.max(cat.items.length, 1)}" style="border: 1px solid #ddd; padding: 6px 10px; text-align: center; background: #f5f5f5;">${cat.name}</th>`
           )}
-          <th rowspan="2" style="border: 1px solid #ddd; padding: 6px 10px; text-align: left; vertical-align: bottom;">Repositories</th>
+          ${showMeta ? html`<th rowspan="2" style="border: 1px solid #ddd; padding: 6px 10px; text-align: left; vertical-align: bottom;">Repositories</th>` : ""}
         </tr>
         <tr>
           ${group.columns.categories.flatMap(cat =>
@@ -71,7 +72,7 @@ export function renderStatusGrid(gridData, iconsMapping) {
             const icon = iconsMapping[cell.status];
             return html`<td style="border: 1px solid #ddd; padding: 4px 8px; text-align: center; background: ${icon.color}; color: white;" title="${cell.title ?? ""}">${icon.symbol}</td>`;
           })}
-          <td style="border: 1px solid #ddd; padding: 6px 10px; white-space: nowrap;">${Array.isArray(row.meta) ? row.meta.map((r, i) => html`${i > 0 ? ", " : ""}${r.url ? html`<a href="${r.url}">${r.name}</a>` : r.name}`) : (row.meta ?? "")}</td>
+          ${showMeta ? html`<td style="border: 1px solid #ddd; padding: 6px 10px; white-space: nowrap;">${Array.isArray(row.meta) ? row.meta.map((r, i) => html`${i > 0 ? ", " : ""}${r.url ? html`<a href="${r.url}">${r.name}</a>` : r.name}`) : (row.meta ?? "")}</td>` : ""}
         </tr>`)}
       </tbody>
     </table>`}`;
