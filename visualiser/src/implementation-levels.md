@@ -104,7 +104,7 @@ display(html`${Object.keys(servicesByProduct).sort().map(product => {
   const services = servicesByProduct[product];
   const checkGrid = buildCheckLevelGrid(product, services, levelGroups, phasesByPromotionType);
   const integrationGrid = buildIntegrationScopeGrid(null, services, phasesByPromotionType, scopes, purposes);
-  const allChecksGrid = buildAllChecksGrid(product, services, phasesByPromotionType);
+  const allChecksGrid = buildAllChecksGrid(product, services, allCheckTypes);
 
   // Interleave grids by promotionType: check grid then integration grid for each
   const promotionTypes = checkGrid.groups.map(g => g.subtitle);
