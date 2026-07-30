@@ -415,7 +415,7 @@ describe("buildIntegrationScopeGrid", () => {
     assert.deepEqual(categories[3].items, [...scopes, "not specified"]);
   });
 
-  it("marks cell as implemented when any component has that purpose at that phase/scope", () => {
+  it("marks cell as 'automated' when check is in automated bucket", () => {
     const services = [
       makeService({
         automated: [
@@ -436,7 +436,7 @@ describe("buildIntegrationScopeGrid", () => {
     // production is phase index 3, e2e is scope index 3
     // cell index = (3 * 5) + 3 = 18
     const smokeRow = result.groups[0].rows[2]; // "smoke"
-    assert.equal(smokeRow.cells[18].status, "implemented");
+    assert.equal(smokeRow.cells[18].status, "automated");
   });
 
   it("aggregates across components — any component implementing counts", () => {
@@ -461,7 +461,7 @@ describe("buildIntegrationScopeGrid", () => {
     const result = buildIntegrationScopeGrid("svc-a", services, phasesByPromotionType, scopes, purposes);
 
     const smokeRow = result.groups[0].rows[2];
-    assert.equal(smokeRow.cells[18].status, "implemented");
+    assert.equal(smokeRow.cells[18].status, "automated");
   });
 
   it("marks non-matching purpose/phase/scope combinations as empty", () => {
@@ -502,7 +502,7 @@ describe("buildIntegrationScopeGrid", () => {
     }
   });
 
-  it("implemented takes priority over notApplicable", () => {
+  it("source status takes priority over notApplicable", () => {
     const services = [
       makeService({
         automated: [
@@ -522,7 +522,7 @@ describe("buildIntegrationScopeGrid", () => {
     const result = buildIntegrationScopeGrid("svc-a", services, phasesByPromotionType, scopes, purposes);
 
     const smokeRow = result.groups[0].rows[2];
-    assert.equal(smokeRow.cells[18].status, "implemented");
+    assert.equal(smokeRow.cells[18].status, "automated");
     assert.equal(result.groups[0].rows[0].cells[0].status, "notApplicable");
   });
 
@@ -559,7 +559,7 @@ describe("buildIntegrationScopeGrid", () => {
     assert.equal(regressionRow.cells[6].status, "empty"); // build / product
     assert.equal(regressionRow.cells[7].status, "empty"); // build / neighbour
     assert.equal(regressionRow.cells[8].status, "empty"); // build / e2e
-    assert.equal(regressionRow.cells[9].status, "implemented"); // build / not specified
+    assert.equal(regressionRow.cells[9].status, "automated"); // build / not specified
   });
 
   it("integration checks with no purpose show in 'not specified' row", () => {
@@ -583,10 +583,76 @@ describe("buildIntegrationScopeGrid", () => {
     // cell index = (1 * 5) + 0 = 5
     const notSpecifiedRow = result.groups[0].rows[4];
     assert.equal(notSpecifiedRow.label, "not specified");
-    assert.equal(notSpecifiedRow.cells[5].status, "implemented");
+    assert.equal(notSpecifiedRow.cells[5].status, "automated");
 
     // Named purpose rows should be empty for this cell
     assert.equal(result.groups[0].rows[0].cells[5].status, "empty"); // regression
     assert.equal(result.groups[0].rows[2].cells[5].status, "empty"); // smoke
+  });
+
+  it("marks cell as 'manual' when check is only in manual bucket", () => {
+    const services = [
+      makeService({
+        manual: [
+          {
+            checks: [{ name: "integration", scope: "e2e", purpose: ["regression"] }],
+            phase: "production",
+            details: ["QA verified"],
+          },
+        ],
+      }),
+    ];
+
+    const result = buildIntegrationScopeGrid("svc-a", services, phasesByPromotionType, scopes, purposes);
+
+    // production/e2e = (3*5)+3 = 18, regression is row 0
+    assert.equal(result.groups[0].rows[0].cells[18].status, "manual");
+  });
+
+  it("marks cell as 'outOfBand' when check is only in outOfBand bucket", () => {
+    const services = [
+      makeService({
+        outOfBand: [
+          {
+            checks: [{ name: "integration", scope: "component", purpose: ["smoke"] }],
+            phase: "build",
+            provider: "GitHub",
+            file: "weekly.yml",
+          },
+        ],
+      }),
+    ];
+
+    const result = buildIntegrationScopeGrid("svc-a", services, phasesByPromotionType, scopes, purposes);
+
+    // build/component = (1*5)+0 = 5, smoke is row 2
+    assert.equal(result.groups[0].rows[2].cells[5].status, "outOfBand");
+  });
+
+  it("marks cell as 'multiple' when check is in more than one bucket", () => {
+    const services = [
+      makeService({
+        automated: [
+          {
+            checks: [{ name: "integration", scope: "e2e", purpose: ["regression"] }],
+            phase: "production",
+            provider: "GitHub",
+            file: "ci.yml",
+          },
+        ],
+        manual: [
+          {
+            checks: [{ name: "integration", scope: "e2e", purpose: ["regression"] }],
+            phase: "production",
+            details: ["QA verified"],
+          },
+        ],
+      }),
+    ];
+
+    const result = buildIntegrationScopeGrid("svc-a", services, phasesByPromotionType, scopes, purposes);
+
+    // production/e2e = (3*5)+3 = 18, regression is row 0
+    assert.equal(result.groups[0].rows[0].cells[18].status, "multiple");
   });
 });

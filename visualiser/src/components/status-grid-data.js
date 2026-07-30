@@ -133,25 +133,37 @@ export function buildIntegrationScopeGrid(product, services, phasesByPromotionTy
   const allScopes = [...scopes, NOT_SPECIFIED];
   const allPurposes = [...purposes, NOT_SPECIFIED];
 
-  // Extract integration checks with their scope and purpose
-  const integrationChecks = services.flatMap(service =>
-    [...(service.automated ?? []), ...(service.manual ?? []), ...(service.outOfBand ?? [])].flatMap(check =>
-      (check.checks ?? [])
-        .filter(ct => ct.name === "integration")
-        .map(ct => ({
-          promotionType: service.promotionType,
-          phase: check.phase,
-          scope: ct.scope ?? NOT_SPECIFIED,
-          purpose: ct.purpose && ct.purpose.length > 0 ? ct.purpose : [NOT_SPECIFIED]
-        }))
-    )
-  );
+  // Extract integration checks with their scope, purpose, and source
+  const integrationChecks = services.flatMap(service => {
+    const sources = [
+      { bucket: service.automated ?? [], source: "automated" },
+      { bucket: service.manual ?? [], source: "manual" },
+      { bucket: service.outOfBand ?? [], source: "outOfBand" },
+    ];
+    return sources.flatMap(({ bucket, source }) =>
+      bucket.flatMap(check =>
+        (check.checks ?? [])
+          .filter(ct => ct.name === "integration")
+          .map(ct => ({
+            promotionType: service.promotionType,
+            phase: check.phase,
+            scope: ct.scope ?? NOT_SPECIFIED,
+            purpose: ct.purpose && ct.purpose.length > 0 ? ct.purpose : [NOT_SPECIFIED],
+            source
+          }))
+      )
+    );
+  });
 
-  // Build lookup: promotionType|phase|scope|purpose → true
-  const implementedIntegration = new Set();
+  // Build lookup: key → Set<source>
+  const implementedIntegration = new Map();
   for (const ic of integrationChecks) {
     for (const p of ic.purpose) {
-      implementedIntegration.add(`${ic.promotionType}|${ic.phase}|${ic.scope}|${p}`);
+      const key = `${ic.promotionType}|${ic.phase}|${ic.scope}|${p}`;
+      if (!implementedIntegration.has(key)) {
+        implementedIntegration.set(key, new Set());
+      }
+      implementedIntegration.get(key).add(ic.source);
     }
   }
 
@@ -181,10 +193,15 @@ export function buildIntegrationScopeGrid(product, services, phasesByPromotionTy
       const cells = validPhases.flatMap(phase =>
         allScopes.map(scope => {
           const key = `${promotionType}|${phase}|${scope}|${purpose}`;
+          const sources = implementedIntegration.get(key);
 
           let status;
-          if (implementedIntegration.has(key)) {
-            status = "implemented";
+          if (sources) {
+            if (sources.size > 1) {
+              status = "multiple";
+            } else {
+              status = [...sources][0]; // "automated", "manual", or "outOfBand"
+            }
           } else if (notApplicableIntegration.has(promotionType)) {
             status = "notApplicable";
           } else {
