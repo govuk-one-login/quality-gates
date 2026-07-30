@@ -25,8 +25,11 @@ const iconsMapping =  {
     "implemented": {color: "#6a9f58", symbol: "✓"},
     "missing": {color:"#d1615d", symbol: "✗"},
     "notApplicable": {color:"#cccccc", symbol: "-"},
-    "empty": {color:"#f9f9f9", symbol: " "}
-
+    "empty": {color:"#f9f9f9", symbol: " "},
+    "automated": {color: "#a87c9f", symbol: "A"},
+    "manual": {color: "#e49444", symbol: "M"},
+    "outOfBand": {color: "#f1a2a9", symbol: "O"},
+    "multiple": {color: "#85b6b2", symbol: "X"}
 }
 ```
 
