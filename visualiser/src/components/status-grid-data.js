@@ -171,7 +171,6 @@ export function buildIntegrationScopeGrid(product, services, phasesByPromotionTy
 
   const groups = promotionTypes.map(promotionType => {
     const validPhases = (phasesByPromotionType[promotionType] ?? [])
-      .filter(phase => phase !== "pre-merge" && phase !== "pre-upload");
 
     const categories = validPhases.map(phase => ({
       name: phase,

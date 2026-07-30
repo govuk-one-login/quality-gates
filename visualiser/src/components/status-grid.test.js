@@ -402,17 +402,17 @@ describe("buildIntegrationScopeGrid", () => {
     assert.deepEqual(rowLabels, [...purposes, "not specified"]);
   });
 
-  it("columns are phases (excluding pre-merge/pre-upload) with scopes including 'not specified'", () => {
+  it("columns are phases with scopes including 'not specified'", () => {
     const services = [makeService({ automated: [] })];
 
     const result = buildIntegrationScopeGrid("svc-a", services, phasesByPromotionType, scopes, purposes);
 
     const categories = result.groups[0].columns.categories;
-    assert.equal(categories.length, 3); // build, staging, production
-    assert.equal(categories[0].name, "build");
+    assert.equal(categories.length, 4); // build, staging, production
+    assert.equal(categories[1].name, "build");
     assert.deepEqual(categories[0].items, [...scopes, "not specified"]);
-    assert.equal(categories[2].name, "production");
-    assert.deepEqual(categories[2].items, [...scopes, "not specified"]);
+    assert.equal(categories[3].name, "production");
+    assert.deepEqual(categories[3].items, [...scopes, "not specified"]);
   });
 
   it("marks cell as implemented when any component has that purpose at that phase/scope", () => {
@@ -431,12 +431,12 @@ describe("buildIntegrationScopeGrid", () => {
 
     const result = buildIntegrationScopeGrid("svc-a", services, phasesByPromotionType, scopes, purposes);
 
-    // phases (after filtering): build, staging, production
+    // phases: pre-merge, build, staging, production
     // scopes per phase: component, product, neighbour, e2e, not specified (5)
-    // production is phase index 2, e2e is scope index 3
-    // cell index = (2 * 5) + 3 = 13
+    // production is phase index 3, e2e is scope index 3
+    // cell index = (3 * 5) + 3 = 18
     const smokeRow = result.groups[0].rows[2]; // "smoke"
-    assert.equal(smokeRow.cells[13].status, "implemented");
+    assert.equal(smokeRow.cells[18].status, "implemented");
   });
 
   it("aggregates across components — any component implementing counts", () => {
@@ -461,7 +461,7 @@ describe("buildIntegrationScopeGrid", () => {
     const result = buildIntegrationScopeGrid("svc-a", services, phasesByPromotionType, scopes, purposes);
 
     const smokeRow = result.groups[0].rows[2];
-    assert.equal(smokeRow.cells[13].status, "implemented");
+    assert.equal(smokeRow.cells[18].status, "implemented");
   });
 
   it("marks non-matching purpose/phase/scope combinations as empty", () => {
@@ -522,7 +522,7 @@ describe("buildIntegrationScopeGrid", () => {
     const result = buildIntegrationScopeGrid("svc-a", services, phasesByPromotionType, scopes, purposes);
 
     const smokeRow = result.groups[0].rows[2];
-    assert.equal(smokeRow.cells[13].status, "implemented");
+    assert.equal(smokeRow.cells[18].status, "implemented");
     assert.equal(result.groups[0].rows[0].cells[0].status, "notApplicable");
   });
 
@@ -552,13 +552,14 @@ describe("buildIntegrationScopeGrid", () => {
 
     const result = buildIntegrationScopeGrid("svc-a", services, phasesByPromotionType, scopes, purposes);
 
-    // Without a scope, maps to "not specified" scope column (index 4)
+    // Without a scope, maps to "not specified" scope column (index 4 within phase)
+    // build is phase index 1, so build/component = (1*5)+0 = 5, build/not specified = (1*5)+4 = 9
     const regressionRow = result.groups[0].rows[0];
-    assert.equal(regressionRow.cells[0].status, "empty"); // build / component
-    assert.equal(regressionRow.cells[1].status, "empty"); // build / product
-    assert.equal(regressionRow.cells[2].status, "empty"); // build / neighbour
-    assert.equal(regressionRow.cells[3].status, "empty"); // build / e2e
-    assert.equal(regressionRow.cells[4].status, "implemented"); // build / not specified
+    assert.equal(regressionRow.cells[5].status, "empty"); // build / component
+    assert.equal(regressionRow.cells[6].status, "empty"); // build / product
+    assert.equal(regressionRow.cells[7].status, "empty"); // build / neighbour
+    assert.equal(regressionRow.cells[8].status, "empty"); // build / e2e
+    assert.equal(regressionRow.cells[9].status, "implemented"); // build / not specified
   });
 
   it("integration checks with no purpose show in 'not specified' row", () => {
@@ -578,13 +579,14 @@ describe("buildIntegrationScopeGrid", () => {
     const result = buildIntegrationScopeGrid("svc-a", services, phasesByPromotionType, scopes, purposes);
 
     // "not specified" purpose is the last row (index 4)
-    // build is phase index 0, component is scope index 0
+    // build is phase index 1, component is scope index 0
+    // cell index = (1 * 5) + 0 = 5
     const notSpecifiedRow = result.groups[0].rows[4];
     assert.equal(notSpecifiedRow.label, "not specified");
-    assert.equal(notSpecifiedRow.cells[0].status, "implemented");
+    assert.equal(notSpecifiedRow.cells[5].status, "implemented");
 
     // Named purpose rows should be empty for this cell
-    assert.equal(result.groups[0].rows[0].cells[0].status, "empty"); // regression
-    assert.equal(result.groups[0].rows[2].cells[0].status, "empty"); // smoke
+    assert.equal(result.groups[0].rows[0].cells[5].status, "empty"); // regression
+    assert.equal(result.groups[0].rows[2].cells[5].status, "empty"); // smoke
   });
 });
