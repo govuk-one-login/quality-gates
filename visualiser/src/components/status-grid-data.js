@@ -25,14 +25,20 @@ export function buildCheckLevelGrid(product, services, levelGroups, phasesByProm
     productChecks.map(d => `${d.component}|${d.check}|${d.phase}`)
   );
 
-  // Build a Set for notApplicable checks (no phase)
-  const notApplicableByProduct = new Set(
-    services.flatMap(service =>
-      (service.notApplicable ?? []).flatMap(entry =>
-        (entry.checks ?? []).map(ct => `${service.component}|${ct.name}`)
-      )
-    )
-  );
+  // Build Sets for notApplicable checks: phase-scoped and global (no phase)
+  const notApplicableGlobal = new Set();
+  const notApplicablePhased = new Set();
+  for (const service of services) {
+    for (const entry of service.notApplicable ?? []) {
+      for (const ct of entry.checks ?? []) {
+        if (entry.phase) {
+          notApplicablePhased.add(`${service.component}|${ct.name}|${entry.phase}`);
+        } else {
+          notApplicableGlobal.add(`${service.component}|${ct.name}`);
+        }
+      }
+    }
+  }
 
   // Build unique component/promotionType combinations
   const componentTypes = Object.values(
@@ -96,9 +102,11 @@ export function buildCheckLevelGrid(product, services, levelGroups, phasesByProm
         return checks.map(check => {
           const status = implementedByProduct.has(`${component}|${check}|${phase}`)
             ? "implemented"
-            : notApplicableByProduct.has(`${component}|${check}`)
+            : notApplicablePhased.has(`${component}|${check}|${phase}`)
               ? "notApplicable"
-              : "missing";
+              : notApplicableGlobal.has(`${component}|${check}`)
+                ? "notApplicable"
+                : "missing";
           return {
             status,
             title: `${product} / ${component}\n${promotionType}: ${phase} → ${check}\n${status}`
@@ -167,16 +175,22 @@ export function buildIntegrationScopeGrid(product, services, phasesByPromotionTy
     }
   }
 
-  // NotApplicable integration checks (aggregated per promotionType)
-  const notApplicableIntegration = new Set(
-    services.flatMap(service =>
-      (service.notApplicable ?? []).flatMap(entry =>
-        (entry.checks ?? [])
-          .filter(ct => ct.name === "integration")
-          .map(() => service.promotionType)
-      )
-    )
-  );
+  // NotApplicable integration checks: phase-scoped and global (per promotionType)
+  const notApplicableIntegrationGlobal = new Set();
+  const notApplicableIntegrationPhased = new Set();
+  for (const service of services) {
+    for (const entry of service.notApplicable ?? []) {
+      for (const ct of entry.checks ?? []) {
+        if (ct.name === "integration") {
+          if (entry.phase) {
+            notApplicableIntegrationPhased.add(`${service.promotionType}|${entry.phase}`);
+          } else {
+            notApplicableIntegrationGlobal.add(service.promotionType);
+          }
+        }
+      }
+    }
+  }
 
   // Build groups (one per promotionType)
   const promotionTypes = [...new Set(services.map(s => s.promotionType))].sort();
@@ -202,7 +216,9 @@ export function buildIntegrationScopeGrid(product, services, phasesByPromotionTy
             } else {
               status = [...sources][0]; // "automated", "manual", or "outOfBand"
             }
-          } else if (notApplicableIntegration.has(promotionType)) {
+          } else if (notApplicableIntegrationPhased.has(`${promotionType}|${phase}`)) {
+            status = "notApplicable";
+          } else if (notApplicableIntegrationGlobal.has(promotionType)) {
             status = "notApplicable";
           } else {
             status = "empty";
@@ -252,7 +268,7 @@ export function buildAllChecksGrid(product, services, allCheckTypes) {
     allChecks.map(d => `${d.component}|${d.check}`)
   );
 
-  // Build a Set for notApplicable checks
+  // Build a Set for notApplicable checks (includes both phased and global)
   const notApplicable = new Set(
     services.flatMap(service =>
       (service.notApplicable ?? []).flatMap(entry =>
