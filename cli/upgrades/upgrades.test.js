@@ -13,6 +13,7 @@ import { transform as v0150 } from "./v0.15.0.js";
 import { transform as v0160 } from "./v0.16.0.js";
 import { transform as v0170 } from "./v0.17.0.js";
 import { transform as v0180 } from "./v0.18.0.js";
+import { transform as v0190 } from "./v0.19.0.js";
 
 describe("parseVersion", () => {
   it("extracts version from schema URL", () => {
@@ -28,47 +29,50 @@ describe("parseVersion", () => {
 
 describe("getTransforms", () => {
   it("returns all transforms for null version", () => {
-    assert.equal(getTransforms(null).length, 12);
+    assert.equal(getTransforms(null).length, 13);
   });
   it("returns all transforms for v0.1.0", () => {
-    assert.equal(getTransforms([0, 1, 0]).length, 12);
+    assert.equal(getTransforms([0, 1, 0]).length, 13);
   });
-  it("returns v0.7.0 through v0.18.0 for v0.5.0", () => {
+  it("returns v0.7.0 through v0.19.0 for v0.5.0", () => {
     const t = getTransforms([0, 5, 0]);
-    assert.equal(t.length, 11);
+    assert.equal(t.length, 12);
   });
-  it("returns v0.9.0 through v0.18.0 for v0.7.0", () => {
-    assert.equal(getTransforms([0, 7, 0]).length, 10);
+  it("returns v0.9.0 through v0.19.0 for v0.7.0", () => {
+    assert.equal(getTransforms([0, 7, 0]).length, 11);
   });
-  it("returns v0.10.0 through v0.18.0 for v0.9.0", () => {
-    assert.equal(getTransforms([0, 9, 0]).length, 9);
+  it("returns v0.10.0 through v0.19.0 for v0.9.0", () => {
+    assert.equal(getTransforms([0, 9, 0]).length, 10);
   });
-  it("returns v0.11.0 through v0.18.0 for v0.10.0", () => {
-    assert.equal(getTransforms([0, 10, 0]).length, 8);
+  it("returns v0.11.0 through v0.19.0 for v0.10.0", () => {
+    assert.equal(getTransforms([0, 10, 0]).length, 9);
   });
-  it("returns v0.12.0 through v0.18.0 for v0.11.0", () => {
-    assert.equal(getTransforms([0, 11, 0]).length, 7);
+  it("returns v0.12.0 through v0.19.0 for v0.11.0", () => {
+    assert.equal(getTransforms([0, 11, 0]).length, 8);
   });
-  it("returns v0.13.0 through v0.18.0 for v0.12.0", () => {
-    assert.equal(getTransforms([0, 12, 0]).length, 6);
+  it("returns v0.13.0 through v0.19.0 for v0.12.0", () => {
+    assert.equal(getTransforms([0, 12, 0]).length, 7);
   });
-  it("returns v0.14.0 through v0.18.0 for v0.13.0", () => {
-    assert.equal(getTransforms([0, 13, 0]).length, 5);
+  it("returns v0.14.0 through v0.19.0 for v0.13.0", () => {
+    assert.equal(getTransforms([0, 13, 0]).length, 6);
   });
-  it("returns v0.15.0 through v0.18.0 for v0.14.0", () => {
-    assert.equal(getTransforms([0, 14, 0]).length, 4);
+  it("returns v0.15.0 through v0.19.0 for v0.14.0", () => {
+    assert.equal(getTransforms([0, 14, 0]).length, 5);
   });
-  it("returns v0.16.0 through v0.18.0 for v0.15.0", () => {
-    assert.equal(getTransforms([0, 15, 0]).length, 3);
+  it("returns v0.16.0 through v0.19.0 for v0.15.0", () => {
+    assert.equal(getTransforms([0, 15, 0]).length, 4);
   });
-  it("returns v0.17.0 and v0.18.0 for v0.16.0", () => {
-    assert.equal(getTransforms([0, 16, 0]).length, 2);
+  it("returns v0.17.0 through v0.19.0 for v0.16.0", () => {
+    assert.equal(getTransforms([0, 16, 0]).length, 3);
   });
-  it("returns only v0.18.0 for v0.17.0", () => {
-    assert.equal(getTransforms([0, 17, 0]).length, 1);
+  it("returns v0.18.0 and v0.19.0 for v0.17.0", () => {
+    assert.equal(getTransforms([0, 17, 0]).length, 2);
   });
-  it("returns nothing for v0.18.0", () => {
-    assert.equal(getTransforms([0, 18, 0]).length, 0);
+  it("returns only v0.19.0 for v0.18.0", () => {
+    assert.equal(getTransforms([0, 18, 0]).length, 1);
+  });
+  it("returns nothing for v0.19.0", () => {
+    assert.equal(getTransforms([0, 19, 0]).length, 0);
   });
 });
 
@@ -448,8 +452,20 @@ describe("v0.18.0 transform", () => {
   });
 });
 
+describe("v0.19.0 transform", () => {
+  it("bumps schema URL to v0.19.0 and preserves data", () => {
+    const input = {
+      $schema: schemaUrl("0.18.0"),
+      services: [{ product: "svc", component: "api", promotionType: "securePipelines", automated: [{ checks: [{ name: "unit" }], phase: "pre-merge", provider: "GitHub", file: "a.yml", path: "$.jobs.test" }], notApplicable: [{ phase: "build", checks: [{ name: "integration", details: ["No AWS at build"] }] }] }],
+    };
+    const result = v0190(input);
+    assert.equal(result.$schema, schemaUrl("0.19.0"));
+    assert.deepEqual(result.services, input.services);
+  });
+});
+
 describe("full pipeline", () => {
-  it("upgrades v0.1.0 manifest to v0.17.0", () => {
+  it("upgrades v0.1.0 manifest to v0.19.0", () => {
     const input = {
       $schema: "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.1.0/schemas/schema.json",
       services: [{
@@ -466,7 +482,7 @@ describe("full pipeline", () => {
       result = transform(result);
     }
 
-    assert.equal(result.$schema, schemaUrl("0.18.0"));
+    assert.equal(result.$schema, schemaUrl("0.19.0"));
     assert.equal(result.services[0].product, "example");
     assert.equal(result.services[0].component, "example");
     assert.equal(result.services[0].promotionType, "securePipelines");

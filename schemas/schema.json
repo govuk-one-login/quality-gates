@@ -255,6 +255,9 @@
           "items": {
             "$ref": "#/$defs/check-with-details"
           }
+        },
+        "phase": {
+          "type": "string"
         }
       },
       "required": ["checks"]
@@ -312,6 +315,15 @@
               }
             }
           }
+        },
+        "notApplicable": {
+          "items": {
+            "properties": {
+              "phase": {
+                "enum": ["pre-merge", "pre-upload", "build", "staging", "production", "integration"]
+              }
+            }
+          }
         }
       }
     },
@@ -344,6 +356,15 @@
               }
             }
           }
+        },
+        "notApplicable": {
+          "items": {
+            "properties": {
+              "phase": {
+                "enum": ["pre-develop", "develop", "pre-release", "release", "pre-main", "main"]
+              }
+            }
+          }
         }
       }
     },
@@ -369,6 +390,15 @@
           }
         },
         "outOfBand": {
+          "items": {
+            "properties": {
+              "phase": {
+                "enum": ["pre-merge", "pre-release"]
+              }
+            }
+          }
+        },
+        "notApplicable": {
           "items": {
             "properties": {
               "phase": {

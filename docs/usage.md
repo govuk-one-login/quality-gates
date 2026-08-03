@@ -178,6 +178,7 @@ Check types that the team has consciously decided do not apply to this service.
 | Field       | Type     | Required | Description                                      |
 |-------------|----------|----------|--------------------------------------------------|
 | `checks`    | object[] | Yes      | Check types with details (see [checks with details](#checks-with-details)) |
+| `phase`     | string   | No       | SDLC phase where the check is not applicable. When omitted, the check is considered not applicable across all phases. |
 
 ### Checks
 

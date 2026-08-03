@@ -211,6 +211,57 @@ describe("buildCheckLevelGrid", () => {
     assert.equal(result.groups[0].rows[0].cells[buildOffset].status, "notApplicable");
   });
 
+  it("phase-scoped notApplicable only marks the specified phase cell", () => {
+    const services = [
+      makeService({
+        automated: [],
+        notApplicable: [
+          { phase: "build", checks: [{ name: "integration", details: ["No AWS resources at build"] }] },
+        ],
+      }),
+    ];
+    const levelGroups = [
+      { name: "S", promotionType: "securePipelines", phase: "pre-merge", checks: ["integration"] },
+      { name: "A", promotionType: "securePipelines", phase: "build", checks: ["integration"] },
+      { name: "B", promotionType: "securePipelines", phase: "staging", checks: ["integration"] },
+    ];
+
+    const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
+
+    const categories = result.groups[0].columns.categories;
+    const preMergeIdx = categories.findIndex(c => c.name === "pre-merge");
+    const buildIdx = categories.findIndex(c => c.name === "build");
+    const stagingIdx = categories.findIndex(c => c.name === "staging");
+    const preMergeOffset = categories.slice(0, preMergeIdx).reduce((sum, c) => sum + Math.max(c.items.length, 1), 0);
+    const buildOffset = categories.slice(0, buildIdx).reduce((sum, c) => sum + Math.max(c.items.length, 1), 0);
+    const stagingOffset = categories.slice(0, stagingIdx).reduce((sum, c) => sum + Math.max(c.items.length, 1), 0);
+
+    assert.equal(result.groups[0].rows[0].cells[preMergeOffset].status, "missing");
+    assert.equal(result.groups[0].rows[0].cells[buildOffset].status, "notApplicable");
+    assert.equal(result.groups[0].rows[0].cells[stagingOffset].status, "missing");
+  });
+
+  it("implemented takes priority over phase-scoped notApplicable", () => {
+    const services = [
+      makeService({
+        automated: [
+          { checks: [{ name: "integration" }], phase: "build", provider: "GitHub", file: "ci.yml" },
+        ],
+        notApplicable: [
+          { phase: "build", checks: [{ name: "integration", details: ["Contradictory"] }] },
+        ],
+      }),
+    ];
+    const levelGroups = [{ name: "A", promotionType: "securePipelines", phase: "build", checks: ["integration"] }];
+
+    const result = buildCheckLevelGrid("svc-a", services, levelGroups, phasesByPromotionType);
+
+    const categories = result.groups[0].columns.categories;
+    const buildIdx = categories.findIndex(c => c.name === "build");
+    const buildOffset = categories.slice(0, buildIdx).reduce((sum, c) => sum + Math.max(c.items.length, 1), 0);
+    assert.equal(result.groups[0].rows[0].cells[buildOffset].status, "implemented");
+  });
+
   it("produces multiple column items when a level group has multiple checks", () => {
     const services = [
       makeService({
@@ -654,5 +705,57 @@ describe("buildIntegrationScopeGrid", () => {
 
     // production/e2e = (3*5)+3 = 18, regression is row 0
     assert.equal(result.groups[0].rows[0].cells[18].status, "multiple");
+  });
+
+  it("phase-scoped notApplicable integration only marks that phase", () => {
+    const services = [
+      makeService({
+        automated: [],
+        notApplicable: [
+          { phase: "build", checks: [{ name: "integration", details: ["No AWS resources at build"] }] },
+        ],
+      }),
+    ];
+
+    const result = buildIntegrationScopeGrid("svc-a", services, phasesByPromotionType, scopes, purposes);
+
+    // build is phase index 1, 5 scopes per phase
+    // All build cells should be notApplicable
+    for (const row of result.groups[0].rows) {
+      for (let i = 0; i < 5; i++) {
+        assert.equal(row.cells[5 + i].status, "notApplicable", `build cell ${i} should be notApplicable`);
+      }
+    }
+    // pre-merge cells (phase index 0) should be empty
+    for (const row of result.groups[0].rows) {
+      for (let i = 0; i < 5; i++) {
+        assert.equal(row.cells[i].status, "empty", `pre-merge cell ${i} should be empty`);
+      }
+    }
+    // staging cells (phase index 2) should be empty
+    for (const row of result.groups[0].rows) {
+      for (let i = 0; i < 5; i++) {
+        assert.equal(row.cells[10 + i].status, "empty", `staging cell ${i} should be empty`);
+      }
+    }
+  });
+
+  it("global notApplicable integration marks all phases", () => {
+    const services = [
+      makeService({
+        automated: [],
+        notApplicable: [
+          { checks: [{ name: "integration", details: ["Standalone service"] }] },
+        ],
+      }),
+    ];
+
+    const result = buildIntegrationScopeGrid("svc-a", services, phasesByPromotionType, scopes, purposes);
+
+    for (const row of result.groups[0].rows) {
+      for (const cell of row.cells) {
+        assert.equal(cell.status, "notApplicable");
+      }
+    }
   });
 });

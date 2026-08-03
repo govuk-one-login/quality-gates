@@ -38,6 +38,19 @@
           "file": ".github/workflows/quality.yaml",
           "path": "$.jobs.codeql"
         }
+      ],
+      "notApplicable": [
+        {
+          "checks": [
+            { "name": "visual regression", "details": ["No user-facing UI in this component"] }
+          ]
+        },
+        {
+          "phase": "build",
+          "checks": [
+            { "name": "integration", "details": ["No AWS resources to test at build phase"] }
+          ]
+        }
       ]
     }
   ]
