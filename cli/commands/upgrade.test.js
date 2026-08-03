@@ -35,7 +35,7 @@ describe("upgrade command", () => {
     assert.equal(result.services[0].serviceTag, undefined);
     assert.equal(result.services[0].promotionType, "securePipelines");
     assert.deepEqual(result.services[0].automated[0].checks, [{ name: "unit" }]);
-    assert.match(result.$schema, /v0\.18\.0/);
+    assert.match(result.$schema, /v0\.19\.0/);
     assert.equal(result.services[0].automated[0].checkTypes, undefined);
   });
 
@@ -65,7 +65,7 @@ describe("upgrade command", () => {
 
   it("skips manifests already at latest version", () => {
     const file = createManifest(TMP, {
-      $schema: "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.18.0/schemas/schema.json",
+      $schema: "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.19.0/schemas/schema.json",
       services: [{ product: "x", component: "x", promotionType: "securePipelines", automated: [{ checks: [{ name: "unit" }], phase: "pre-merge", provider: "GitHub", file: "a.yml", path: "$.jobs.test" }] }],
     });
     const before = readFileSync(file, "utf8");
@@ -89,8 +89,8 @@ describe("upgrade command", () => {
 
     const a = JSON.parse(readFileSync(join(TMP, "a", "quality-gate.manifest.json"), "utf8"));
     const b = JSON.parse(readFileSync(join(TMP, "b", "quality-gate.manifest.json"), "utf8"));
-    assert.match(a.$schema, /v0\.18\.0/);
-    assert.match(b.$schema, /v0\.18\.0/);
+    assert.match(a.$schema, /v0\.19\.0/);
+    assert.match(b.$schema, /v0\.19\.0/);
     assert.equal(b.services[0].product, "b");
     assert.equal(b.services[0].component, "b");
   });
