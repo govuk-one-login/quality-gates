@@ -1,0 +1,199 @@
+{
+  "target": "../schemas/schema.json",
+  "$comment": "notApplicable optional phase validation tests",
+  "tests": [
+    {
+      "description": "notApplicable without phase is valid (backwards compat)",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "product": "service",
+            "component": "api",
+            "promotionType": "securePipelines",
+            "notApplicable": [
+              {
+                "checks": [
+                  { "name": "visual regression", "details": ["No user-facing UI"] }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "securePipelines notApplicable with valid phase build",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "product": "service",
+            "component": "api",
+            "promotionType": "securePipelines",
+            "notApplicable": [
+              {
+                "phase": "build",
+                "checks": [
+                  { "name": "integration", "details": ["No AWS resources to test at build"] }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "securePipelines notApplicable with valid phase pre-merge",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "product": "service",
+            "component": "api",
+            "promotionType": "securePipelines",
+            "notApplicable": [
+              {
+                "phase": "pre-merge",
+                "checks": [
+                  { "name": "canary", "details": ["Canary only applies post-deploy"] }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "securePipelines notApplicable with invalid phase pre-develop",
+      "valid": false,
+      "data": {
+        "services": [
+          {
+            "product": "service",
+            "component": "api",
+            "promotionType": "securePipelines",
+            "notApplicable": [
+              {
+                "phase": "pre-develop",
+                "checks": [
+                  { "name": "integration", "details": ["Invalid phase for this promotionType"] }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "gitFlow notApplicable with valid phase develop",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "product": "service",
+            "component": "api",
+            "promotionType": "gitFlow",
+            "notApplicable": [
+              {
+                "phase": "develop",
+                "checks": [
+                  { "name": "canary", "details": ["No canary in develop"] }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "gitFlow notApplicable with invalid phase staging",
+      "valid": false,
+      "data": {
+        "services": [
+          {
+            "product": "service",
+            "component": "api",
+            "promotionType": "gitFlow",
+            "notApplicable": [
+              {
+                "phase": "staging",
+                "checks": [
+                  { "name": "integration", "details": ["Invalid phase for gitFlow"] }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "library notApplicable with valid phase pre-release",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "product": "service",
+            "component": "sdk",
+            "promotionType": "library",
+            "notApplicable": [
+              {
+                "phase": "pre-release",
+                "checks": [
+                  { "name": "canary", "details": ["Libraries do not have canary deployments"] }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "library notApplicable with invalid phase build",
+      "valid": false,
+      "data": {
+        "services": [
+          {
+            "product": "service",
+            "component": "sdk",
+            "promotionType": "library",
+            "notApplicable": [
+              {
+                "phase": "build",
+                "checks": [
+                  { "name": "integration", "details": ["Invalid phase for library"] }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "notApplicable with phase and without phase together is valid",
+      "valid": true,
+      "data": {
+        "services": [
+          {
+            "product": "service",
+            "component": "api",
+            "promotionType": "securePipelines",
+            "notApplicable": [
+              {
+                "checks": [
+                  { "name": "visual regression", "details": ["No UI"] }
+                ]
+              },
+              {
+                "phase": "build",
+                "checks": [
+                  { "name": "integration", "details": ["No AWS resources at build time"] }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
