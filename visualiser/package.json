@@ -16,7 +16,7 @@
     "data-structure-typed": "2.6.2"
   },
   "devDependencies": {
-    "@octokit/core": "7.0.6",
+    "@octokit/core": "7.0.7",
     "@octokit/graphql": "9.0.3",
     "@octokit/plugin-paginate-graphql": "6.0.0",
     "dotenv": "^17.4.2",
