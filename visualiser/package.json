@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@octokit/core": "7.0.6",
-    "@octokit/graphql": "9.0.3",
+    "@octokit/graphql": "9.0.4",
     "@octokit/plugin-paginate-graphql": "6.0.0",
     "dotenv": "^17.4.2",
     "octokit": "^5.0.5",
