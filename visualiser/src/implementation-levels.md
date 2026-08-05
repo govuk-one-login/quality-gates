@@ -22,7 +22,7 @@ const includedProjectComponents = FileAttachment("./data/filter-included-project
 ```js
 const isIncluded = (product, component) =>
   includedProjectComponents.length === 0
-    ? false
+    ? true
     : includedProjectComponents.some(i => i.product === product && i.component === component);
 ```
 

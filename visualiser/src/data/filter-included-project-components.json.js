@@ -1,9 +1,9 @@
 // Note: Changing environment variables doesn't invalidate the cache
-// Restart and delete src/.observable/cache/data/included-project-components.json to refresh
+// Restart and delete src/.observable/cache/data/filter-included-project-components.json to refresh
 
 import "dotenv/config";
 
-const raw = process.env.LEVEL_INCLUDED_PROJECT_COMPONENTS ?? "";
+const raw = process.env.LEVEL_FILTER_INCLUDED_PROJECT_COMPONENTS ?? "";
 
 const data = raw.trim() === ""
   ? []
