@@ -106,14 +106,25 @@ const versionsSearch = view(Inputs.search(stats, {placeholder: "Search actionsâ€
 ```
 
 ```js
-const statsSelection = view(Inputs.table(versionsSearch.filter((d) => preMergeChecks.includes(d.checkType)), {
-    columns: ["name", "checkType", "file", "path", "stepsCount"],
+const filteredVersionsSearch = versionsSearch
+    .map((d) => ({...d, url: new URL(`/${d?.owner?.login}/${d?.name}/blob/main/${d?.file}`, "https://github.com")}))
+    .filter((d) => preMergeChecks.includes(d.checkType))
+```
+```js
+display(filteredVersionsSearch)
+```
+
+
+```js
+const statsSelection = view(Inputs.table(filteredVersionsSearch, {
+    columns: ["name", "checkType", "url", "path", "stepsCount"],
     header: {
       name: "Name",
-      "checkType":  "check type"
+      "checkType":  "check type",
+        url: "filename"
     },
     format: {
-        "file": (s) => s.split("workflows/")[1]
+        "url": url => htl.html`<a href=${url}>${url.pathname.split("/").pop()}</a>`
     },
     multiple: false,
     width: {
