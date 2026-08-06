@@ -45,16 +45,16 @@ cp .env.example .env
 
 Edit `.env` with your values:
 
-| Variable                    | Description                                                          |
-|-----------------------------|----------------------------------------------------------------------|
-| `GITHUB_TOKEN`              | Fine-grained PAT (see [token permissions](#token-permissions) below) |
-| `GITHUB_ORG`                | GitHub organisation to query                                         |
-| `LEVEL_GROUP_PREFIX`        | Prefix for tier grouping (default: `CHECKS`)                         |
-| `LEVEL_GROUP_DELIMITER`     | Delimiter between tier segments (default: `__`)                      |
-| `CHECKS__S_TIER__PRE_MERGE` | Example of comma-separated check-types required at S tier            |
-| `CHECKS__A_TIER__PRE_MERGE` | Example of comma-separated check-types required at A tier            |
-| `CHECKS__B_TIER__PRE_MERGE` | Example of comma-separated check-types required at B tier            |
-
+| Variable                                   | Description                                                          |
+|--------------------------------------------|----------------------------------------------------------------------|
+| `GITHUB_TOKEN`                             | Fine-grained PAT (see [token permissions](#token-permissions) below) |
+| `GITHUB_ORG`                               | GitHub organisation to query                                         |
+| `LEVEL_GROUP_PREFIX`                       | Prefix for tier grouping (default: `CHECKS`)                         |
+| `LEVEL_GROUP_DELIMITER`                    | Delimiter between tier segments (default: `__`)                      |
+| `CHECKS__S_TIER__PRE_MERGE`                | Example of comma-separated check-types required at S tier            |
+| `CHECKS__A_TIER__PRE_MERGE`                | Example of comma-separated check-types required at A tier            |
+| `CHECKS__B_TIER__PRE_MERGE`                | Example of comma-separated check-types required at B tier            |
+| `LEVEL_FILTER_INCLUDED_PROJECT_COMPONENTS` | Product:component filter, comma-separated                            |
 
 
 ### 4. Start the dev server

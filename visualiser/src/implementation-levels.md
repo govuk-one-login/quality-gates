@@ -1,3 +1,6 @@
+---
+toc: false
+---
 # Implementation Levels
 
 
@@ -13,6 +16,17 @@ const levelGroups  = FileAttachment("./data/level-groups.json").json();
 
 ```js
 const currentSchema = FileAttachment("./data/schema.json").json();
+```
+
+```js
+const includedProjectComponents = FileAttachment("./data/filter-included-project-components.json").json();
+```
+
+```js
+const isIncluded = (product, component) =>
+  includedProjectComponents.length === 0
+    ? true
+    : includedProjectComponents.some(i => i.product === product && i.component === component);
 ```
 
 ```js
@@ -46,17 +60,8 @@ const productsAndComponents = repositories
       promotionType: service.promotionType
     }))
   )
+  .filter(s => isIncluded(s.product, s.component))
   .sort((a, b) => a.product.localeCompare(b.product) || a.component.localeCompare(b.component));
-
-display(Inputs.table(productsAndComponents, {
-  columns: ["product", "component", "repository", "promotionType"],
-  header: {
-    product: "Product",
-    component: "Component",
-    repository: "Repository",
-    promotionType: "Promotion Type"
-  }
-}));
 ```
 
 ## By Product
@@ -97,30 +102,109 @@ const servicesByProduct = Object.groupBy(
         repository: node.name,
         repositoryUrl: `https://github.com/${node.owner.login}/${node.name}`
       }))
-    ),
+    )
+    .filter(service => isIncluded(service.product, service.component)),
   service => service.product
 );
 ```
 
 ```js
+// Group level definitions by name (e.g. "s-tier", "a-tier", "b-tier")
+const levelGroupsByName = Object.groupBy(levelGroups, l => l.name);
+const levelNames = [...new Set(levelGroups.map(l => l.name))];
+```
+
+```js
+function renderDonut(group) {
+  const counts = {};
+  for (const row of group.rows) {
+    for (const cell of row.cells) {
+      if (cell.status !== "empty") {
+        counts[cell.status] = (counts[cell.status] ?? 0) + 1;
+      }
+    }
+  }
+  const data = Object.entries(counts).map(([status, count]) => ({ status, count }));
+
+  const width = 160;
+  const height = 160;
+  const radius = Math.min(width, height) / 2;
+  const innerRadius = radius * 0.55;
+
+  const total = data.reduce((sum, d) => sum + d.count, 0);
+  const implemented = (counts["implemented"] ?? 0) + (counts["notApplicable"] ?? 0);
+  const pct = total > 0 ? Math.round((implemented / total) * 100) : 0;
+
+  const svg = d3.create("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("viewBox", [-width / 2, -height / 2, width, height]);
+
+  if (data.length === 0) {
+    // Empty ring for 0%
+    svg.append("path")
+      .attr("d", d3.arc().innerRadius(innerRadius).outerRadius(radius).startAngle(0).endAngle(2 * Math.PI)())
+      .attr("fill", iconsMapping["empty"]?.color ?? "#f9f9f9")
+      .attr("stroke", "white")
+      .attr("stroke-width", 1.5);
+  } else {
+    const pie = d3.pie().value(d => d.count).sort(null);
+    const arc = d3.arc().innerRadius(innerRadius).outerRadius(radius);
+    const arcs = pie(data);
+
+    svg.selectAll("path")
+      .data(arcs)
+      .join("path")
+      .attr("d", arc)
+      .attr("fill", d => iconsMapping[d.data.status]?.color ?? "#ccc")
+      .attr("stroke", "white")
+      .attr("stroke-width", 1.5)
+      .append("title")
+      .text(d => `${d.data.status}: ${d.data.count}`);
+  }
+
+  svg.append("text")
+    .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "central")
+    .attr("font-size", "1.2rem")
+    .attr("font-weight", "bold")
+    .text(`${pct}%`);
+
+  return svg.node();
+}
+```
+
+```js
 display(html`${Object.keys(servicesByProduct).sort().map(product => {
   const services = servicesByProduct[product];
-  const checkGrid = buildCheckLevelGrid(product, services, levelGroups, phasesByPromotionType);
-  const integrationGrid = buildIntegrationScopeGrid(null, services, phasesByPromotionType, scopes, purposes);
   const allChecksGrid = buildAllChecksGrid(product, services, allCheckTypes);
 
-  // Interleave grids by promotionType
-  const promotionTypes = checkGrid.groups.map(g => g.subtitle);
+  // Build one check-level grid per level-group name
+  const checkGridsByLevel = Object.fromEntries(
+    levelNames.map(name => [name, buildCheckLevelGrid(product, services, levelGroupsByName[name], phasesByPromotionType)])
+  );
+
+  // Determine promotionTypes from the first available grid
+  const firstGrid = Object.values(checkGridsByLevel).find(g => g.groups.length > 0) ?? { groups: [] };
+  const promotionTypes = firstGrid.groups.map(g => g.subtitle);
+
   return html`<h3>${product}</h3>${promotionTypes.map(pt => {
-    const checkGroup = { ...checkGrid.groups.find(g => g.subtitle === pt), title: null };
-    const intGroup = integrationGrid.groups.find(g => g.subtitle === pt);
     const allChecksGroup = allChecksGrid.groups.find(g => g.subtitle === pt);
     return html`
-      <h4>Level Requirements</h4>
-      ${renderStatusGrid(toCheckLevelTableModel(checkGroup, iconsMapping))}
-      <h4>Integration Checks</h4>
-      ${intGroup ? renderStatusGrid(toIntegrationTableModel(intGroup, iconsMapping)) : ""}
-      <h4>All Checks</h4>
+          <h4>Levels</h4>
+
+      ${levelNames.map(name => {
+        const checkGrid = checkGridsByLevel[name];
+        const checkGroup = checkGrid.groups.find(g => g.subtitle === pt);
+        return checkGroup
+          ? html`<h5>${name}</h5>
+            <div style="display: flex; align-items: flex-start; gap: 1.5rem;">
+              <div>${renderDonut(checkGroup)}</div>
+              <div style="flex: 1; overflow-x: auto;">${renderStatusGrid(toCheckLevelTableModel({ ...checkGroup, title: null }, iconsMapping))}</div>
+            </div>`
+          : "";
+      })}
+      <h4>all checks</h4>
       ${allChecksGroup ? renderStatusGrid(toAllChecksTableModel({ ...allChecksGroup, title: null }, iconsMapping)) : ""}
     `;
   })}`;
@@ -131,212 +215,4 @@ display(html`${Object.keys(servicesByProduct).sort().map(product => {
 
 ```js
 const allCheckTypes = currentSchema["$defs"]["check-type"].enum
-```
-
-```js
-const allPods = _.chain(githubManifestAndWorkflows.organization.repositories.nodes)
-    .map(n => n.pod.value)
-    .uniq()
-    .sort()
-    .value()
-```
-
-```js
-const allTeams = _.chain(githubManifestAndWorkflows.organization.repositories.nodes)
-    .map(n => n.teamResponsible.value)
-    .uniq()
-    .sort()
-    .value()
-```
-
-<div class="grid grid-cols-2">
-
-<div class="card">
-
-```js
-const selectedTeams = view(Inputs.checkbox(_.chain(allTeams), {label: "Team", value: allTeams}));
-```
-
-
-</div>
-
-<div class="card">
-
-```js
-const toggleExcludeArchived = view(Inputs.toggle({label: "Exclude Archived", value: true}));
-```
-</div>
-</div>
-
-```js
-const filteredFlattenedCheckTypes = flattenedCheckTypes.filter(fc => selectedTeams.includes(fc.teamResponsible.value))
-```
-
-
-# By Level
-
-```js
-const groupedCheckTypes = _.groupBy(flattenedCheckTypes, (ct) => ct.teamResponsible.value)
-```
-
-```js
-// display(groupedCheckTypes)
-```
-
-
-```js
-const createChart = (level, checkTypes) => {
-    return html`<div>
-        <h3>${checkTypes[0].pod.value} - ${checkTypes[0].teamResponsible.value} (${level.name} - ${level.phase})</h3>
-        <div>${Plot.plot({
-        marginLeft: 350,
-        marginBottom: 200,
-        marginTop: 150,
-        x: { domain: level.checks },
-        y: { domain: checkTypes.filter(fc => selectedTeams.includes(fc.teamResponsible.value)).map((fc) => fc.service__repo).sort()},
-        marks: [
-            Plot.axisX({anchor: "top", tickRotate: -90}),
-            Plot.axisX({anchor: "bottom", label: null, tickRotate: -90}),
-            Plot.cell(
-                checkTypes,
-                { x: "check-type", y: "service__repo", fill: "check-type" }
-            )
-        ]
-    })}</div></div>`
-}
-
-```
-```js
-const makeSections = (level, groupedCheckTypes) => {
-    const heading = html`<h2>${level.name} - ${level.phase}</h2>`
-
-//    const chart = createChart(level, flattenedCheckTypes)
-
-    const charts = _.map(groupedCheckTypes, (group, groupName) => createChart(level, group))
-
-    return html`<div>${heading}${charts}</div>`
-}
-```
-
-```js
-const disp = levelGroups.map(l => makeSections(l, groupedCheckTypes))
-```
-
-```js
-display(html`${disp}`)
-```
-
-```js
-const filteredManifestAndWorkflows = {
-    organization: {
-        repositories: {
-            ...githubManifestAndWorkflows.organization.repositories,
-            nodes: githubManifestAndWorkflows.organization.repositories.nodes.filter((n) => toggleExcludeArchived ? n.isArchived === false : true),
-
-        }
-    }
-}
-```
-
-```js
-const nodesWithManifest = filteredManifestAndWorkflows.organization.repositories.nodes.filter((n) => n.manifest).map((n) => ({
-    ...n,
-    manifest: {
-        ...n.manifest,
-        text: {
-            ...n.manifest.text,
-            version: n?.manifest?.text?.$schema?.match(/tags\/v(.+?)\/schemas\/schema\.json/)?.[1]
-        }
-    }
-}))
-```
-
-```js
-const nodesByServiceTag = Object.groupBy(
-    nodesWithManifest.flatMap((n) => (n.manifest.text.services ?? []).map((s) => ({ ...n, serviceTag: s.product }))),
-    (n) => n.serviceTag
-)
-```
-
-
-
-```js
-const flattenedServices = Object.entries(nodesByServiceTag).flatMap(([tag, nodes]) =>
-    nodes.map((n) => ({ ...n, service__repo: `${tag} / ${n.name}` }))
-)
-```
-
-```js
-const serviceItems = Object.keys(nodesByServiceTag).reduce((acc, tag) =>
-  acc.concat(nodesByServiceTag[tag].map((n) => ({
-    service__repo: `${tag} / ${n.name}`,
-    ...n,
-    ...(n.manifest.text.services ?? []).find((s) => s.product === tag)
-  }))),
-[])
-```
-
-
-
-```js
-const flattenedQualityGates = serviceItems.flatMap(({ automated, manual, ...rest }) =>
-  [...(automated ?? []), ...(manual ?? [])].map((gate) => ({ ...rest, ...gate }))
-)
-```
-
-
-```js
-const flattenedCheckTypes = flattenedQualityGates.flatMap(({ checks: ct, ...rest }) =>
-    (ct ?? []).flatMap((check) => ({ ...rest, "check-type": check.name }))
-)
-```
-
----
-
-# Explorer
-
-```js
-const explorerChecks = view(Inputs.checkbox(allCheckTypes, {label: "Check Types", value: allCheckTypes}));
-```
-
-```js
-display(Plot.plot({
-    marginLeft: 350,
-    marginBottom: 200,
-    marginTop: 200,
-    x: { domain: explorerChecks.sort() },
-    y: { domain: flattenedCheckTypes.map((fc) => fc.service__repo)},
-    marks: [
-        Plot.axisX({anchor: "top", tickRotate: -90}),
-        Plot.axisX({anchor: "bottom", label: null, tickRotate: -90}),
-        Plot.cell(
-            flattenedCheckTypes,
-            { x: "check-type", y: "service__repo", fill: "check-type" }
-        )
-    ]
-}))
-```
-
----
-
-# Repository count per service-tag
-
-```js
-display(Plot.plot({
-    marginLeft: 200,
-    color: {
-        type: "categorical",
-        scheme: "observable10",
-        legend: true
-    },
-    x: { label: "Count" },
-    y: { label: "Service Tag" },
-    marks: [
-        Plot.barX(
-            Object.entries(nodesByServiceTag).map(([tag, nodes]) => ({ tag, count: nodes.length })),
-            { x: "count", y: "tag", sort: { y: "y" }, fill: "count" }
-        ),
-        Plot.gridX({ stroke: "white" })
-    ]
-}))
 ```
