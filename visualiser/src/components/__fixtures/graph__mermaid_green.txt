@@ -1,0 +1,46 @@
+---
+title: govuk-one-login/quality-gates
+---
+flowchart LR
+subgraph events["GitHub Events"]
+direction LR
+pull_request
+push
+schedule
+end
+
+subgraph actions["GitHub Actions"]
+direction TB
+subgraph quality.yml
+direction LR
+quality.yml__pre-commit(["pre-commit"]):::green
+quality.yml__codeql(["codeql"])
+end
+
+subgraph schema.yml
+direction LR
+schema.yml__run-tests(["run-tests"]):::green
+end
+
+subgraph visualiser.yml
+direction LR
+visualiser.yml__run-tests(["run-tests"]):::green
+visualiser.yml__dependent(["dependent"])
+visualiser.yml__double-dependent(["double-dependent"])
+end
+
+end
+
+pull_request --> quality.yml
+pull_request --> schema.yml
+push --> quality.yml
+push --> schema.yml
+push --> visualiser.yml
+schedule --> quality.yml
+schedule --> schema.yml
+
+visualiser.yml__run-tests --> visualiser.yml__dependent
+visualiser.yml__run-tests --> visualiser.yml__double-dependent
+visualiser.yml__dependent --> visualiser.yml__double-dependent
+
+classDef green fill:#85d4ae,color:#000
