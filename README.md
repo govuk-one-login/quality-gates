@@ -1,5 +1,6 @@
 # Quality Gates Schema
 
+
 [![Schema Tests](https://github.com/govuk-one-login/quality-gates/actions/workflows/schema.yml/badge.svg)](https://github.com/govuk-one-login/quality-gates/actions/workflows/schema.yml)
 [![Quality](https://github.com/govuk-one-login/quality-gates/actions/workflows/quality.yml/badge.svg)](https://github.com/govuk-one-login/quality-gates/actions/workflows/quality.yml)
 
