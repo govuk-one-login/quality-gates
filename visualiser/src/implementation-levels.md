@@ -23,10 +23,12 @@ const includedProjectComponents = FileAttachment("./data/filter-included-project
 ```
 
 ```js
-const isIncluded = (product, component) =>
-  includedProjectComponents.length === 0
-    ? true
-    : includedProjectComponents.some(i => i.product === product && i.component === component);
+const isIncluded = () => true
+
+// const isIncluded = (product, component) =>
+//   includedProjectComponents.length === 0
+//     ? true
+//     : includedProjectComponents.some(i => i.product === product && i.component === component);
 ```
 
 ```js
@@ -119,7 +121,20 @@ const repoFilteredServices = view(Inputs.search(allServices, {
 }));
 ```
 
-<div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+<div style="">
+
+```js
+display(githubManifestAndWorkflows.organization.repositories.nodes.filter((n) => n.manifest !== null))
+```
+```js
+display(prepareServicesWithPod(repositories))
+```
+```js
+display(allServices)
+```
+```js
+display(availableProducts)
+```
 
 ```js
 const selectedPods = view(Inputs.checkbox(podOptionsWithNoPod, {label: "Pod", value: podOptionsWithNoPod}));
@@ -210,7 +225,7 @@ function renderDonut(group) {
 ```
 
 ```js
-function renderProductGrids(product, services) {
+function renderProductGrids(podName, product, services) {
   const allChecksGrid = buildAllChecksGrid(product, services, allCheckTypes);
 
   // Build one check-level grid per level-group name
@@ -222,7 +237,7 @@ function renderProductGrids(product, services) {
   const firstGrid = Object.values(checkGridsByLevel).find(g => g.groups.length > 0) ?? { groups: [] };
   const promotionTypes = firstGrid.groups.map(g => g.subtitle);
 
-  return html`<h3>${product}</h3>${promotionTypes.map(pt => {
+  return html`<div data-id="product-grids"><h3>${product}</h3>${promotionTypes.map(pt => {
     const allChecksGroup = allChecksGrid.groups.find(g => g.subtitle === pt);
     return html`
           <h4>Levels</h4>
@@ -232,16 +247,20 @@ function renderProductGrids(product, services) {
         const checkGroup = checkGrid.groups.find(g => g.subtitle === pt);
         return checkGroup
           ? html`<h5>${name}</h5>
-            <div style="display: flex; align-items: flex-start; gap: 1.5rem;">
-              <div>${renderDonut(checkGroup)}</div>
-              <div style="flex: 1; overflow-x: auto;">${renderStatusGrid(toCheckLevelTableModel({ ...checkGroup, title: null }, iconsMapping))}</div>
+            <div data-id="level-grids" data-pod="${podName}" data-product="${product}" data-level="${name}">
+              <div><h5>${product} - ${name}</h5></div>
+              <div style="display: flex; align-items: flex-start; gap: 1.5rem;">
+                <div>${renderDonut(checkGroup)}</div>
+                <div style="flex: 1; overflow-x: auto;">${renderStatusGrid(toCheckLevelTableModel({ ...checkGroup, title: null }, iconsMapping))}</div>
+              </div>
             </div>`
           : "";
       })}
       <h4>all checks</h4>
       ${allChecksGroup ? renderStatusGrid(toAllChecksTableModel({ ...allChecksGroup, title: null }, iconsMapping)) : ""}
     `;
-  })}`;
+  })}
+  </div>`;
 }
 ```
 
@@ -251,12 +270,12 @@ display(html`${filteredServices.length === 0
   : html`${podGrouping.pods.map(pod => html`
   <details open>
     <summary><h2 style="display: inline;">${pod.name}</h2></summary>
-    ${Object.keys(pod.products).map(product => renderProductGrids(product, pod.products[product]))}
+    ${Object.keys(pod.products).map(product => renderProductGrids(pod.name, product, pod.products[product]))}
   </details>
 `)}${Object.keys(podGrouping.noPod).length > 0 ? html`
   <details open>
     <summary><h2 style="display: inline;">No Pod</h2></summary>
-    ${Object.keys(podGrouping.noPod).map(product => renderProductGrids(product, podGrouping.noPod[product]))}
+    ${Object.keys(podGrouping.noPod).map(product => renderProductGrids("No Pod", product, podGrouping.noPod[product]))}
   </details>
 ` : ""}`}`)
 ```
