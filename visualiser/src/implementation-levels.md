@@ -17,14 +17,19 @@ const currentSchema = FileAttachment("./data/schema.json").json();
 ```
 
 ```js
-const includedProjectComponents = FileAttachment("./data/filter-included-project-components.json").json();
+const includedProjectComponents = FileAttachment("./data/filter-included-project-component.json").json();
 ```
 
 ```js
-const isIncluded = (product, component) =>
-  includedProjectComponents.length === 0
-    ? true
-    : includedProjectComponents.some(i => i.product === product && i.component === component);
+const toggleUseFilter = view(Inputs.toggle({label: "Use filter from environment", value: true}));
+```
+
+```js
+
+ const isIncluded = (product, component) =>
+     (!toggleUseFilter || includedProjectComponents.length === 0)
+     ? true
+     : includedProjectComponents.some(i => i.product === product && i.component === component);
 ```
 
 ```js
@@ -58,14 +63,8 @@ const productsAndComponents = repositories
       promotionType: service.promotionType
     }))
   )
-  // Drop services missing required identity fields (e.g. authored against a
-  // different schema version or a partially-migrated manifest)
-  .filter(s => s.product != null && s.component != null)
   .filter(s => isIncluded(s.product, s.component))
-  .sort((a, b) =>
-    (a.product ?? "").localeCompare(b.product ?? "") ||
-    (a.component ?? "").localeCompare(b.component ?? "")
-  );
+  .sort((a, b) => a.product.localeCompare(b.product) || a.component.localeCompare(b.component));
 ```
 
 ## By Product
@@ -117,13 +116,18 @@ const {allPodValues, podOptionsWithNoPod} = deriveFilterOptions(allServices);
 <div class="card" style="padding: 1rem;">
 
 ```js
-const repoFilteredServices = view(Inputs.search(allServices, {
+const configFilteredServices = allServices.filter((d) => {
+    return true
+})
+```
+```js
+const repoFilteredServices = view(Inputs.search(configFilteredServices, {
   placeholder: "Search repositories…",
   filter: (query) => (d) => d.repository.toLowerCase().includes(query.toLowerCase())
 }));
 ```
 
-<div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+<div style="">
 
 ```js
 const selectedPods = view(Inputs.checkbox(podOptionsWithNoPod, {label: "Pod", value: podOptionsWithNoPod}));
@@ -214,7 +218,7 @@ function renderDonut(group) {
 ```
 
 ```js
-function renderProductGrids(product, services) {
+function renderProductGrids(podName, product, services) {
   const allChecksGrid = buildAllChecksGrid(product, services, allCheckTypes);
 
   // Build one check-level grid per level-group name
@@ -226,26 +230,27 @@ function renderProductGrids(product, services) {
   const firstGrid = Object.values(checkGridsByLevel).find(g => g.groups.length > 0) ?? { groups: [] };
   const promotionTypes = firstGrid.groups.map(g => g.subtitle);
 
-  return html`<h3>${product}</h3>${promotionTypes.map(pt => {
+  return html`<div data-id="product-grids"><h3>${product}</h3>${promotionTypes.map(pt => {
     const allChecksGroup = allChecksGrid.groups.find(g => g.subtitle === pt);
     return html`
-          <h4>Levels</h4>
-
       ${levelNames.map(name => {
         const checkGrid = checkGridsByLevel[name];
         const checkGroup = checkGrid.groups.find(g => g.subtitle === pt);
         return checkGroup
-          ? html`<h5>${name}</h5>
-            <div style="display: flex; align-items: flex-start; gap: 1.5rem;">
-              <div>${renderDonut(checkGroup)}</div>
-              <div style="flex: 1; overflow-x: auto;">${renderStatusGrid(toCheckLevelTableModel({ ...checkGroup, title: null }, iconsMapping))}</div>
+          ? html`<h4>${_.lowerCase(name)}</h4>
+            <div data-id="level-grids" data-pod="${podName}" data-product="${product}" data-level="${name}">
+              <div style="display: flex; align-items: flex-start; gap: 1.5rem;">
+                <div>${renderDonut(checkGroup)}</div>
+                <div style="flex: 1; overflow-x: auto;">${renderStatusGrid(toCheckLevelTableModel({ ...checkGroup, title: null }, iconsMapping))}</div>
+              </div>
             </div>`
           : "";
       })}
       <h4>all checks</h4>
       ${allChecksGroup ? renderStatusGrid(toAllChecksTableModel({ ...allChecksGroup, title: null }, iconsMapping)) : ""}
     `;
-  })}`;
+  })}
+  </div>`;
 }
 ```
 
@@ -255,12 +260,12 @@ display(html`${filteredServices.length === 0
   : html`${podGrouping.pods.map(pod => html`
   <details open>
     <summary><h2 style="display: inline;">${pod.name}</h2></summary>
-    ${Object.keys(pod.products).map(product => renderProductGrids(product, pod.products[product]))}
+    ${Object.keys(pod.products).map(product => renderProductGrids(pod.name, product, pod.products[product]))}
   </details>
 `)}${Object.keys(podGrouping.noPod).length > 0 ? html`
   <details open>
     <summary><h2 style="display: inline;">No Pod</h2></summary>
-    ${Object.keys(podGrouping.noPod).map(product => renderProductGrids(product, podGrouping.noPod[product]))}
+    ${Object.keys(podGrouping.noPod).map(product => renderProductGrids("No Pod", product, podGrouping.noPod[product]))}
   </details>
 ` : ""}`}`)
 ```
