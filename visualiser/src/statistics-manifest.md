@@ -1,8 +1,13 @@
 # Statistics - Manifest
 
 ```js
+import semver from "semver"
+```
+
+```js
 const githubManifestAndWorkflows = FileAttachment("./data/github-graphql-manifest-workflows.json").json();
 ```
+
 
 ```js
 const nodes = githubManifestAndWorkflows.organization.repositories.nodes.filter((n) => toggleExcludeArchived ? n.isArchived === false : true)
@@ -93,21 +98,63 @@ Plot.plot({
 
 ### Versions of Manifests
 ```js
-const versions = _.uniq(_.map(nodesWithManifest, (n) => n.manifest.text.version)).sort()
+const versions = _.uniq(_.map(nodesWithManifest, (n) => n.manifest.text.version))
+semver.sort(versions)
 ```
+
+<div class="grid grid-cols-2">
+<div>
+
 ```js
-Plot.plot({
+const selections = view(Plot.plot({
     color: {
         type: "categorical",
-        scheme: "observable10",
+        scheme: "tableau10",
         legend: true,
         domain: versions
     },
   marks: [
     Plot.barY(
       nodesWithManifest,
-      Plot.groupX({ y: "count" }, { x: (n) => n.pod.value, fill: (n) => n.manifest.text.version })
-    )
+      Plot.groupX(
+          { y: "count" }, { x: (n) => n.pod.value, fill: (n) => n.manifest.text.version })
+    ),
+
+      Plot.barY(
+          nodesWithManifest,
+          Plot.pointer(
+              Plot.groupX(
+                  {y: "count"},
+                  {
+                      x: (n) => n.pod.value,
+                      fill: (n) => n.manifest.text.version,
+                      // Aesthetic visual feedback when a bar is selected or hovered
+                      stroke: "black",
+                      strokeWidth: 2
+                  }
+              )
+          )
+      ),
+      Plot.ruleY([0])
   ]
+}))
+```
+
+</div>
+
+<div>
+
+```js
+Inputs.table(selections || [], {
+    columns: [
+        "name",
+        "manifest"
+    ],
+    format: {
+        "manifest": (d) => d.text.version
+    }
 })
 ```
+
+</div>
+</div>
