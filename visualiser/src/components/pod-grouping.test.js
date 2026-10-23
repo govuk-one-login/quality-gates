@@ -271,6 +271,45 @@ describe("prepareServicesWithPod", () => {
     assert.equal(result[1].pod, "Identity");
   });
 
+  it("skips services missing a product (e.g. authored against a different schema version)", () => {
+    const nodes = [makeNode({
+      manifest: {
+        text: {
+          services: [
+            { component: "api", promotionType: "securePipelines" },
+            { product: "Auth", component: "frontend", promotionType: "securePipelines" },
+          ]
+        }
+      }
+    })];
+    const result = prepareServicesWithPod(nodes);
+    assert.equal(result.length, 1);
+    assert.equal(result[0].product, "Auth");
+    assert.equal(result[0].component, "frontend");
+  });
+
+  it("skips services missing a component", () => {
+    const nodes = [makeNode({
+      manifest: {
+        text: {
+          services: [
+            { product: "Auth", promotionType: "securePipelines" },
+          ]
+        }
+      }
+    })];
+    const result = prepareServicesWithPod(nodes);
+    assert.deepEqual(result, []);
+  });
+
+  it("does not throw and yields no malformed services when every service lacks identity fields", () => {
+    const nodes = [makeNode({
+      manifest: { text: { services: [{ promotionType: "securePipelines" }] } }
+    })];
+    const result = prepareServicesWithPod(nodes);
+    assert.deepEqual(result, []);
+  });
+
   it("preserves all original service properties", () => {
     const nodes = [makeNode({
       manifest: {

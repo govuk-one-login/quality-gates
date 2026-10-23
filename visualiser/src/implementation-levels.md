@@ -3,8 +3,6 @@ toc: false
 ---
 # Implementation Levels
 
-
-
 ```js
 const githubManifestAndWorkflows = FileAttachment("./data/github-graphql-manifest-workflows.json").json();
 ```
@@ -60,8 +58,14 @@ const productsAndComponents = repositories
       promotionType: service.promotionType
     }))
   )
+  // Drop services missing required identity fields (e.g. authored against a
+  // different schema version or a partially-migrated manifest)
+  .filter(s => s.product != null && s.component != null)
   .filter(s => isIncluded(s.product, s.component))
-  .sort((a, b) => a.product.localeCompare(b.product) || a.component.localeCompare(b.component));
+  .sort((a, b) =>
+    (a.product ?? "").localeCompare(b.product ?? "") ||
+    (a.component ?? "").localeCompare(b.component ?? "")
+  );
 ```
 
 ## By Product

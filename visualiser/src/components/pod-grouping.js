@@ -85,11 +85,15 @@ export function prepareServicesWithPod(repositoryNodes) {
   return repositoryNodes
     .filter(node => node.manifest?.text?.services)
     .flatMap(node =>
-      node.manifest.text.services.map(service => ({
-        ...service,
-        repository: node.name,
-        repositoryUrl: `https://github.com/${node.owner.login}/${node.name}`,
-        pod: node.pod?.value ?? null
-      }))
+      node.manifest.text.services
+        // Drop services missing required identity fields (e.g. authored against
+        // a different schema version or a partially-migrated manifest)
+        .filter(service => service.product != null && service.component != null)
+        .map(service => ({
+          ...service,
+          repository: node.name,
+          repositoryUrl: `https://github.com/${node.owner.login}/${node.name}`,
+          pod: node.pod?.value ?? null
+        }))
     );
 }
