@@ -46,7 +46,13 @@ const productsAndComponents = repositories
       promotionType: service.promotionType
     }))
   )
-  .sort((a, b) => a.product.localeCompare(b.product) || a.component.localeCompare(b.component));
+  // Drop services missing required identity fields (e.g. authored against a
+  // different schema version or a partially-migrated manifest)
+  .filter(s => s.product != null && s.component != null)
+  .sort((a, b) =>
+    (a.product ?? "").localeCompare(b.product ?? "") ||
+    (a.component ?? "").localeCompare(b.component ?? "")
+  );
 
 display(Inputs.table(productsAndComponents, {
   columns: ["product", "component", "repository", "promotionType"],
