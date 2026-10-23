@@ -43,7 +43,23 @@ const graph = createGraph(repositoryActions)
 ```
 
 ```js
-const graphAsFlowChart = renderAsFlowChart(graph, `${repositoryActions[0].owner}/${repositoryActions[0].repo}`)
+const graphAsFlowChart = renderAsFlowChart(graph, `${repositoryActions[0].owner}/${repositoryActions[0].repo}`, {jobNames: qualityGateConfigs})
 ```
 
 ${mermaid`${graphAsFlowChart}`}
+
+
+```js
+// display(selectedRepository)
+// display(JSON.stringify(selectedRepository))
+```
+
+```js
+const qualityGateConfigs = selectedRepository?.manifest?.text?.services
+    .flatMap(s => s["quality-gates"])
+    .map(qg => (qg.config.path ?? qg.config.name).replace(/^jobs\./, ""))
+```
+
+```js
+// display(qualityGateConfigs)
+```
