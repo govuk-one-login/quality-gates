@@ -19,7 +19,8 @@ for(let i=0; i<selectors.length; i++) {
     const podName = await selectors[i].getAttribute("data-pod")
     const productName = await selectors[i].getAttribute("data-product")
     const levelName = await selectors[i].getAttribute("data-level")
-    await selectors[i].screenshot({path: `screenshots/${podName}-${productName}-${levelName}.png`})
+    const date = new Date().toISOString().split("T")[0];
+    await selectors[i].screenshot({path: `screenshots/${podName}-${productName}-${levelName}-${date}.png`})
 }
 
 await browser.close();

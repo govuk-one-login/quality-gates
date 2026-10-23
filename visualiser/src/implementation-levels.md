@@ -19,16 +19,24 @@ const currentSchema = FileAttachment("./data/schema.json").json();
 ```
 
 ```js
-const includedProjectComponents = FileAttachment("./data/filter-included-project-components.json").json();
+const includedProjectComponents = FileAttachment("./data/filter-included-project-component.json").json();
 ```
 
 ```js
-const isIncluded = () => true
+display(includedProjectComponents)
+```
 
-// const isIncluded = (product, component) =>
-//   includedProjectComponents.length === 0
-//     ? true
-//     : includedProjectComponents.some(i => i.product === product && i.component === component);
+```js
+const toggleUseFilter = view(Inputs.toggle({label: "Use filter from environment", value: true}));
+```
+
+
+```js
+
+ const isIncluded = (product, component) =>
+     (!toggleUseFilter || includedProjectComponents.length === 0)
+     ? true
+     : includedProjectComponents.some(i => i.product === product && i.component === component);
 ```
 
 ```js
@@ -50,6 +58,10 @@ const iconsMapping =  {
 ```
 
 ## Products and Components
+
+```js
+display(repositories)
+```
 
 ```js
 const productsAndComponents = repositories
@@ -114,8 +126,14 @@ const {allPodValues, podOptionsWithNoPod} = deriveFilterOptions(allServices);
 
 <div class="card" style="padding: 1rem;">
 
+
 ```js
-const repoFilteredServices = view(Inputs.search(allServices, {
+const configFilteredServices = allServices.filter((d) => {
+    return true
+})
+```
+```js
+const repoFilteredServices = view(Inputs.search(configFilteredServices, {
   placeholder: "Search repositories…",
   filter: (query) => (d) => d.repository.toLowerCase().includes(query.toLowerCase())
 }));
